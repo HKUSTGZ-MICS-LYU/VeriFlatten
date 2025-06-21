@@ -1,0 +1,55 @@
+                          CONFORMAL (R)
+                   Version 24.10-s200 (23-Aug-2024) (64 bit executable)
+   Copyright (c) Cadence Design Systems, Inc., 1997-2024. All Rights Reserved
+
+
+This program is proprietary and confidential information belonging to
+Cadence Design Systems, Inc., and may be used and disclosed only as authorized
+in a license agreement controlling such use and disclosure.
+
+// Warning: This version is 301 days old. You can download the latest version from http://downloads.cadence.com.
+
+// Command: read design adder.v -Verilog -Golden -sensitive -continuousassignment Bidirectional -nokeep_unreach -nosupply
+// Parsing file adder.v ...
+// Golden root module is set to 'adder_32bit'
+// Warning: (RTL1.5b) Potential loss of RHS msb or carry-out bit (occurrence:1)
+// Note: Read VERILOG design successfully
+CPU time     : 0.16    seconds
+Elapse time  : 0       seconds
+Memory usage : 72.90   M bytes
+// Command: read design f_adder.v -sv09 -Revised -sensitive -continuousassignment Bidirectional -nokeep_unreach -nosupply
+// Parsing file f_adder.v ...
+// Revised root module is set to 'adder_32bit'
+// Warning: (RTL1.5b) Potential loss of RHS msb or carry-out bit (occurrence:16)
+// Warning: (RTL14) Signal has input but it has no output (occurrence:400)
+// Warning: (RTL14.1) Fanout load of the signal is removed (occurrence:46)
+// Warning: (HRC3.16) A wire is declared, but not used in the module (occurrence:61)
+// Note: Read VERILOG design successfully
+// Command: set analyze option -auto
+// Command: set flatten model -gated_clock
+// Command: set system mode lec
+// Processing Golden ...
+//  18% completed//  28% completed//  33% completed//  35% completed//  38% completed//  43% completed//  50% completed//  53% completed//  58% completed//  67% completed//  70% completed//  73% completed//  77% completed//  85% completed//  88% completed//  92% completed// 100% completed// Modeling Golden ...
+//   0% completed//   1% completed//   2% completed//   3% completed//   4% completed//   5% completed//   7% completed//   8% completed//   9% completed//  10% completed//  11% completed//  12% completed//  14% completed//  15% completed//  16% completed//  17% completed//  18% completed//  20% completed//  21% completed//  22% completed//  23% completed//  24% completed//  25% completed//  27% completed//  28% completed//  29% completed//  30% completed//  31% completed//  32% completed//  34% completed//  35% completed//  36% completed//  37% completed//  38% completed//  40% completed//  41% completed//  42% completed//  43% completed//  44% completed//  45% completed//  47% completed//  48% completed//  49% completed//  50% completed//  51% completed//  52% completed//  54% completed//  55% completed//  56% completed//  57% completed//  58% completed//  60% completed//  61% completed//  62% completed//  63% completed//  64% completed//  65% completed//  67% completed//  68% completed//  69% completed//  70% completed//  71% completed//  72% completed//  74% completed//  75% completed//  76% completed//  77% completed//  78% completed//  80% completed//  81% completed//  82% completed//  83% completed//  84% completed//  85% completed//  87% completed//  88% completed//  89% completed//  90% completed//  91% completed//  92% completed//  94% completed//  95% completed//  96% completed//  97% completed//  98% completed// 100% completed// Processing Revised ...
+//   6% completed//   7% completed//   8% completed//  10% completed//  11% completed//  13% completed//  14% completed//  16% completed//  18% completed//  19% completed//  21% completed//  23% completed//  24% completed//  26% completed//  27% completed//  29% completed//  30% completed//  32% completed//  34% completed//  36% completed//  38% completed//  40% completed//  42% completed//  44% completed//  46% completed//  48% completed//  50% completed//  52% completed//  54% completed//  56% completed//  58% completed//  60% completed//  62% completed// 100% completed// Modeling Revised ...
+//   0% completed//   1% completed//   2% completed//   3% completed//   4% completed//   5% completed//   7% completed//   8% completed//   9% completed//  10% completed//  11% completed//  12% completed//  14% completed//  15% completed//  16% completed//  17% completed//  18% completed//  20% completed//  21% completed//  22% completed//  23% completed//  24% completed//  25% completed//  27% completed//  28% completed//  29% completed//  30% completed//  31% completed//  32% completed//  34% completed//  35% completed//  36% completed//  37% completed//  38% completed//  40% completed//  41% completed//  42% completed//  43% completed//  44% completed//  45% completed//  47% completed//  48% completed//  49% completed//  50% completed//  51% completed//  52% completed//  54% completed//  55% completed//  56% completed//  57% completed//  58% completed//  60% completed//  61% completed//  62% completed//  63% completed//  64% completed//  65% completed//  67% completed//  68% completed//  69% completed//  70% completed//  71% completed//  72% completed//  74% completed//  75% completed//  76% completed//  77% completed//  78% completed//  80% completed//  81% completed//  82% completed//  83% completed//  84% completed//  85% completed//  87% completed//  88% completed//  89% completed//  90% completed//  91% completed//  92% completed//  94% completed//  95% completed//  96% completed//  97% completed//  98% completed// 100% completed// Mapping key points ...
+//   1% completed//   2% completed//   3% completed//   4% completed//   5% completed//   6% completed//   7% completed//   8% completed//   9% completed//  10% completed//  11% completed//  12% completed//  13% completed//  14% completed//  15% completed//  16% completed//  17% completed//  18% completed//  19% completed//  20% completed//  21% completed//  22% completed//  23% completed//  24% completed//  25% completed//  26% completed//  27% completed//  28% completed//  29% completed//  30% completed//  31% completed//  32% completed//  33% completed//  34% completed//  35% completed//  36% completed//  37% completed//  38% completed//  39% completed//  40% completed//  41% completed//  42% completed//  43% completed//  44% completed//  45% completed//  46% completed//  47% completed//  48% completed//  50% completed//  51% completed//  52% completed//  53% completed//  54% completed//  55% completed//  56% completed//  57% completed//  58% completed//  59% completed//  60% completed//  61% completed//  62% completed//  63% completed//  64% completed//  65% completed//  66% completed//  67% completed//  68% completed//  69% completed//  70% completed//  71% completed//  72% completed//  73% completed//  74% completed//  75% completed//  76% completed//  77% completed//  78% completed//  79% completed//  80% completed//  81% completed//  82% completed//  83% completed//  84% completed//  85% completed//  86% completed//  87% completed//  88% completed//  89% completed//  90% completed//  91% completed//  92% completed//  93% completed//  94% completed//  95% completed//  96% completed//  97% completed//  98% completed// 100% completed================================================================================
+Mapped points: SYSTEM class
+--------------------------------------------------------------------------------
+Mapped points     PI     PO        Total   
+--------------------------------------------------------------------------------
+Golden            65     33        98      
+--------------------------------------------------------------------------------
+Revised           65     33        98      
+================================================================================
+// Running automatic setup...
+// Automatic setup finished.
+// Command: add compared points -all
+// 33 compared points added to compare list
+// Command: compare
+//   3% Comparing 1 out of 33 points, 0 Non-equivalent// 100% Comparing 33 out of 33 points, 0 Non-equivalent================================================================================
+Compared points      PO        Total   
+--------------------------------------------------------------------------------
+Equivalent           33        33      
+================================================================================
+// Command: exit -force

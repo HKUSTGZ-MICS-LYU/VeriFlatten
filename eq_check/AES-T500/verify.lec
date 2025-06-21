@@ -1,0 +1,9 @@
+read design aes_128.v round.v table.v top.v TSC.v AES-T500.v -Verilog -Golden -sensitive -continuousassignment Bidirectional -nokeep_unreach -nosupply
+read design f_AES-T500.v -sv09 -Revised -sensitive -continuousassignment Bidirectional -nokeep_unreach -nosupply
+set analyze option -auto
+set flatten model -gated_clock
+set system mode lec
+add compared points -all
+compare
+
+exit -force

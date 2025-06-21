@@ -1,0 +1,57 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "VeriFlatten: adder",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": ["--file", "${workspaceFolder}/bench/adder/adder.v","--top","adder_32bit","-o","${workspaceFolder}/bench/adder/f_adder.v","--force"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "VeriFlatten: AES-T500",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": ["--filelist", "${workspaceFolder}/bench/AES-T500/filelist.f","--top","top","-o","${workspaceFolder}/bench/AES-T500/f_AES-T500.v","--force"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "VeriFlatten: cb_aes_01",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": ["--filelist", "${workspaceFolder}/bench/cb_aes_01/filelist.f","--top","top","-o","${workspaceFolder}/bench/AES-T500/f_cb_aes_01.v","--force"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "VeriFlatten: b17",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": ["--file", "${workspaceFolder}/bench/b17/b17.v","--top","b17","-o","${workspaceFolder}/bench/b17/f_b17.v","--force"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "VeriFlatten: b19",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": ["--file", "${workspaceFolder}/bench/b19/b19.v","--top","b19","-o","${workspaceFolder}/bench/b19/f_b19.v","--force"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "VeriFlatten: RocketTile Tiny",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": ["--file", "${workspaceFolder}/bench/RocketTile_Tiny/RocketTile.v","--top","RocketTile","-o","${workspaceFolder}/bench/RocketTile_Tiny/f_RocketTile.v","--force"],
+            "console": "integratedTerminal"
+        },
+        
+    ]
+}
