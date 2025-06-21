@@ -1,0 +1,13 @@
+python src/main.py --help
+usage: main.py [-h] (--file FILE | --filelist FILELIST) --top TOP -o OUTPUT [--force]
+
+Verilog AST to Source Code Generator
+
+options:
+  -h, --help            show this help message and exit
+  --file FILE           Input Verilog file path
+  --filelist FILELIST   Path to a file containing a list of Verilog files
+  --top TOP             Top module name
+  -o OUTPUT, --output OUTPUT
+                        Output Verilog file path
+  --force               Force overwrite output file if it exists
