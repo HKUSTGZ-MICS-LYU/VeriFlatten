@@ -45,11 +45,11 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "VeriFlatten: RocketTile Tiny",
+            "name": "VeriFlatten: RocketTile Small",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
-            "args": ["--file", "${workspaceFolder}/bench/RocketTile_Tiny/RocketTile.v","--top","RocketTile","-o","${workspaceFolder}/bench/RocketTile_Tiny/f_RocketTile.v","--force"],
+            "args": ["--file", "${workspaceFolder}/bench/RocketTile_Small/RocketTile.v","--top","RocketTile","-o","${workspaceFolder}/bench/RocketTile_Small/f_RocketTile.v","--force"],
             "console": "integratedTerminal"
         },
         
