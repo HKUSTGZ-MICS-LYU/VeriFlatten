@@ -52,6 +52,14 @@
             "args": ["--file", "${workspaceFolder}/bench/RocketTile_Small/RocketTile.v","--top","RocketTile","-o","${workspaceFolder}/bench/RocketTile_Small/f_RocketTile.v","--force"],
             "console": "integratedTerminal"
         },
+        {
+            "name": "VeriFlatten: Kronos",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": ["--file", "${workspaceFolder}/bench/kronos/kronos.v","--top","kronos_mem_top","-o","${workspaceFolder}/bench/kronos/f_kronos.v","--force"],
+            "console": "integratedTerminal"
+        },
         
     ]
 }

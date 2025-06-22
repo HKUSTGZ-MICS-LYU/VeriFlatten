@@ -455,7 +455,7 @@ class VerilogGenerator:
                 
                 if SEPARATE_INITIAL_ASSIGN:
                     # 分离声明和赋值语句
-                    assign_statement = f"{self.indent()}assign {var_name} = {init_expr};"
+                    assign_statement = f"{self.indent()}initial begin\n{self.indent()}    {var_name} = {init_expr};\n{self.indent()}end"
                     init_value = ""  # 声明时不赋初值
                 else:
                     init_value = f" = {init_expr}"

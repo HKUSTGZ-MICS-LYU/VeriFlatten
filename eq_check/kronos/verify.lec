@@ -1,0 +1,9 @@
+read design kronos.v -ROot kronos_mem_top -sv09 -Golden -sensitive -continuousassignment Bidirectional -nokeep_unreach -nosupply
+read design f_kronos.v -ROot kronos_mem_top -sv09 -Revised -sensitive -continuousassignment Bidirectional -nokeep_unreach -nosupply
+set analyze option -auto
+set flatten model -gated_clock
+set system mode lec
+add compared points -all
+compare
+
+exit -force
