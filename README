@@ -1,9 +1,11 @@
 Verilog Flattening
 
-This project is designed to flatten Verilog designs and recover a readable Verilog file by utilizing Verilator. The tool processes Verilog code and outputs a flattened, human-readable version of the design. eq_check is used for equilavence checking.
+This project is an upgraded version of FlattenRTL, designed to flatten Verilog designs more efficiently and generate a readable Verilog file by utilizing Verilator. The tool processes Verilog code and outputs a flattened, human-readable version of the design. eq_check is used for equivalence checking.
+
+Note: Due to certain optimizations performed by Verilator, the flattened output may result in some signals not matching perfectly in equivalence checking.
 
 Requirements:
-- Verilator: Version 30.0 or higher is recommended. You can install or update Verilator by following its official installation guide.
+- Verilator: Version 5.30.0 or higher is recommended. You can install or update Verilator by following its official installation guide.
 
 python src/main.py --help
 usage: main.py [-h] (--file FILE | --filelist FILELIST) --top TOP -o OUTPUT [--force]
@@ -18,4 +20,3 @@ options:
   -o OUTPUT, --output OUTPUT
                         Output Verilog file path
   --force               Force overwrite output file if it exists
-
