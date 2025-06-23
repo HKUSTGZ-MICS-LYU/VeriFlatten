@@ -53,6 +53,14 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "VeriFlatten: RocketTile Tiny",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": ["--file", "${workspaceFolder}/bench/RocketTile_Tiny/RocketTile.v","--top","RocketTile","-o","${workspaceFolder}/bench/RocketTile_Tiny/f_RocketTile.v","--force"],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "VeriFlatten: Kronos",
             "type": "debugpy",
             "request": "launch",

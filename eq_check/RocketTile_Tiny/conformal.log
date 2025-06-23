@@ -1,0 +1,56 @@
+================================================================================
+Mapped points: SYSTEM class
+--------------------------------------------------------------------------------
+Mapped points     PI        Total   
+--------------------------------------------------------------------------------
+Golden            2         2       
+--------------------------------------------------------------------------------
+Revised           2         2       
+================================================================================
+Unmapped points:
+================================================================================
+Golden:
+--------------------------------------------------------------------------------
+Unmapped points   PO     DFF    DLAT   Z      BBOX      Total   
+--------------------------------------------------------------------------------
+Extra             1      0      0      0      0         1       
+Unreachable       0      213545 1358   222    2         215127  
+Not-mapped        0      0      0      32     0         32      
+================================================================================
+Revised:
+--------------------------------------------------------------------------------
+Unmapped points   PI     PO     DFF    E      Z         Total   
+--------------------------------------------------------------------------------
+Extra             201    482    0      0      0         683     
+Unreachable       0      0      1195   0      689       1884    
+Not-mapped        0      0      171060 213    3136      174409  
+================================================================================
+// Warning: Key point mapping is incomplete
+CPU time     : 161.08  seconds
+Elapse time  : 161     seconds
+Memory usage : 2899.93 M bytes
+// Running automatic setup...
+// Merged 273 DFF/DLAT(s) in (R)
+// Automatic setup finished.
+CPU time     : 684.55  seconds
+Elapse time  : 685     seconds
+Memory usage : 4260.36 M bytes
+// Command: add compared points -all
+// Warning: Revised has 170787 unmapped key points which will not be compared
+// 0 compared points added to compare list
+CPU time     : 684.76  seconds
+Elapse time  : 685     seconds
+Memory usage : 4260.36 M bytes
+// Command: compare
+Compare results of instance/output/pin equivalences and/or sequential merge      
+================================================================================
+Compared points      DFF       Total   
+--------------------------------------------------------------------------------
+Equivalent           273       273     
+================================================================================
+// Warning: (COMP3) There are extra POs in Golden
+// Warning: (COMP3) There are extra POs in Revised
+CPU time     : 685.42  seconds
+Elapse time  : 686     seconds
+Memory usage : 4260.87 M bytes
+// Command: exit -force
