@@ -572,7 +572,7 @@ class VerilogGenerator:
                 self.sel_temp_dict = {}
             
             def is_complex_expression(expr: str) -> bool:
-                return expr.strip().endswith(')')
+                return expr.strip().endswith(')') or expr.strip().endswith('}')
             def is_constant(expr: str) -> bool:
                 """检查表达式是否为纯常量值(不包含任何运算符或其他字符)
                 支持格式:
@@ -1946,6 +1946,15 @@ def main():
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w') as f:
             f.write(verilog_code)
+
+        # 用 sv2v 再处理一次输出文件
+        sv2v_cmd = f"sv2v {args.output} > {args.output}.tmp && mv {args.output}.tmp {args.output}"
+        sv2v_result = subprocess.run(sv2v_cmd, shell=True, capture_output=True, text=True)
+        if sv2v_result.returncode != 0:
+            print(f"Error: sv2v failed!\n{sv2v_result.stderr}", file=sys.stderr)
+            sys.exit(1)
+        else:
+            print(f"sv2v conversion complete: '{args.output}'")
 
         print(f"Successfully generated Verilog code in '{args.output}'")
 

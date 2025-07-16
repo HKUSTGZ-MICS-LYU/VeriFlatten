@@ -68,6 +68,14 @@
             "args": ["--file", "${workspaceFolder}/bench/kronos/kronos.v","--top","kronos_mem_top","-o","${workspaceFolder}/bench/kronos/f_kronos.v","--force"],
             "console": "integratedTerminal"
         },
+        {
+            "name": "VeriFlatten: fpu",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": ["--filelist", "${workspaceFolder}/bench/fpu/filelist.f","--top","fpu","-o","${workspaceFolder}/bench/fpu/f_fpu.v","--force"],
+            "console": "integratedTerminal"
+        },
         
     ]
 }
