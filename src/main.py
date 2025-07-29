@@ -1600,7 +1600,19 @@ class VerilogGenerator:
             # 计算需要扩展的位数
             extend_bits = target_width - source_width
             
+            # 为适应SystemVerilog 05的拓展规则
+            if expr.endswith(')') or expr.endswith('}') or expr.endswith(']'):
+                base_width, array_range = self.get_width_info(lhs_node)
+                temp_var = f"___sel_temp_{self.sel_temp_count}"
+                self.sel_temp_count += 1
+                self.sel_temp_dict[temp_var] = {
+                    'expr': expr,
+                    'width': base_width if base_width else "[31:0]",  # 默认位宽
+                    'array_range': array_range
+                }
+                expr = temp_var
             extend_str = '{'+str(extend_bits) + '{' + f'{expr}[{source_width-1}]' +'}}'
+            
             if extend_bits > 0:
                 if is_signed:
                     return f"{{{extend_str},{expr}}}"
@@ -1908,7 +1920,7 @@ def main():
         os.chdir(input_dir)
 
         # 运行verilator命令 - 只修改此行
-        cmd = f"verilator --json-only {files_arg} --flatten --top {args.top} -fno-case -fno-life -fno-dfg -fno-assemble \
+        cmd = f"verilator +1800-2005ext+v --json-only {files_arg} --flatten --top {args.top} -fno-case -fno-life -fno-assemble \
             -fno-acyc-simp -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-gate -fno-merge-cond-motion \
                 -fno-subst-const -fno-subst -fno-table -Wno-fatal"
         
