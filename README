@@ -1,11 +1,19 @@
 Verilog Flattening
 
-This project is an upgraded version of FlattenRTL, designed to flatten Verilog designs more efficiently and generate a readable Verilog file by utilizing Verilator. The tool processes Verilog code and outputs a flattened, human-readable version of the design. eq_check is used for equivalence checking.
+This project is an upgraded version of FlattenRTL, designed to more efficiently flatten Verilog designs and generate a more readable Verilog file by leveraging Verilator.
+The tool parses Verilog code and outputs a flattened, human-readable version of the design.
+Additionally, eq_check is provided for equivalence checking, which requires Cadence Conformal to be installed.
 
-Note: Due to certain optimizations performed by Verilator, the flattened output may result in some signals not matching perfectly in equivalence checking.
+⚠️ Important: Due to certain optimizations performed by Verilator (such as signal merging or pruning), some DFFs may not match between the original and the flattened design during equivalence checking.
+However, all primary inputs (PIs) and primary outputs (POs) are guaranteed to match.
+
+This is an alpha version: the codebase still contains many uncleaned comments and debug fragments
+If the output Verilog is too long or not well-formatted, you can enable the sv2v formatter, or disable it to keep the raw structure. (Line 1963 in main.py)
+
 
 Requirements:
 - Verilator: Version 5.30.0 or higher is recommended. You can install or update Verilator by following its official installation guide.
+- sv2v (optional)
 
 python src/main.py --help
 usage: main.py [-h] (--file FILE | --filelist FILELIST) --top TOP -o OUTPUT [--force]
