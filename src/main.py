@@ -10,6 +10,7 @@ import re
 import debugpy
 
 SEPARATE_INITIAL_ASSIGN = True
+sys.setrecursionlimit(10000)  # 例如改成10000，看具体需求
 
 class UnhandledTypeError(Exception):
     """当遇到未处理的类型时抛出此异常"""
@@ -641,7 +642,7 @@ class VerilogGenerator:
                 # 保存临时变量、表达式和位宽信息
                 self.sel_temp_dict[temp_var] = {
                     'expr': base_expr,
-                    'width': base_width if base_width else "[31:0]",  # 默认位宽
+                    'width': base_width, # if base_width else "[31:0]",  # 默认位宽
                     'array_range': array_range
                 }
                 # 使用临时变量替换复杂表达式
@@ -655,7 +656,7 @@ class VerilogGenerator:
                 # 保存临时变量、表达式和位宽信息
                 self.sel_temp_dict[temp_var] = {
                     'expr': base_expr,
-                    'width': base_width if base_width else "[31:0]",  # 默认位宽
+                    'width': base_width, # if base_width else "[31:0]",  # 默认位宽
                     'array_range': array_range
                 }
                 # 使用临时变量替换复杂表达式
@@ -678,7 +679,7 @@ class VerilogGenerator:
                     # 保存临时变量、表达式和位宽信息
                     self.sel_temp_dict[temp_var] = {
                         'expr': lsb_expr,
-                        'width': lsb_width if lsb_width else "[31:0]",  # 默认位宽
+                        'width': lsb_width, # if lsb_width else "[31:0]",  # 默认位宽
                         'array_range': array_range
                     }
                     # 使用临时变量替换复杂表达式
@@ -1607,7 +1608,7 @@ class VerilogGenerator:
                 self.sel_temp_count += 1
                 self.sel_temp_dict[temp_var] = {
                     'expr': expr,
-                    'width': base_width if base_width else "[31:0]",  # 默认位宽
+                    'width': base_width,# if base_width else "[31:0]",  # 默认位宽
                     'array_range': array_range
                 }
                 expr = temp_var

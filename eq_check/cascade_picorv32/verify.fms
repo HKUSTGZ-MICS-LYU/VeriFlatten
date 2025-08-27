@@ -1,0 +1,19 @@
+set_mismatch_message_filter -warn FMR_ELAB-147
+set_mismatch_message_filter -warn FMR_VLOG-038
+set hdlin_error_on_mismatch_message false
+set verification_failing_point_limit 0
+
+
+read_sverilog -r -17 pico.v
+set_top picorv32_mem_top
+current_design picorv32_mem_top
+set_dont_verify_points [all_registers]
+
+read_sverilog -i -17 f_pico.v
+set_top picorv32_mem_top
+current_design picorv32_mem_top
+set_dont_verify_points [all_registers]
+
+verify -restart
+report_unverified_points 
+exit

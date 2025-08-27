@@ -57,7 +57,7 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
-            "args": ["--file", "${workspaceFolder}/bench/RocketTile_Tiny/RocketTile.v","--top","RocketTile","-o","${workspaceFolder}/bench/RocketTile_Tiny/f_RocketTile.v","--force"],
+            "args": ["--file", "${workspaceFolder}/bench/RocketTile_Tiny/RocketTile.v","--top","ITLB","-o","${workspaceFolder}/bench/RocketTile_Tiny/f_RocketTile.v","--force"],
             "console": "integratedTerminal"
         },
         {
@@ -76,6 +76,85 @@
             "args": ["--filelist", "${workspaceFolder}/bench/fpu/filelist.f","--top","fpu","-o","${workspaceFolder}/bench/fpu/f_fpu.v","--force"],
             "console": "integratedTerminal"
         },
-        
+        {
+            "name": "VeriCodegen: cascade_boom",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": [
+                "--file",
+                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_boom/boom.v",
+                "--top",
+                "boom_mem_top",
+                "--output",
+                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_boom/f_boom.v",
+                "--force"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "VeriCodegen: cascade_rocket",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": [
+                "--file",
+                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_rocket/rocket.v",
+                "--top",
+                "rocket_mem_top",
+                "--output",
+                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_rocket/f_rocket.v",
+                "--force"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "VeriCodegen: cascade_cva6",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": [
+                "--file",
+                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_cva6/sv2v_cva6.v",
+                "--top",
+                "ariane_mem_top",
+                "--output",
+                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_cva6/f_cva6.v",
+                "--force"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "VeriCodegen: cascade_picorv32",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": [
+                "--file",
+                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_picorv32/pico.v",
+                "--top",
+                "picorv32_mem_top",
+                "--output",
+                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_picorv32/f_pico.v",
+                "--force"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "VeriCodegen: test_signed",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": [
+                "--file",
+                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/test_signed/test_signed.v",
+                "--top",
+                "example_module",
+                "--output",
+                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/test_signed/f_test_signed.v",
+                "--force"
+            ],
+            "console": "integratedTerminal"
+        },
     ]
 }
