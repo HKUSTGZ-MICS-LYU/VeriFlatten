@@ -1,0 +1,36 @@
+Sender: LSF System <lsfadmin@cpu08>
+Subject: Job 683383: <32 fm_shell -f verify.fms> in cluster <myCluster> Exited
+
+Job <32 fm_shell -f verify.fms> was submitted from host <vm_yangdilyu> by user <connect.zzheng989> in cluster <myCluster> at Tue Sep  2 21:26:48 2025
+Job was executed on host(s) <cpu08>, in queue <normal>, as user <connect.zzheng989> in cluster <myCluster> at Tue Sep  2 21:26:48 2025
+</hpc/home/connect.zzheng989> was used as the home directory.
+</hpc/home/connect.zzheng989/researchlib/VeriFlatten/eq_check/cascade_rocket> was used as the working directory.
+Started at Tue Sep  2 21:26:48 2025
+Terminated at Tue Sep  2 21:26:48 2025
+Results reported at Tue Sep  2 21:26:48 2025
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+32 fm_shell -f verify.fms
+------------------------------------------------------------
+
+Exited with exit code 127.
+
+Resource usage summary:
+
+    CPU time :                                   0.02 sec.
+    Max Memory :                                 -
+    Average Memory :                             -
+    Total Requested Memory :                     -
+    Delta Memory :                               -
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   0 sec.
+    Turnaround time :                            0 sec.
+
+The output (if any) follows:
+
+/hpc/home/connect.zzheng989/.lsbatch/1756819608.683383: line 8: 32: command not found

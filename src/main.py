@@ -9,7 +9,8 @@ import subprocess
 import re
 import debugpy
 
-SEPARATE_INITIAL_ASSIGN = True
+SEPARATE_INITIAL_ASSIGN = False
+SEPARATE_ASSIGN_FOR_EQ_CHECK = True
 sys.setrecursionlimit(10000)  # 例如改成10000，看具体需求
 
 class UnhandledTypeError(Exception):
@@ -458,6 +459,9 @@ class VerilogGenerator:
                     # 分离声明和赋值语句
                     assign_statement = f"{self.indent()}initial begin\n{self.indent()}    {var_name} = {init_expr};\n{self.indent()}end"
                     init_value = ""  # 声明时不赋初值
+                elif SEPARATE_ASSIGN_FOR_EQ_CHECK:
+                    assign_statement = f"{self.indent()}assign {var_name} = {init_expr};\n{self.indent()}"
+                    init_value = ""  # 声明时不赋初值
                 else:
                     init_value = f" = {init_expr}"
                 
@@ -795,14 +799,20 @@ class VerilogGenerator:
                 if stmt_result:
                     temp_stmts.append(stmt_result)
         
+        if len(temp_stmts) > 1:
+            print("Warning: Multiple initialization statements found in INITIAL block.")
         # 如果有需要初始化的语句，才生成initial块
-        if temp_stmts:
+        if temp_stmts and SEPARATE_INITIAL_ASSIGN:
             result.append(f"{self.indent()}initial")
             result.append(f"{self.indent()}begin")
             self.indent_level += 1
-            result.extend(f"{self.indent()}{stmt}" for stmt in temp_stmts)
+            result.extend(f"assign{self.indent()}{stmt}" for stmt in temp_stmts)
             self.indent_level -= 1
             result.append(f"{self.indent()}end")
+        elif temp_stmts and SEPARATE_ASSIGN_FOR_EQ_CHECK:
+            result.extend(f"assign{self.indent()}{stmt}" for stmt in temp_stmts)
+        
+            
             
         return "\n".join(filter(None, result))
 
@@ -1922,7 +1932,7 @@ def main():
 
         # 运行verilator命令 - 只修改此行
         cmd = f"verilator +1800-2005ext+v --json-only {files_arg} --flatten --top {args.top} -fno-case -fno-life -fno-assemble \
-            -fno-acyc-simp -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-gate -fno-merge-cond-motion \
+            -fno-acyc-simp -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-gate -fno-merge-cond -fno-merge-cond-motion \
                 -fno-subst-const -fno-subst -fno-table -Wno-fatal"
         
         # 构造JSON文件路径
@@ -1961,13 +1971,13 @@ def main():
             f.write(verilog_code)
 
         # 用 sv2v 再处理一次输出文件
-        sv2v_cmd = f"sv2v {args.output} > {args.output}.tmp && mv {args.output}.tmp {args.output}"
-        sv2v_result = subprocess.run(sv2v_cmd, shell=True, capture_output=True, text=True)
-        if sv2v_result.returncode != 0:
-            print(f"Error: sv2v failed!\n{sv2v_result.stderr}", file=sys.stderr)
-            sys.exit(1)
-        else:
-            print(f"sv2v conversion complete: '{args.output}'")
+        # sv2v_cmd = f"sv2v {args.output} > {args.output}.tmp && mv {args.output}.tmp {args.output}"
+        # sv2v_result = subprocess.run(sv2v_cmd, shell=True, capture_output=True, text=True)
+        # if sv2v_result.returncode != 0:
+        #     print(f"Error: sv2v failed!\n{sv2v_result.stderr}", file=sys.stderr)
+        #     sys.exit(1)
+        # else:
+        #     print(f"sv2v conversion complete: '{args.output}'")
 
         print(f"Successfully generated Verilog code in '{args.output}'")
 

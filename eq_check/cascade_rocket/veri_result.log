@@ -1,0 +1,34 @@
+********************************* Verification Results *********************************
+Verification FAILED
+   ATTENTION: RTL interpretation messages were produced during link
+              of reference and implementation designs.
+              Verification results may disagree with a logic simulator.
+-----------------------------------------------------------------------
+ Reference design: r:/WORK/ChipTop
+ Implementation design: i:/WORK/ChipTop
+ 320844 Passing compare points
+ 23 Failing compare points (23 matched, 0 unmatched)
+ 0 Aborted compare points
+ 0 Unverified compare points
+----------------------------------------------------------------------------------------
+Matched Compare Points     BBPin    Loop   BBNet     Cut    Port     DFF     LAT   TOTAL
+----------------------------------------------------------------------------------------
+Passing (equivalent)           0       0       0       0     402  320442       0  320844
+Failing (not equivalent)       0       0       0       0       0      23       0      23
+Not Compared
+  Constant reg                                                      2705       0    2705
+  Unread                       0       0       0       0       0   26721       0   26721
+****************************************************************************************
+Info:  Try the analyze_points command to see if Formality can determine potential
+causes, or suggest next steps for a FAILED or INCONCLUSIVE verification.
+See the man page for analyze_points usage and options.
+Info:  Formality Guide Files (SVF) can improve verification success by automating setup.
+0
+exit
+
+Maximum memory usage for this session: 23481 MB
+CPU usage for this session: 5806.39 seconds ( 1.61 hours )
+Current time: Tue Sep  2 21:54:30 2025
+Elapsed time: 5833 seconds ( 1.62 hours )
+
+Thank you for using Formality (R)!

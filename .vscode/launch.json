@@ -69,11 +69,27 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "VeriFlatten: miim",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": ["--file", "${workspaceFolder}/bench/miim/vMiim.v","--top","main","-o","${workspaceFolder}/bench/miim/f_vMiim.v","--force"],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "VeriFlatten: fpu",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
             "args": ["--filelist", "${workspaceFolder}/bench/fpu/filelist.f","--top","fpu","-o","${workspaceFolder}/bench/fpu/f_fpu.v","--force"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "VeriFlatten: BoomTile",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": ["--file", "${workspaceFolder}/bench/BoomTile/BoomTile.v","--top","BoomTile","-o","${workspaceFolder}/bench/BoomTile/f_BoomTile.v","--force"],
             "console": "integratedTerminal"
         },
         {
@@ -85,10 +101,10 @@
                 "--file",
                 "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_boom/boom.v",
                 "--top",
-                "boom_mem_top",
+                "ChipTop",
                 "--output",
                 "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_boom/f_boom.v",
-                "--force"
+                // "--force"
             ],
             "console": "integratedTerminal"
         },
@@ -152,6 +168,22 @@
                 "example_module",
                 "--output",
                 "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/test_signed/f_test_signed.v",
+                "--force"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "VeriCodegen: mpeg",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": [
+                "--file",
+                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/mpeg/mpeg.v",
+                "--top",
+                "main",
+                "--output",
+                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/mpeg/f_mpeg.v",
                 "--force"
             ],
             "console": "integratedTerminal"

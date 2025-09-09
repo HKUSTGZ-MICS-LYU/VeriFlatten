@@ -1,0 +1,14 @@
+set_mismatch_message_filter -warn FMR_ELAB-147
+set_mismatch_message_filter -warn FMR_VLOG-038
+set hdlin_error_on_mismatch_message false
+set verification_failing_point_limit 0
+
+
+read_sverilog -i -17 boom.v
+set_top ChipTop
+
+read_sverilog -r -17 f_boom.v
+set_top ChipTop
+
+verify -restart
+exit

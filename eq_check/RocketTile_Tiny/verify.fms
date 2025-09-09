@@ -15,7 +15,6 @@ set_top RocketTile
 current_design RocketTile
 set_dont_verify_points [all_registers]
 verify -restart
-report
 analyze_points -all
 
 exit

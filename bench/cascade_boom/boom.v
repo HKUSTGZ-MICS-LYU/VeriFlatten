@@ -1,8 +1,8 @@
-`define RANDOMIZE_MEM_INIT 1
-`define RANDOMIZE_REG_INIT 1
-`define RANDOMIZE_GARBAGE_ASSIGN 1
-`define RANDOMIZE_INVALID_ASSIGN 1
-`define MODELSIM 1
+`define RANDOMIZE_MEM_INIT 0
+`define RANDOMIZE_REG_INIT 0
+`define RANDOMIZE_GARBAGE_ASSIGN 0
+`define RANDOMIZE_INVALID_ASSIGN 0
+`define MODELSIM 0
 `define SYNTHESIS
 // See LICENSE for license details.
 
@@ -317395,41 +317395,41 @@ module ClockGroupResetSynchronizer(
   wire  bundleOut_0_member_allClocks_implicit_clock_reset_catcher_clock; // @[ResetCatchAndSync.scala 39:28]
   wire  bundleOut_0_member_allClocks_implicit_clock_reset_catcher_reset; // @[ResetCatchAndSync.scala 39:28]
   wire  bundleOut_0_member_allClocks_implicit_clock_reset_catcher_io_sync_reset; // @[ResetCatchAndSync.scala 39:28]
-  ResetCatchAndSync_d3 bundleOut_0_member_allClocks_subsystem_sbus_0_reset_catcher ( // @[ResetCatchAndSync.scala 39:28]
-    .clock(bundleOut_0_member_allClocks_subsystem_sbus_0_reset_catcher_clock),
-    .reset(bundleOut_0_member_allClocks_subsystem_sbus_0_reset_catcher_reset),
-    .io_sync_reset(bundleOut_0_member_allClocks_subsystem_sbus_0_reset_catcher_io_sync_reset)
-  );
-  ResetCatchAndSync_d3 bundleOut_0_member_allClocks_subsystem_sbus_1_reset_catcher ( // @[ResetCatchAndSync.scala 39:28]
-    .clock(bundleOut_0_member_allClocks_subsystem_sbus_1_reset_catcher_clock),
-    .reset(bundleOut_0_member_allClocks_subsystem_sbus_1_reset_catcher_reset),
-    .io_sync_reset(bundleOut_0_member_allClocks_subsystem_sbus_1_reset_catcher_io_sync_reset)
-  );
-  ResetCatchAndSync_d3 bundleOut_0_member_allClocks_subsystem_pbus_0_reset_catcher ( // @[ResetCatchAndSync.scala 39:28]
-    .clock(bundleOut_0_member_allClocks_subsystem_pbus_0_reset_catcher_clock),
-    .reset(bundleOut_0_member_allClocks_subsystem_pbus_0_reset_catcher_reset),
-    .io_sync_reset(bundleOut_0_member_allClocks_subsystem_pbus_0_reset_catcher_io_sync_reset)
-  );
-  ResetCatchAndSync_d3 bundleOut_0_member_allClocks_subsystem_fbus_0_reset_catcher ( // @[ResetCatchAndSync.scala 39:28]
-    .clock(bundleOut_0_member_allClocks_subsystem_fbus_0_reset_catcher_clock),
-    .reset(bundleOut_0_member_allClocks_subsystem_fbus_0_reset_catcher_reset),
-    .io_sync_reset(bundleOut_0_member_allClocks_subsystem_fbus_0_reset_catcher_io_sync_reset)
-  );
-  ResetCatchAndSync_d3 bundleOut_0_member_allClocks_subsystem_mbus_0_reset_catcher ( // @[ResetCatchAndSync.scala 39:28]
-    .clock(bundleOut_0_member_allClocks_subsystem_mbus_0_reset_catcher_clock),
-    .reset(bundleOut_0_member_allClocks_subsystem_mbus_0_reset_catcher_reset),
-    .io_sync_reset(bundleOut_0_member_allClocks_subsystem_mbus_0_reset_catcher_io_sync_reset)
-  );
-  ResetCatchAndSync_d3 bundleOut_0_member_allClocks_subsystem_cbus_0_reset_catcher ( // @[ResetCatchAndSync.scala 39:28]
-    .clock(bundleOut_0_member_allClocks_subsystem_cbus_0_reset_catcher_clock),
-    .reset(bundleOut_0_member_allClocks_subsystem_cbus_0_reset_catcher_reset),
-    .io_sync_reset(bundleOut_0_member_allClocks_subsystem_cbus_0_reset_catcher_io_sync_reset)
-  );
-  ResetCatchAndSync_d3 bundleOut_0_member_allClocks_implicit_clock_reset_catcher ( // @[ResetCatchAndSync.scala 39:28]
-    .clock(bundleOut_0_member_allClocks_implicit_clock_reset_catcher_clock),
-    .reset(bundleOut_0_member_allClocks_implicit_clock_reset_catcher_reset),
-    .io_sync_reset(bundleOut_0_member_allClocks_implicit_clock_reset_catcher_io_sync_reset)
-  );
+  // ResetCatchAndSync_d3 bundleOut_0_member_allClocks_subsystem_sbus_0_reset_catcher ( // @[ResetCatchAndSync.scala 39:28]
+  //   .clock(bundleOut_0_member_allClocks_subsystem_sbus_0_reset_catcher_clock),
+  //   .reset(bundleOut_0_member_allClocks_subsystem_sbus_0_reset_catcher_reset),
+  //   .io_sync_reset(bundleOut_0_member_allClocks_subsystem_sbus_0_reset_catcher_io_sync_reset)
+  // );
+  // ResetCatchAndSync_d3 bundleOut_0_member_allClocks_subsystem_sbus_1_reset_catcher ( // @[ResetCatchAndSync.scala 39:28]
+  //   .clock(bundleOut_0_member_allClocks_subsystem_sbus_1_reset_catcher_clock),
+  //   .reset(bundleOut_0_member_allClocks_subsystem_sbus_1_reset_catcher_reset),
+  //   .io_sync_reset(bundleOut_0_member_allClocks_subsystem_sbus_1_reset_catcher_io_sync_reset)
+  // );
+  // ResetCatchAndSync_d3 bundleOut_0_member_allClocks_subsystem_pbus_0_reset_catcher ( // @[ResetCatchAndSync.scala 39:28]
+  //   .clock(bundleOut_0_member_allClocks_subsystem_pbus_0_reset_catcher_clock),
+  //   .reset(bundleOut_0_member_allClocks_subsystem_pbus_0_reset_catcher_reset),
+  //   .io_sync_reset(bundleOut_0_member_allClocks_subsystem_pbus_0_reset_catcher_io_sync_reset)
+  // );
+  // ResetCatchAndSync_d3 bundleOut_0_member_allClocks_subsystem_fbus_0_reset_catcher ( // @[ResetCatchAndSync.scala 39:28]
+  //   .clock(bundleOut_0_member_allClocks_subsystem_fbus_0_reset_catcher_clock),
+  //   .reset(bundleOut_0_member_allClocks_subsystem_fbus_0_reset_catcher_reset),
+  //   .io_sync_reset(bundleOut_0_member_allClocks_subsystem_fbus_0_reset_catcher_io_sync_reset)
+  // );
+  // ResetCatchAndSync_d3 bundleOut_0_member_allClocks_subsystem_mbus_0_reset_catcher ( // @[ResetCatchAndSync.scala 39:28]
+  //   .clock(bundleOut_0_member_allClocks_subsystem_mbus_0_reset_catcher_clock),
+  //   .reset(bundleOut_0_member_allClocks_subsystem_mbus_0_reset_catcher_reset),
+  //   .io_sync_reset(bundleOut_0_member_allClocks_subsystem_mbus_0_reset_catcher_io_sync_reset)
+  // );
+  // ResetCatchAndSync_d3 bundleOut_0_member_allClocks_subsystem_cbus_0_reset_catcher ( // @[ResetCatchAndSync.scala 39:28]
+  //   .clock(bundleOut_0_member_allClocks_subsystem_cbus_0_reset_catcher_clock),
+  //   .reset(bundleOut_0_member_allClocks_subsystem_cbus_0_reset_catcher_reset),
+  //   .io_sync_reset(bundleOut_0_member_allClocks_subsystem_cbus_0_reset_catcher_io_sync_reset)
+  // );
+  // ResetCatchAndSync_d3 bundleOut_0_member_allClocks_implicit_clock_reset_catcher ( // @[ResetCatchAndSync.scala 39:28]
+  //   .clock(bundleOut_0_member_allClocks_implicit_clock_reset_catcher_clock),
+  //   .reset(bundleOut_0_member_allClocks_implicit_clock_reset_catcher_reset),
+  //   .io_sync_reset(bundleOut_0_member_allClocks_implicit_clock_reset_catcher_io_sync_reset)
+  // );
   assign auto_out_member_allClocks_implicit_clock_clock = auto_in_member_allClocks_implicit_clock_clock; // @[Nodes.scala 1210:84 LazyModule.scala 309:16]
   assign auto_out_member_allClocks_implicit_clock_reset =
     bundleOut_0_member_allClocks_implicit_clock_reset_catcher_io_sync_reset; // @[Nodes.scala 1207:84 ResetSynchronizer.scala 35:17]

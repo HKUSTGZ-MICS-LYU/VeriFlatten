@@ -2,6 +2,7 @@ set_mismatch_message_filter -warn FMR_ELAB-147
 set_mismatch_message_filter -warn FMR_VLOG-038
 set hdlin_error_on_mismatch_message false
 set verification_failing_point_limit 0
+set verification_set_undriven_signals 0
 
 read_sverilog -r -17 except.v
 read_sverilog -r -17 fpu.v
@@ -9,12 +10,15 @@ read_sverilog -r -17 post_norm.v
 read_sverilog -r -17 pre_norm_fmul.v
 read_sverilog -r -17 pre_norm.v
 read_sverilog -r -17 primitives.v
+current_design fpu
+# set_dont_verify_points [all_registers]
 
 set_top fpu
 
 read_sverilog -i -17 f_fpu.v
 set_top fpu
+current_design fpu
+# set_dont_verify_points [all_registers]
 
 verify -restart
-report_unverified_points 
 exit

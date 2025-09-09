@@ -5,7 +5,6 @@ set verification_failing_point_limit 0
 
 
 read_sverilog -r -17 rocket.v
-
 set_top ChipTop
 
 read_sverilog -i -17 f_rocket.v
