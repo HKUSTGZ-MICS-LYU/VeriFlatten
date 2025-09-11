@@ -101,10 +101,10 @@
                 "--file",
                 "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_boom/boom.v",
                 "--top",
-                "ChipTop",
+                "BoomTile",
                 "--output",
                 "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_boom/f_boom.v",
-                // "--force"
+                "--force"
             ],
             "console": "integratedTerminal"
         },
@@ -117,7 +117,7 @@
                 "--file",
                 "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_rocket/rocket.v",
                 "--top",
-                "rocket_mem_top",
+                "RocketTile",
                 "--output",
                 "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_rocket/f_rocket.v",
                 "--force"

@@ -5,10 +5,10 @@ set verification_failing_point_limit 0
 
 
 read_sverilog -i -17 boom.v
-set_top ChipTop
+set_top BoomTile
 
 read_sverilog -r -17 f_boom.v
-set_top ChipTop
+set_top BoomTile
 
 verify -restart
 exit

@@ -806,7 +806,7 @@ class VerilogGenerator:
             result.append(f"{self.indent()}initial")
             result.append(f"{self.indent()}begin")
             self.indent_level += 1
-            result.extend(f"assign{self.indent()}{stmt}" for stmt in temp_stmts)
+            result.extend(f"{self.indent()}{stmt}" for stmt in temp_stmts)
             self.indent_level -= 1
             result.append(f"{self.indent()}end")
         elif temp_stmts and SEPARATE_ASSIGN_FOR_EQ_CHECK:
