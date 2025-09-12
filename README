@@ -8,7 +8,7 @@ Additionally, eq_check is provided for equivalence checking, which requires Form
 However, all primary inputs (PIs) and primary outputs (POs) are guaranteed to match.
 
 This is an alpha version: the codebase still contains many uncleaned comments and debug fragments
-If the output Verilog is too long or not well-formatted, you can enable the sv2v formatter, or disable it to keep the raw structure. (Line 1963 in main.py)
+If the output Verilog is too long or not well-formatted, you can enable the sv2v formatter, or disable it to keep the raw structure. 
 
 
 Requirements:
