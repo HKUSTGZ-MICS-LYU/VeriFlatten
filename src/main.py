@@ -1932,8 +1932,8 @@ def main():
 
         # 运行verilator命令 - 只修改此行
         cmd = f"verilator +1800-2005ext+v --json-only {files_arg} --flatten --top {args.top} -fno-case -fno-life -fno-assemble \
-            -fno-acyc-simp -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-gate -fno-merge-cond -fno-merge-cond-motion \
-                -fno-subst-const -fno-subst -fno-table -Wno-fatal"
+            -fno-acyc-simp -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
+                -fno-subst-const -fno-subst -fno-table -fno-dfg -Wno-fatal"
         
         # 构造JSON文件路径
         json_path = input_dir / "obj_dir" / f"V{args.top}.tree.json"
