@@ -11,6 +11,7 @@ import debugpy
 
 SEPARATE_INITIAL_ASSIGN = False
 SEPARATE_ASSIGN_FOR_EQ_CHECK = True
+CONVERT_ASSIGN_TO_ALWAYS = True
 sys.setrecursionlimit(10000)  # 例如改成10000，看具体需求
 
 class UnhandledTypeError(Exception):
@@ -461,6 +462,8 @@ class VerilogGenerator:
                     init_value = ""  # 声明时不赋初值
                 elif SEPARATE_ASSIGN_FOR_EQ_CHECK:
                     assign_statement = f"{self.indent()}assign {var_name} = {init_expr};\n{self.indent()}"
+                    if CONVERT_ASSIGN_TO_ALWAYS:
+                        assign_statement = f"{self.indent()}always @(*) begin\n{self.indent()}    {var_name} = {init_expr};\n{self.indent()}end"
                     init_value = ""  # 声明时不赋初值
                 else:
                     init_value = f" = {init_expr}"
@@ -561,6 +564,9 @@ class VerilogGenerator:
         rhs = node["rhsp"][0]["name"] if node["rhsp"] else ""
         lhs = node["lhsp"][0]["name"] if node["lhsp"] else ""
         
+        if CONVERT_ASSIGN_TO_ALWAYS:
+            # 生成always块
+            return f"{self.indent()}always @(*) begin\n{self.indent()}    {lhs} = {rhs};\n{self.indent()}end"
         # 生成assign语句
         return f"{self.indent()}assign {lhs} = {rhs};"
     
@@ -756,7 +762,10 @@ class VerilogGenerator:
                     
                     # 添加临时变量声明和赋值
                     temp_decls.append(f"wire [127:0] {temp_var};")
-                    temp_decls.append(f"assign {temp_var} = {expr};")
+                    if CONVERT_ASSIGN_TO_ALWAYS:
+                        temp_decls.append(f"always @(*) begin\n{self.indent()}    {temp_var} = {expr};\nend")
+                    else:
+                        temp_decls.append(f"assign {temp_var} = {expr};")
                     
                     # 替换原表达式中的这部分
                     rhs = rhs[:left_paren] + f"{temp_var}{sel}" + rhs[sel_end + 1:]
@@ -767,7 +776,10 @@ class VerilogGenerator:
             result = []
             for decl in temp_decls:
                 result.append(f"{self.indent()}{decl}")
-            result.append(f"{self.indent()}assign {lhs} = {rhs};")
+            if CONVERT_ASSIGN_TO_ALWAYS:
+                result.append(f"{self.indent()}always @(*) begin\n{self.indent()}    {lhs} = {rhs};\n{self.indent()}end")
+            else:
+                result.append(f"{self.indent()}assign {lhs} = {rhs};")
             
             return "\n".join(result)
                 
@@ -1861,7 +1873,10 @@ def insert_sel_temp_statements(verilog_code: str, sel_temp_dict: dict) -> str:
                 previous_line = result_lines[i - 1] if i > 0 else ""
                 if "assign" in previous_line or "assign" in result_lines[i]:
                     # 如果上下文有assign语句，加上assign
-                    result_lines.insert(i, f"{target_indent}assign {temp_var} = {info['expr']};")
+                    if CONVERT_ASSIGN_TO_ALWAYS:
+                        result_lines.insert(i, f"{target_indent}always @(*) begin\n{target_indent}    {temp_var} = {info['expr']};\n{target_indent}end")
+                    else:
+                        result_lines.insert(i, f"{target_indent}assign {temp_var} = {info['expr']};")
                 else:
                     # 否则直接插入
                     result_lines.insert(i, f"{target_indent}{temp_var} = {info['expr']};")

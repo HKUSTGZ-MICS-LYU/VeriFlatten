@@ -57,7 +57,7 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
-            "args": ["--file", "${workspaceFolder}/bench/RocketTile_Tiny/RocketTile.v","--top","ITLB","-o","${workspaceFolder}/bench/RocketTile_Tiny/f_RocketTile.v","--force"],
+            "args": ["--file", "${workspaceFolder}/bench/RocketTile_Tiny/RocketTile.v","--top","Rocket","-o","${workspaceFolder}/bench/RocketTile_Tiny/f_RocketTile.v","--force"],
             "console": "integratedTerminal"
         },
         {
@@ -65,7 +65,7 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/main.py",
-            "args": ["--file", "${workspaceFolder}/bench/kronos/kronos.v","--top","kronos_mem_top","-o","${workspaceFolder}/bench/kronos/f_kronos.v","--force"],
+            "args": ["--file", "${workspaceFolder}/bench/kronos/kronos.v","--top","kronos_core","-o","${workspaceFolder}/bench/kronos/f_kronos.v","--force"],
             "console": "integratedTerminal"
         },
         {
@@ -85,6 +85,14 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "VeriFlatten: fpu2",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": ["--file", "${workspaceFolder}/bench/fpu2/fpu.v","--top","fpu","-o","${workspaceFolder}/bench/fpu2/f_fpu.v","--force"],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "VeriFlatten: BoomTile",
             "type": "debugpy",
             "request": "launch",
@@ -99,11 +107,11 @@
             "program": "${workspaceFolder}/src/main.py",
             "args": [
                 "--file",
-                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_boom/boom.v",
+                "${workspaceFolder}/bench/cascade_boom/boom.v",
                 "--top",
                 "BoomTile",
                 "--output",
-                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_boom/f_boom.v",
+                "${workspaceFolder}/bench/cascade_boom/f_boom.v",
                 "--force"
             ],
             "console": "integratedTerminal"
@@ -115,11 +123,11 @@
             "program": "${workspaceFolder}/src/main.py",
             "args": [
                 "--file",
-                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_rocket/rocket.v",
+                "${workspaceFolder}/bench/cascade_rocket/rocket.v",
                 "--top",
                 "RocketTile",
                 "--output",
-                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_rocket/f_rocket.v",
+                "${workspaceFolder}/bench/cascade_rocket/f_rocket.v",
                 "--force"
             ],
             "console": "integratedTerminal"
@@ -131,11 +139,11 @@
             "program": "${workspaceFolder}/src/main.py",
             "args": [
                 "--file",
-                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_cva6/sv2v_cva6.v",
+                "${workspaceFolder}/bench/cascade_cva6/sv2v_cva6.v",
                 "--top",
                 "ariane_mem_top",
                 "--output",
-                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_cva6/f_cva6.v",
+                "${workspaceFolder}/bench/cascade_cva6/f_cva6.v",
                 "--force"
             ],
             "console": "integratedTerminal"
@@ -147,11 +155,11 @@
             "program": "${workspaceFolder}/src/main.py",
             "args": [
                 "--file",
-                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_picorv32/pico.v",
+                "${workspaceFolder}/bench/cascade_picorv32/pico.v",
                 "--top",
-                "picorv32_mem_top",
+                "picorv32",
                 "--output",
-                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/cascade_picorv32/f_pico.v",
+                "${workspaceFolder}/bench/cascade_picorv32/f_pico.v",
                 "--force"
             ],
             "console": "integratedTerminal"
@@ -163,11 +171,11 @@
             "program": "${workspaceFolder}/src/main.py",
             "args": [
                 "--file",
-                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/test_signed/test_signed.v",
+                "${workspaceFolder}/bench/test_signed/test_signed.v",
                 "--top",
                 "example_module",
                 "--output",
-                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/test_signed/f_test_signed.v",
+                "${workspaceFolder}/bench/test_signed/f_test_signed.v",
                 "--force"
             ],
             "console": "integratedTerminal"
@@ -179,11 +187,11 @@
             "program": "${workspaceFolder}/src/main.py",
             "args": [
                 "--file",
-                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/mpeg/mpeg.v",
+                "${workspaceFolder}/bench/mpeg/mpeg.v",
                 "--top",
                 "main",
                 "--output",
-                "/hpc/home/connect.zzheng989/researchlib/VeriFlatten/bench/mpeg/f_mpeg.v",
+                "${workspaceFolder}/bench/mpeg/f_mpeg.v",
                 "--force"
             ],
             "console": "integratedTerminal"
