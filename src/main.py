@@ -11,7 +11,7 @@ import debugpy
 
 SEPARATE_INITIAL_ASSIGN = False
 SEPARATE_ASSIGN_FOR_EQ_CHECK = True
-CONVERT_ASSIGN_TO_ALWAYS = True
+CONVERT_ASSIGN_TO_ALWAYS = False
 sys.setrecursionlimit(10000)  # 例如改成10000，看具体需求
 
 class UnhandledTypeError(Exception):
