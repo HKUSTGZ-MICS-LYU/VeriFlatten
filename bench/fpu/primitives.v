@@ -79,27 +79,27 @@ endmodule
 // Divide
 //
 
-// module div_r2(clk, opa, opb, quo, rem);
-// input		clk;
-// input	[49:0]	opa;
-// input	[23:0]	opb;
-// output	[49:0]	quo, rem;
+module div_r2(clk, opa, opb, quo, rem);
+input		clk;
+input	[49:0]	opa;
+input	[23:0]	opb;
+output	[49:0]	quo, rem;
 
-// reg	[49:0]	quo, rem, quo1, remainder;
+reg	[49:0]	quo, rem, quo1, remainder;
 
-// always @(posedge clk)
-// 	quo1 <=  opa / opb;
+always @(posedge clk)
+	quo1 <=  opa / opb;
 
-// always @(posedge clk)
-// 	quo <=  quo1;
+always @(posedge clk)
+	quo <=  quo1;
 
-// always @(posedge clk)
-// 	remainder <=  opa % opb;
+always @(posedge clk)
+	remainder <=  opa % opb;
 
-// always @(posedge clk)
-// 	rem <=  remainder;
+always @(posedge clk)
+	rem <=  remainder;
 
-// endmodule
+endmodule
 
 
 //parameter N means the actual width of dividend

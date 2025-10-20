@@ -301,14 +301,14 @@ always @(fracta_mul)
 assign fdiv_opa = !(|opa_r[30:23]) ? {(fracta_mul<<div_opa_ldz_d), 26'h0} : {fracta_mul, 26'h0};
 
 
-// div_r2 u6(.clk(clk), .opa(fdiv_opa), .opb(fractb_mul), .quo(quo), .rem(remainder));
-divider_man #(.N(50), .M(24)) u_divider (
-    .clk        (clk),
-    .dividend   (fdiv_opa),     // 对应 div_r2 的 `opa`
-    .divisor    (fractb_mul),   // 对应 div_r2 的 `opb`
-    .merchant   (quo),          // 对应 div_r2 的 `quo`
-    .remainder  (remainder)     // 对应 div_r2 的 `rem`
-);
+div_r2 u6(.clk(clk), .opa(fdiv_opa), .opb(fractb_mul), .quo(quo), .rem(remainder));
+// divider_man #(.N(50), .M(24)) u_divider (
+//     .clk        (clk),
+//     .dividend   (fdiv_opa),     // 对应 div_r2 的 `opa`
+//     .divisor    (fractb_mul),   // 对应 div_r2 的 `opb`
+//     .merchant   (quo),          // 对应 div_r2 的 `quo`
+//     .remainder  (remainder)     // 对应 div_r2 的 `rem`
+// );
 
 
 assign remainder_00 = !(|remainder);

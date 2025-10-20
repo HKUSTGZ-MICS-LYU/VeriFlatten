@@ -21,6 +21,14 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "VeriFlatten: or1200",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": ["--filelist", "${workspaceFolder}/bench/or1200/filelist.f","--top","top","-o","${workspaceFolder}/bench/or1200/f_or1200.v","--force"],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "VeriFlatten: cb_aes_01",
             "type": "debugpy",
             "request": "launch",
