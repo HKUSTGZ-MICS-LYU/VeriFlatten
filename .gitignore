@@ -5,3 +5,8 @@ cascade_
 fm_*
 FM_*
 formality*
+backup/
+bin/
+
+oss-cad-suite/
+oss-cad-suite-*.tgz
