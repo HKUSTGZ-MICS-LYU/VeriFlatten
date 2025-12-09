@@ -1,3 +1,4 @@
+from enum import Flag
 import json
 import argparse
 import sys
@@ -8,10 +9,13 @@ import os
 import subprocess
 import re
 import debugpy
+import time
+import psutil
 
 SEPARATE_INITIAL_ASSIGN = False
-SEPARATE_ASSIGN_FOR_EQ_CHECK = True
+SEPARATE_ASSIGN_FOR_EQ_CHECK = False
 CONVERT_ASSIGN_TO_ALWAYS = False
+CONVERT_COMPLEX_SEL_TO_TEMP = True
 sys.setrecursionlimit(10000)  # 例如改成10000，看具体需求
 
 class UnhandledTypeError(Exception):
@@ -45,8 +49,8 @@ class VerilogGenerator:
         - EXPRSTMT的stmtsp[0]是COMMENT
         """
         try:
-            # 检查是否是没有sensesp的always
-            if node.get("sensesp") != []:
+            # 检查是否是没有sensesp/sentreep的always
+            if node.get("sensesp") != [] or node.get("sentreep") != []:
                 return False
                 
             # 获取always下的语句
@@ -335,6 +339,67 @@ class VerilogGenerator:
         
         return f"{self.indent()}{' '.join(filter(None, components))};"
     
+    def get_base_width_bits(self, dtype_info: Dict[str, Any]) -> int:
+        """递归计算基础类型的位宽（以位数为单位）
+        对于 [31:0] 返回 32，对于 [1:0][31:0] 递归计算
+        """
+        if not dtype_info:
+            return 0
+        
+        # 检查是否是打包数组类型
+        if dtype_info.get("type") == "PACKARRAYDTYPE":
+            # 获取基础类型
+            ref_dtype_id = dtype_info.get("refDTypep", "").strip("()")
+            base_type_info = self.type_table.get(ref_dtype_id, {})
+            base_width_bits = self.get_base_width_bits(base_type_info)
+            
+            # 计算数组维度的大小
+            range_items = dtype_info.get("rangep", [])
+            array_size = 1
+            if isinstance(range_items, list) and range_items:
+                for range_item in range_items:
+                    left_const = range_item.get("leftp", [{}])[0].get("name", "")
+                    right_const = range_item.get("rightp", [{}])[0].get("name", "")
+                    left = self.parse_const_value(left_const)
+                    right = self.parse_const_value(right_const)
+                    # 计算范围大小：abs(left - right) + 1
+                    array_size *= abs(left - right) + 1
+            
+            return base_width_bits * array_size
+        
+        # 检查是否有 range 字段
+        range_str = dtype_info.get("range", "")
+        if range_str:
+            # 解析 range，格式可能是 "31:0" 或 "0:31"
+            try:
+                parts = range_str.split(":")
+                if len(parts) == 2:
+                    left = int(parts[0].strip())
+                    right = int(parts[1].strip())
+                    return abs(left - right) + 1
+            except:
+                pass
+        
+        # 检查是否有 rangep 数组
+        range_items = dtype_info.get("rangep", [])
+        if isinstance(range_items, list) and range_items:
+            for range_item in range_items:
+                if "leftp" in range_item and "rightp" in range_item:
+                    left_const = range_item.get("leftp", [{}])[0].get("name", "")
+                    right_const = range_item.get("rightp", [{}])[0].get("name", "")
+                    left = self.parse_const_value(left_const)
+                    right = self.parse_const_value(right_const)
+                    return abs(left - right) + 1
+        
+        # 如果没有找到位宽信息，尝试从 dtypep 查找一次
+        next_dtype_ref = dtype_info.get("dtypep", "")
+        if isinstance(next_dtype_ref, str) and next_dtype_ref.startswith("(") and next_dtype_ref.endswith(")"):
+            type_id = next_dtype_ref[1:-1]
+            if type_id in self.type_table:
+                return self.get_base_width_bits(self.type_table[type_id])
+        
+        return 0
+    
     def get_width_info(self, node: Dict[str, Any]) -> Tuple[str, str]:
         """获取节点的位宽信息
         返回元组: (基础类型位宽, 数组维度)
@@ -357,32 +422,12 @@ class VerilogGenerator:
 
             # 检查是否是打包数组类型
             if dtype_info.get("type") == "PACKARRAYDTYPE":
-                # 获取基础类型的位宽
-                ref_dtype_id = dtype_info.get("refDTypep", "").strip("()")
-                base_type_info = self.type_table.get(ref_dtype_id, {})
-                base_width = ""
-                if base_type_info.get("range"):
-                    base_width = f"[{base_type_info['range']}]"
-                
-                # 获取数组维度
-                range_items = dtype_info.get("rangep", [])
-                if isinstance(range_items, list) and range_items:
-                    for range_item in range_items:
-                        # 提取左值
-                        left_const = range_item.get("leftp", [{}])[0].get("name", "")
-                        left = str(self.parse_const_value(left_const))
-                        
-                        # 提取右值
-                        right_const = range_item.get("rightp", [{}])[0].get("name", "")
-                        right = str(self.parse_const_value(right_const))
-
-                        if left and right:
-                            if base_width:
-                                base_width = f"[{left}:{right}]{base_width}"
-                            else:
-                                base_width = f"[{left}:{right}]"
-                
-                return (base_width, "")
+                # 递归计算总位宽
+                total_width_bits = self.get_base_width_bits(dtype_info)
+                if total_width_bits > 0:
+                    # 返回 [总位宽-1:0] 格式
+                    return (f"[{total_width_bits - 1}:0]", "")
+                return ("", "")
 
             # 检查是否是解包数组类型
             if dtype_info.get("type") == "UNPACKARRAYDTYPE":
@@ -457,7 +502,7 @@ class VerilogGenerator:
                 init_expr = self.handle_expression(value_node)
                 
                 if SEPARATE_INITIAL_ASSIGN:
-                    # 分离声明和赋值语句
+                    # # 分离声明和赋值语句
                     assign_statement = f"{self.indent()}initial begin\n{self.indent()}    {var_name} = {init_expr};\n{self.indent()}end"
                     init_value = ""  # 声明时不赋初值
                 elif SEPARATE_ASSIGN_FOR_EQ_CHECK:
@@ -643,7 +688,7 @@ class VerilogGenerator:
             # 获取并检查base是否需要替换
             base_expr = self.handle_expression(node["fromp"][0])
             
-            if is_constant(base_expr):
+            if is_constant(base_expr) and CONVERT_COMPLEX_SEL_TO_TEMP:
                 # 获取位宽信息
                 base_width, array_range = self.get_width_info(node["fromp"][0])
                 # 生成新的临时变量名
@@ -657,7 +702,7 @@ class VerilogGenerator:
                 }
                 # 使用临时变量替换复杂表达式
                 base = temp_var
-            elif is_complex_expression(base_expr):
+            elif is_complex_expression(base_expr) and CONVERT_COMPLEX_SEL_TO_TEMP:
                 # 获取位宽信息
                 base_width, array_range = self.get_width_info(node["fromp"][0])
                 # 生成新的临时变量名
@@ -680,7 +725,7 @@ class VerilogGenerator:
             # 检查lsbp是否是复杂表达式
             if node.get("lsbp"):
                 lsb_expr = self.handle_expression(node["lsbp"][0])
-                if is_complex_expression(lsb_expr):
+                if is_complex_expression(lsb_expr) and CONVERT_COMPLEX_SEL_TO_TEMP:
                     # 获取位宽信息
                     lsb_width, array_range = self.get_width_info(node["lsbp"][0])
                     # 生成新的临时变量名
@@ -696,11 +741,35 @@ class VerilogGenerator:
                     lsb = temp_var
                 else:
                     lsb = lsb_expr
-                    
-                if node.get("widthp"):
-                    # 获取宽度
-                    width = self.handle_expression(node["widthp"][0])
-                    # 使用Verilog的+:语法
+                
+                # 新版本使用 widthConst，旧版本使用 widthp
+                width_const = node.get("widthConst")
+                widthp = node.get("widthp")
+                
+                if width_const is not None:
+                    # 新版本：使用 widthConst 和 lsbp 生成范围选择
+                    # widthConst 表示选择的位宽，lsbp 表示起始位置（LSB）
+                    # 例如：lsbp=0, widthConst=8 -> [7:0]
+                    #      lsbp=8, widthConst=8 -> [15:8]
+                    try:
+                        # 解析 lsb_expr 获取数值
+                        lsb_value = self.parse_const_value(lsb_expr) if is_constant(lsb_expr) else None
+                        if lsb_value is not None:
+                            # 计算 MSB = LSB + widthConst - 1
+                            msb_value = lsb_value + width_const - 1
+                            return f"{base}[{msb_value}:{lsb_value}]"
+                        else:
+                            # 如果 lsb 不是常量，使用表达式计算
+                            # MSB = lsb + widthConst - 1
+                            msb_expr = f"({lsb_expr} + {width_const} - 1)"
+                            return f"{base}[{msb_expr}:{lsb_expr}]"
+                    except Exception as e:
+                        # 如果解析失败，使用表达式方式
+                        msb_expr = f"({lsb_expr} + {width_const} - 1)"
+                        return f"{base}[{msb_expr}:{lsb_expr}]"
+                elif widthp:
+                    # 旧版本：使用 widthp 和 lsbp，使用Verilog的+:语法
+                    width = self.handle_expression(widthp[0])
                     return f"{base}[{lsb}+:{width}]"
                 else:
                     # 只有单个位选择
@@ -815,6 +884,7 @@ class VerilogGenerator:
             print("Warning: Multiple initialization statements found in INITIAL block.")
         # 如果有需要初始化的语句，才生成initial块
         if temp_stmts and SEPARATE_INITIAL_ASSIGN:
+            # pass
             result.append(f"{self.indent()}initial")
             result.append(f"{self.indent()}begin")
             self.indent_level += 1
@@ -871,39 +941,78 @@ class VerilogGenerator:
     
     
     def handle_always(self, node: Dict[str, Any]) -> str:
-        # 如果节点中没有 "sensesp"，使用默认的敏感性列表
-        if not node.get("sensesp"):
+        # --- 修改开始: 特殊处理 cont_assign ---
+        # 如果 keyword 是 "cont_assign"，这实际上是一个连续赋值语句 (assign lhs = rhs;)
+        # 而不是一个时序或组合逻辑块 (always @...)
+        if node.get("keyword") == "cont_assign":
+            result = []
+            for stmt in node.get("stmtsp", []):
+                # 调用 handle_statement 获取 "lhs = rhs;" 部分
+                stmt_str = self.handle_statement(stmt)
+                # 加上 "assign" 关键字
+                result.append(f"{self.indent()}assign {stmt_str}")
+            return "\n".join(result)
+        # --- 修改结束 ---
+
+        # 以下是原有的 always 块处理逻辑
+        
+        # 新版本使用 "sentreep"，旧版本使用 "sensesp"，优先检查新版本
+        sentreep = node.get("sentreep", [])
+        sensesp = node.get("sensesp", [])
+        
+        # 如果两者都没有，使用默认的敏感性列表
+        if not sentreep and not sensesp:
             sensitivity_str = "*"
         else:
-            # 获取 SENTREE 节点
-            sensetree = node["sensesp"][0]
-            if not sensetree.get("sensesp"):
+            # 收集所有敏感信号
+            sensitivity_list = []
+            
+            # 处理新版本的 sentreep 格式
+            if sentreep:
+                for sentree in sentreep:
+                    if sentree.get("type") == "SENTREE":
+                        if sentree.get("sensesp"):
+                            for senitem in sentree["sensesp"]:
+                                edge_type = senitem.get("edgeType", "")
+                                if not senitem.get("sensp"):
+                                    continue
+                                
+                                signal = senitem["sensp"][0]
+                                signal_name = signal.get("name", "")
+                                
+                                if edge_type == "POS":
+                                    sensitivity_list.append(f"posedge {signal_name}")
+                                elif edge_type == "NEG":
+                                    sensitivity_list.append(f"negedge {signal_name}")
+                                elif edge_type == "CHANGED":
+                                    sensitivity_list.append(signal_name)
+            
+            # 处理旧版本的 sensesp 格式（向后兼容）
+            elif sensesp:
+                # 获取 SENTREE 节点
+                sensetree = sensesp[0]
+                if sensetree.get("sensesp"):
+                    for senitem in sensetree["sensesp"]:
+                        edge_type = senitem.get("edgeType", "")
+                        if not senitem.get("sensp"):
+                            continue
+
+                        signal = senitem["sensp"][0]
+                        signal_name = signal.get("name", "")
+
+                        if edge_type == "POS":
+                            sensitivity_list.append(f"posedge {signal_name}")
+                        elif edge_type == "NEG":
+                            sensitivity_list.append(f"negedge {signal_name}")
+                        elif edge_type == "CHANGED":
+                            sensitivity_list.append(signal_name)
+
+            # 根据敏感信号列表生成字符串
+            sensitivity_str = " or ".join(sensitivity_list)
+
+            # 如果敏感信号列表为空，默认使用 "*"
+            if not sensitivity_list:
                 sensitivity_str = "*"
-            else:
-                # 收集所有敏感信号
-                sensitivity_list = []
-
-                for senitem in sensetree["sensesp"]:
-                    edge_type = senitem.get("edgeType", "")
-                    if not senitem.get("sensp"):
-                        continue
-
-                    signal = senitem["sensp"][0]
-                    signal_name = signal.get("name", "")
-
-                    if edge_type == "POS":
-                        sensitivity_list.append(f"posedge {signal_name}")
-                    elif edge_type == "NEG":
-                        sensitivity_list.append(f"negedge {signal_name}")
-                    elif edge_type == "CHANGED":
-                        sensitivity_list.append(signal_name)
-
-                # 根据敏感信号列表生成字符串
-                sensitivity_str = " or ".join(sensitivity_list)
-
-                # 如果敏感信号列表为空，默认使用 "*"
-                if not sensitivity_list:
-                    sensitivity_str = "*"
 
         # 构建 `always` 块
         result = [f"{self.indent()}always @({sensitivity_str}) begin"]
@@ -940,7 +1049,7 @@ class VerilogGenerator:
                     msg = self.clean_format_string(msg)
                     return f"{self.indent()}$error(\"{msg}\");"
                 
-            return ""
+            return f"{self.indent()}placeholder = 1;"
             
         except Exception as e:
             warning_msg = f"Error in DISPLAY: {str(e)}"
@@ -1025,6 +1134,8 @@ class VerilogGenerator:
                 return self.handle_assigndly(node)
             elif stmt_type == "ASSIGN":
                 return self.handle_assign(node)
+            elif stmt_type == "ASSIGNW":
+                return self.handle_assign(node)
             elif stmt_type == "CASE":
                 return self.handle_case(node)
             elif stmt_type == "DISPLAY":
@@ -1063,7 +1174,28 @@ class VerilogGenerator:
         
         # 使用handle_expression处理case表达式
         expr = self.handle_expression(node["exprp"][0])
-        result.append(f"{self.indent()}case ({expr})")
+        
+        # 检查所有case项的条件中是否包含z或x
+        has_z_or_x = False
+        for item in node.get("itemsp", []):
+            if item["type"] != "CASEITEM":
+                continue
+            if item.get("condsp"):
+                for cond_node in item["condsp"]:
+                    cond_str = self.handle_expression(cond_node)
+                    if 'z' in cond_str.lower() or 'x' in cond_str.lower():
+                        has_z_or_x = True
+                        break
+                if has_z_or_x:
+                    break
+        
+        # 如果包含z或x，使用casex并打印warning
+        case_keyword = "casex" if has_z_or_x else "case"
+        if has_z_or_x:
+            loc = node.get("loc", "unknown")
+            print(f"Warning: Detected 'z' or 'x' in case conditions, using casex instead of case (line {loc})")
+        
+        result.append(f"{self.indent()}{case_keyword} ({expr})")
         
         # 增加缩进层级
         self.indent_level += 1
@@ -1078,7 +1210,20 @@ class VerilogGenerator:
                 # 处理所有条件，用逗号分隔
                 conditions = []
                 for cond_node in item["condsp"]:
-                    conditions.append(self.handle_expression(cond_node))
+                    raw_cond = self.handle_expression(cond_node)
+                    
+                    # --- 修改开始 ---
+                    # 修复 Verilog 扩展规则问题：
+                    # 原始 AST可能是 "48'bz"，Verilog 会解析为全 z (zzzz...)
+                    # 我们将其替换为 "48'b0z"，Verilog 会解析为 0 扩展 (000...z)
+                    if raw_cond.endswith("'bz"):
+                        raw_cond = raw_cond.replace("'bz", "'b0z")
+                    elif raw_cond.endswith("'bx"):
+                        raw_cond = raw_cond.replace("'bx", "'b0x")
+                    # --- 修改结束 ---
+                    
+                    conditions.append(raw_cond)
+                    
                 cond_str = ", ".join(conditions)
                 result.append(f"{self.indent()}{cond_str}: begin")
             else:
@@ -1624,7 +1769,7 @@ class VerilogGenerator:
             extend_bits = target_width - source_width
             
             # 为适应SystemVerilog 05的拓展规则
-            if expr.endswith(')') or expr.endswith('}') or expr.endswith(']'):
+            if (expr.endswith(')') or expr.endswith('}') or expr.endswith(']')) and CONVERT_COMPLEX_SEL_TO_TEMP:
                 base_width, array_range = self.get_width_info(lhs_node)
                 temp_var = f"___sel_temp_{self.sel_temp_count}"
                 self.sel_temp_count += 1
@@ -1945,26 +2090,70 @@ def main():
         original_dir = Path.cwd()
         os.chdir(input_dir)
 
-        # 运行verilator命令 - 只修改此行
-        cmd = f"verilator +1800-2005ext+v --json-only {files_arg} --flatten --top {args.top} -fno-case -fno-life -fno-assemble \
-            -fno-acyc-simp -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
-                -fno-subst-const -fno-subst -fno-table -fno-dfg -Wno-fatal"
+        # 获取 main.py 所在的目录 (例如 .../VeriFlatten/src)
+        script_dir = Path(__file__).resolve().parent
+        
+        # 获取项目根目录 (假设是 main.py 的上一级，即 .../VeriFlatten)
+        project_root = script_dir.parent
+        
+        # 构建 verilator 的绝对路径
+        verilator_bin = project_root / "oss-cad-suite" / "bin" / "verilator"
+
+        # 检查文件是否存在 (可选，但推荐)
+        if not verilator_bin.exists():
+            print(f"Error: Verilator not found at {verilator_bin}", file=sys.stderr)
+            sys.exit(1)
+
+        # 使用变量构造命令
+        cmd = f"{verilator_bin} {files_arg} --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
+                -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble \
+                 -Wno-fatal "
         
         # 构造JSON文件路径
         json_path = input_dir / "obj_dir" / f"V{args.top}.tree.json"
+
         if not json_path.exists() or args.force:
-            result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+            # 修改点 1: 移除 capture_output=True
+            # 使用 stdout=subprocess.PIPE, stderr=subprocess.PIPE 来捕获输出
+            result = subprocess.run(
+                cmd, 
+                shell=True, 
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.PIPE, 
+                text=True # 保持 text=True 以便将输出解码为字符串
+            )
+            
+            # 修改点 2: 无论结果如何，都打印标准输出和标准错误
+            # 打印标准输出 (stdout)
+            if result.stdout:
+                print("--- Verilator STDOUT Start ---")
+                print(result.stdout)
+                print("--- Verilator STDOUT End ---")
+                
+            # 打印标准错误 (stderr)
+            if result.stderr:
+                print("--- Verilator STDERR Start ---")
+                print(result.stderr)
+                print("--- Verilator STDERR End ---")
+            
+            # 检查错误 (保留原有逻辑)
+            if "%Error" in result.stderr or "%Error" in result.stdout:
+                # 由于上面已经打印了完整的输出，这里的 print(f"Error: {result.stdout}") 可以简化或删除，
+                # 但为了保持和原逻辑对齐，可以保留一个简单的错误提示
+                print("!!! Error detected in Verilator output. Exiting. !!!", file=sys.stderr)
+                sys.exit(1)
+                
             if not json_path.exists():
                 print(f"Error: JSON file '{json_path}' was not generated. (ERROR in verilog)", file=sys.stderr)
                 sys.exit(1)
 
-        # 读取并解析JSON
-        with open(json_path, 'r') as f:
-            try:
-                ast = json.load(f)
-            except json.JSONDecodeError as e:
-                print(f"Error: Invalid JSON in file: {e}", file=sys.stderr)
-                sys.exit(1)
+            # 读取并解析JSON
+            with open(json_path, 'r') as f:
+                try:
+                    ast = json.load(f)
+                except json.JSONDecodeError as e:
+                    print(f"Error: Invalid JSON in file: {e}", file=sys.stderr)
+                    sys.exit(1)
 
         # 切回原始目录
         os.chdir(original_dir)
@@ -1986,13 +2175,13 @@ def main():
             f.write(verilog_code)
 
         # 用 sv2v 再处理一次输出文件
-        # sv2v_cmd = f"sv2v {args.output} > {args.output}.tmp && mv {args.output}.tmp {args.output}"
-        # sv2v_result = subprocess.run(sv2v_cmd, shell=True, capture_output=True, text=True)
-        # if sv2v_result.returncode != 0:
-        #     print(f"Error: sv2v failed!\n{sv2v_result.stderr}", file=sys.stderr)
-        #     sys.exit(1)
-        # else:
-        #     print(f"sv2v conversion complete: '{args.output}'")
+        sv2v_cmd = f"sv2v {args.output} > {args.output}.tmp && mv {args.output}.tmp {args.output}"
+        sv2v_result = subprocess.run(sv2v_cmd, shell=True, capture_output=True, text=True)
+        if sv2v_result.returncode != 0:
+            print(f"Error: sv2v failed!\n{sv2v_result.stderr}", file=sys.stderr)
+            sys.exit(1)
+        else:
+            print(f"sv2v conversion complete: '{args.output}'")
 
         print(f"Successfully generated Verilog code in '{args.output}'")
 
@@ -2002,4 +2191,22 @@ def main():
         sys.exit(1)
 
 if __name__ == "__main__":
+    # Start tracking time and memory
+    start_time = time.time()
+    process = psutil.Process(os.getpid())
+    start_memory = process.memory_info().rss / 1024 / 1024  # MB
+    
+    # Run main function
     main()
+
+    # Calculate execution time and memory usage
+    end_time = time.time()
+    end_memory = process.memory_info().rss / 1024 / 1024  # MB
+    
+    execution_time = end_time - start_time
+    memory_used = end_memory - start_memory
+    
+    print(f"\n--- Execution Summary ---")
+    print(f"Execution time: {execution_time:.4f} seconds")
+    print(f"Memory used: {memory_used:.2f} MB")
+    print(f"Peak memory: {process.memory_info().rss / 1024 / 1024:.2f} MB")
