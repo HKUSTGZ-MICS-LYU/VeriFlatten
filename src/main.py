@@ -13,7 +13,7 @@ import time
 import psutil
 
 SEPARATE_INITIAL_ASSIGN = False
-SEPARATE_ASSIGN_FOR_EQ_CHECK = False
+SEPARATE_ASSIGN_FOR_EQ_CHECK = True
 CONVERT_ASSIGN_TO_ALWAYS = False
 CONVERT_COMPLEX_SEL_TO_TEMP = True
 sys.setrecursionlimit(10000)  # 例如改成10000，看具体需求
@@ -2106,8 +2106,7 @@ def main():
 
         # 使用变量构造命令
         cmd = f"{verilator_bin} {files_arg} --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
-                -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble \
-                 -Wno-fatal "
+                -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble --timing -Wno-fatal "
         
         # 构造JSON文件路径
         json_path = input_dir / "obj_dir" / f"V{args.top}.tree.json"
