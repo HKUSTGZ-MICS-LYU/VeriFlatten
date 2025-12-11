@@ -6,13 +6,14 @@ Additionally, eq_check is provided for equivalence checking, which requires Form
 
 ⚠️ Important: Due to certain optimizations performed by Verilator (such as signal merging or pruning), some DFFs may not match between the original and the flattened design during equivalence checking.
 However, all primary inputs (PIs) and primary outputs (POs) are guaranteed to match.
+If you need to perform equivalence checking, please set `SEPARATE_ASSIGN_FOR_EQ_CHECK` to `True` in `src/main.py`.
 
 This is an alpha version: the codebase still contains many uncleaned comments and debug fragments
 If the output Verilog is too long or not well-formatted, you can enable the sv2v formatter, or disable it to keep the raw structure. 
 
 
 Requirements:
-- Verilator: Version 5.30.0 or higher is recommended. You can install or update Verilator by following its official installation guide.
+- Verilator: Currently only supports version 5.043. Please run `install_verilator.sh` before using the tool.
 - sv2v (optional)
 
 python src/main.py --help
