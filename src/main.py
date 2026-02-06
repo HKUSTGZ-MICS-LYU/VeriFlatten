@@ -249,6 +249,9 @@ class VerilogGenerator:
             
         keyword = dtype_node.get("keyword", "logic")
         range_str = dtype_node.get("range", "")
+
+        if keyword == "integer":
+            return "integer"
         
         # 如果没有range，尝试从type_table查找一次
         if not range_str:
@@ -298,6 +301,10 @@ class VerilogGenerator:
         declarations: List[str] = []
         
         if "stmtsp" in node and isinstance(node["stmtsp"], list):
+            # 预先收集本模块中所有被引用的变量
+            self.used_vars = set()
+            self.collect_used_vars(node["stmtsp"])
+            
             for stmt in node["stmtsp"]:
                 if stmt.get("type") == "VAR" and stmt.get("isPrimaryIO"):
                     ports.append(self.generate_port(stmt))
@@ -321,6 +328,32 @@ class VerilogGenerator:
         
         # 使用join来组合所有部分
         return "\n".join([module_decl] + body + ["endmodule"])
+
+    def collect_used_vars(self, node: Any) -> None:
+        """递归收集所有被引用的变量名 (VARREF)"""
+        if isinstance(node, list):
+            for item in node:
+                self.collect_used_vars(item)
+        elif isinstance(node, dict):
+            node_type = node.get("type")
+            
+            # 特殊处理 SCOPE 节点：只遍历 blocksp，忽略 varsp
+            if node_type == "SCOPE":
+                if "blocksp" in node:
+                    self.collect_used_vars(node["blocksp"])
+                return
+
+            # 如果是VARREF节点，收集名字
+            if node_type == "VARREF":
+                name = node.get("name")
+                if name:
+                    # print(f"DEBUG: Collected usage of '{name}'")
+                    self.used_vars.add(name)
+            
+            # 递归处理所有字典值
+            for key, value in node.items():
+                if isinstance(value, (list, dict)):
+                    self.collect_used_vars(value)
 
     def generate_port(self, node: Dict[str, Any]) -> str:
         return node.get("name", "")
@@ -489,6 +522,15 @@ class VerilogGenerator:
         try:
             var_type = node.get("varType", "")
             var_name = node.get("name", "")
+            
+            # 检查变量是否被使用 (仅对非端口变量进行检查)
+            is_port = node.get("isPrimaryIO", False)
+            # 确保 used_vars 已初始化且变量未被使用
+            if not is_port and hasattr(self, 'used_vars'):
+                if var_name not in self.used_vars:
+                    # 过滤掉未使用的变量
+                    return ""
+                
             dtype_name = node.get("dtypeName", "wire")
             
             if var_name in self.initialized_vars:
@@ -560,6 +602,11 @@ class VerilogGenerator:
         """处理parameter和localparam定义"""
         try:
             param_name = node.get("name", "")
+            
+            # 过滤掉包含 "___" 或 "." 的内部参数
+            if "___" in param_name or "." in param_name:
+                return ""
+
             var_type = node.get("varType", "")
             
             # 确定是parameter还是localparam
@@ -2051,7 +2098,7 @@ def main():
     # 确定输入文件或filelist
     if args.file:
         # 单文件模式
-        input_path = Path(args.file)
+        input_path = Path(args.file).resolve()
         if not input_path.exists():
             print(f"Error: Input file '{args.file}' does not exist", file=sys.stderr)
             sys.exit(1)
@@ -2059,7 +2106,7 @@ def main():
         files_arg = input_path.name  # 只需要文件名，因为我们会切换到目录
     elif args.filelist:
         # filelist模式
-        filelist_path = Path(args.filelist)
+        filelist_path = Path(args.filelist).resolve()
         if not filelist_path.exists():
             print(f"Error: Filelist '{args.filelist}' does not exist", file=sys.stderr)
             sys.exit(1)
@@ -2146,13 +2193,13 @@ def main():
                 print(f"Error: JSON file '{json_path}' was not generated. (ERROR in verilog)", file=sys.stderr)
                 sys.exit(1)
 
-            # 读取并解析JSON
-            with open(json_path, 'r') as f:
-                try:
-                    ast = json.load(f)
-                except json.JSONDecodeError as e:
-                    print(f"Error: Invalid JSON in file: {e}", file=sys.stderr)
-                    sys.exit(1)
+        # 读取并解析JSON
+        with open(json_path, 'r') as f:
+            try:
+                ast = json.load(f)
+            except json.JSONDecodeError as e:
+                print(f"Error: Invalid JSON in file: {e}", file=sys.stderr)
+                sys.exit(1)
 
         # 切回原始目录
         os.chdir(original_dir)
