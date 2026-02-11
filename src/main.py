@@ -33,6 +33,8 @@ class VerilogGenerator:
         self.temp_count = 0  # 添加临时变量计数器
         self.initialized_vars = set()  # 新增：记录已经初始化过的变量
         self.resultp_dict = {}  # 新增：记录所有的resultp节点
+        self.used_vars = set()  # 存储所有被引用的变量名
+        self.procedural_vars = set()  # 存储所有被程序化赋值的变量名
         
         # 初始化临时变量记录器（如果还没有的话）
         self.sel_temp_count = 0
@@ -303,6 +305,7 @@ class VerilogGenerator:
         if "stmtsp" in node and isinstance(node["stmtsp"], list):
             # 预先收集本模块中所有被引用的变量
             self.used_vars = set()
+            self.procedural_vars = set()  # 重置程序化变量集合
             self.collect_used_vars(node["stmtsp"])
             
             for stmt in node["stmtsp"]:
@@ -330,7 +333,7 @@ class VerilogGenerator:
         return "\n".join([module_decl] + body + ["endmodule"])
 
     def collect_used_vars(self, node: Any) -> None:
-        """递归收集所有被引用的变量名 (VARREF)"""
+        """递归收集所有被引用的变量名 (VARREF) 以及被程序化赋值的变量名"""
         if isinstance(node, list):
             for item in node:
                 self.collect_used_vars(item)
@@ -350,10 +353,42 @@ class VerilogGenerator:
                     # print(f"DEBUG: Collected usage of '{name}'")
                     self.used_vars.add(name)
             
+            # 识别程序化赋值 (Procedural Assignments)
+            # 1. EXPRSTMT 节点中的 resultp (通常来自 Verilator 对函数的程序化处理)
+            if node_type == "EXPRSTMT" and "resultp" in node:
+                resultp_node = node["resultp"][0]
+                name = self.extract_base_var_name(resultp_node)
+                if name:
+                    self.procedural_vars.add(name)
+            
+            # 2. ALWAYS/INITIAL 块中的 ASSIGN/ASSIGNDLY
+            # 注意：在 Verilator AST 中，顶层的 ASSIGNW 通常对应连续赋值 (assign)，
+            # 而过程块内部的 ASSIGN 对应阻塞赋值 (=)，ASSIGNDLY 对应非阻塞赋值 (<=)
+            if node_type in ["ASSIGN", "ASSIGNDLY"]:
+                if "lhsp" in node:
+                    name = self.extract_base_var_name(node["lhsp"][0])
+                    if name:
+                        self.procedural_vars.add(name)
+            
             # 递归处理所有字典值
             for key, value in node.items():
                 if isinstance(value, (list, dict)):
                     self.collect_used_vars(value)
+
+    def extract_base_var_name(self, node: Any) -> str:
+        """从表达式节点中提取基础变量名 (处理 SEL, ARRAYSEL 等)"""
+        if not isinstance(node, dict):
+            return ""
+        
+        node_type = node.get("type")
+        if node_type == "VARREF":
+            return node.get("name", "")
+        elif node_type in ["SEL", "ARRAYSEL", "DOT"]:
+            fromp = node.get("fromp", [])
+            if fromp:
+                return self.extract_base_var_name(fromp[0])
+        
+        return ""
 
     def generate_port(self, node: Dict[str, Any]) -> str:
         return node.get("name", "")
@@ -364,6 +399,21 @@ class VerilogGenerator:
         name = node.get("name", "")
         type_info = self.get_type_info(node)
         
+        # 如果是过程块赋值的变量，确保类型是 logic 而不是 wire
+        if name in self.procedural_vars:
+            if var_type == "wire":
+                var_type = "logic"
+            
+            if "wire" in type_info:
+                type_info = type_info.replace("wire", "logic")
+            elif "logic" not in type_info and "reg" not in type_info and "integer" not in type_info:
+                # 如果 type_info 只是 [31:0] 这种，前面补 logic
+                type_info = "logic " + type_info
+            
+            # 如果 var_type 和 type_info 都包含了 logic，合并它们
+            if var_type == "logic" and type_info.startswith("logic"):
+                var_type = "" # 让 type_info 承担 logic 关键字
+
         components = [direction]
         if var_type != "port":
             components.append(var_type)
@@ -568,7 +618,10 @@ class VerilogGenerator:
                 type_keyword = "reg"
                 
             elif var_type in ["PORT", "WIRE", "LOGIC", "MODULETEMP", "BLOCKTEMP"]:
-                type_keyword = "logic" if dtype_name.lower() == "logic" else "wire"
+                if var_name in self.procedural_vars:
+                    type_keyword = "logic"
+                else:
+                    type_keyword = "logic" if dtype_name.lower() == "logic" else "wire"
                 
             else:
                 warning = f"Warning: Unhandled var type: {var_type}"
@@ -794,26 +847,24 @@ class VerilogGenerator:
                 widthp = node.get("widthp")
                 
                 if width_const is not None:
-                    # 新版本：使用 widthConst 和 lsbp 生成范围选择
                     # widthConst 表示选择的位宽，lsbp 表示起始位置（LSB）
-                    # 例如：lsbp=0, widthConst=8 -> [7:0]
-                    #      lsbp=8, widthConst=8 -> [15:8]
+                    if width_const == 1:
+                        # 单个位选择，直接返回 [lsb]
+                        return f"{base}[{lsb}]"
+                    
                     try:
                         # 解析 lsb_expr 获取数值
                         lsb_value = self.parse_const_value(lsb_expr) if is_constant(lsb_expr) else None
                         if lsb_value is not None:
-                            # 计算 MSB = LSB + widthConst - 1
+                            # 如果是常量，使用标准范围选择 [msb:lsb]
                             msb_value = lsb_value + width_const - 1
                             return f"{base}[{msb_value}:{lsb_value}]"
                         else:
-                            # 如果 lsb 不是常量，使用表达式计算
-                            # MSB = lsb + widthConst - 1
-                            msb_expr = f"({lsb_expr} + {width_const} - 1)"
-                            return f"{base}[{msb_expr}:{lsb_expr}]"
+                            # 如果不是常量，使用 indexed part-select [lsb +: width]
+                            return f"{base}[{lsb}+:{width_const}]"
                     except Exception as e:
-                        # 如果解析失败，使用表达式方式
-                        msb_expr = f"({lsb_expr} + {width_const} - 1)"
-                        return f"{base}[{msb_expr}:{lsb_expr}]"
+                        # 出现异常时也使用 indexed part-select
+                        return f"{base}[{lsb}+:{width_const}]"
                 elif widthp:
                     # 旧版本：使用 widthp 和 lsbp，使用Verilog的+:语法
                     width = self.handle_expression(widthp[0])
@@ -1175,42 +1226,87 @@ class VerilogGenerator:
         stmt_type = node.get("type", "")
         
         try:
+            result = ""
             if stmt_type == "IF":
-                return self.handle_if(node)
+                result = self.handle_if(node)
             elif stmt_type == "ASSIGNDLY":
-                return self.handle_assigndly(node)
+                result = self.handle_assigndly(node)
             elif stmt_type == "ASSIGN":
-                return self.handle_assign(node)
+                result = self.handle_assign(node)
             elif stmt_type == "ASSIGNW":
-                return self.handle_assign(node)
+                result = self.handle_assign(node)
             elif stmt_type == "CASE":
-                return self.handle_case(node)
+                result = self.handle_case(node)
             elif stmt_type == "DISPLAY":
-                return self.handle_display(node)
+                result = self.handle_display(node)
             elif stmt_type == "STOP":
-                return ""  # STOP通常和DISPLAY一起使用，我们可以忽略它
+                result = ""  # STOP通常和DISPLAY一起使用，我们可以忽略它
             elif stmt_type == "COMMENT":
-                return self.handle_comment(node)
+                result = self.handle_comment(node)
             elif stmt_type == "FINISH":
-                return self.handle_finish(node)
+                result = self.handle_finish(node)
             elif stmt_type == "WHILE":
-                return self.handle_while(node)
+                result = self.handle_while(node)
+            elif stmt_type == "LOOP":
+                result = self.handle_loop(node)
+            elif stmt_type == "BEGIN":
+                result = self.handle_begin(node)
             elif stmt_type == "JUMPBLOCK":
                 loc = node.get("loc")
                 print(f"Warning: JUMPBLOCK is not fully supported in line {loc}")
-                return self.handle_jumpblock(node)
+                result = self.handle_jumpblock(node)
             elif stmt_type == "VARREF":
-                return node.get("name", "")
+                result = node.get("name", "")
             else:
                 warning_msg = f"Unhandled statement type: {stmt_type}"
                 loc = node.get("loc")
                 print(f"Warning: {warning_msg} in line {loc}")
-                return f"/* Warning: {warning_msg} */"
+                result = f"/* Warning: {warning_msg} */"
+            
+            # 过滤掉包含 Verilator 内部变量的语句（通常是仿真相关的断言或调试代码）
+            if result and any(kw in result for kw in ["vlSymsp", "_vm_contextp__", "assertOn"]):
+                return ""
+                
+            return result
                 
         except Exception as e:
             warning_msg = f"Error in statement: {str(e)}"
             print(f"Warning: {warning_msg}")
             return f"/* Warning: {warning_msg} */"
+        
+    def handle_begin(self, node: Dict[str, Any]) -> str:
+        """处理BEGIN节点，生成begin...end块"""
+        if not node:
+            return ""
+        
+        try:
+            result = []
+            indent_str = self.indent()
+            
+            # 获取块名称（如果有）
+            name = node.get("name", "")
+            if name:
+                result.append(f"{indent_str}begin : {name}")
+            else:
+                result.append(f"{indent_str}begin")
+            
+            self.indent_level += 1
+            
+            # 处理块中的所有语句
+            for stmt in node.get("stmtsp", []):
+                stmt_str = self.handle_statement(stmt)
+                if stmt_str:
+                    result.append(stmt_str)
+            
+            self.indent_level -= 1
+            result.append(f"{indent_str}end")
+            
+            return "\n".join(result)
+            
+        except Exception as e:
+            warning_msg = f"Error in BEGIN: {str(e)}"
+            print(f"Warning: {warning_msg}")
+            return f"{self.indent()}// Warning: {warning_msg}"
         
     def handle_case(self, node: Dict[str, Any]) -> str:
         result = []
@@ -1299,6 +1395,11 @@ class VerilogGenerator:
         
         # 处理条件
         condition = self.handle_condition(node.get("condp", [])[0])
+        
+        # 过滤掉包含 Verilator 内部变量的条件块（通常是 Verilator 插入的断言检查）
+        if any(kw in condition for kw in ["vlSymsp", "_vm_contextp__", "assertOn"]):
+            return ""
+            
         result.append(f"{self.indent()}if ({condition}) begin")
         
         # 增加缩进层级
@@ -1465,6 +1566,75 @@ class VerilogGenerator:
             warning_msg = f"Error in FOR loop (WHILE node): {str(e)}"
             print(f"Warning: {warning_msg}")
             return f"{self.indent()}// Warning: {warning_msg}\n{self.indent()}for (;;) begin\n{self.indent()}  // Error processing for loop\n{self.indent()}end"
+        
+    def handle_loop(self, node: Dict[str, Any]) -> str:
+        """处理LOOP节点，生成完整的for循环语句"""
+        if not node:
+            return ""
+        
+        try:
+            result = []
+            indent_str = self.indent()
+            
+            # 获取循环测试、循环体和递增表达式
+            stmtsp = node.get("stmtsp", [])
+            condition = ""
+            increment = ""
+            body_statements = []
+            
+            for stmt in stmtsp:
+                stype = stmt.get("type")
+                if stype == "LOOPTEST":
+                    if "condp" in stmt and stmt["condp"]:
+                        condition = self.handle_expression(stmt["condp"][0])
+                elif stype == "BEGIN" or stype == "ASSIGN":
+                    # 如果是ASSIGN且不是最后一个，或者它在LOOPTEST之后，可能是递增或体
+                    # 在Verilator的LOOP中，通常顺序是 LOOPTEST -> BODY -> INCREMENT
+                    # 我们可以根据顺序来判断，或者检查它是否是最后一个ASSIGN
+                    pass
+            
+            # 重新精确解析LOOP节点结构
+            # 通常结构: [LOOPTEST, BODY_STMT, INCREMENT_STMT]
+            if len(stmtsp) >= 1 and stmtsp[0].get("type") == "LOOPTEST":
+                test_node = stmtsp[0]
+                if "condp" in test_node and test_node["condp"]:
+                    condition = self.handle_expression(test_node["condp"][0])
+            
+            # 寻找递增表达式 (通常是最后一个语句，且类型为ASSIGN)
+            if len(stmtsp) >= 3:
+                inc_node = stmtsp[-1]
+                if inc_node.get("type") == "ASSIGN":
+                    lhs = self.handle_expression(inc_node["lhsp"][0])
+                    rhs = self.handle_expression(inc_node["rhsp"][0])
+                    increment = f"{lhs} = {rhs}"
+                    body_statements = stmtsp[1:-1]
+                else:
+                    body_statements = stmtsp[1:]
+            elif len(stmtsp) >= 2:
+                body_statements = stmtsp[1:]
+
+            # 构建for循环语句
+            # 注意：初始化部分(i=0)通常在LOOP节点之前已经生成了
+            loop_header = f"{indent_str}for (; {condition}; {increment}) begin"
+            result.append(loop_header)
+            
+            # 增加缩进级别处理循环体
+            self.indent_level += 1
+            for stmt in body_statements:
+                stmt_str = self.handle_statement(stmt)
+                if stmt_str:
+                    result.append(stmt_str)
+            self.indent_level -= 1
+            
+            # 添加循环结束标记
+            result.append(f"{indent_str}end")
+            
+            return "\n".join(result)
+            
+        except Exception as e:
+            warning_msg = f"Error in LOOP node: {str(e)}"
+            print(f"Warning: {warning_msg}")
+            return f"{self.indent()}// Warning: {warning_msg}"
         
     def handle_insiderange(self, node: Dict[str, Any]) -> str:
         """处理INSIDERANGE节点，将其转换为[left:right]格式"""
@@ -1704,6 +1874,15 @@ class VerilogGenerator:
                 warning_msg = f"Error in COND: {str(e)}"
                 print(f"Warning: {warning_msg}")
                 return f"/* Warning: {warning_msg} */ 1'b0"
+        elif node_type == "CEXPR":
+            # 处理CEXPR节点，通常包含TEXT节点
+            results = []
+            for child in node.get("nodesp", []):
+                results.append(self.handle_expression(child))
+            return "".join(results)
+        elif node_type == "TEXT":
+            # 处理TEXT节点，直接返回其内容
+            return node.get("text", "")
         else:
             loc = node.get("loc")
             warning_msg = f"Unknown expression type: {node_type} in line {loc}"
@@ -2063,14 +2242,26 @@ def insert_sel_temp_statements(verilog_code: str, sel_temp_dict: dict) -> str:
                 
                 # 检查是否需要加上assign关键字
                 previous_line = result_lines[i - 1] if i > 0 else ""
-                if "assign" in previous_line or "assign" in result_lines[i]:
-                    # 如果上下文有assign语句，加上assign
-                    if CONVERT_ASSIGN_TO_ALWAYS:
+                
+                # 检查是否在过程块(always/initial)内
+                # 简单的判断方法：如果在模块顶层（缩进较少且不在always/initial之后），则需要assign
+                is_top_level = True
+                for j in range(i - 1, -1, -1):
+                    prev_line_strip = result_lines[j].strip()
+                    if prev_line_strip.startswith(("always", "initial", "begin", "if", "else", "case", "for", "while")):
+                        is_top_level = False
+                        break
+                    if prev_line_strip.startswith("endmodule"):
+                        break
+                
+                if "assign" in previous_line or "assign" in result_lines[i] or is_top_level:
+                    # 如果上下文有assign语句或者是顶层，加上assign
+                    if CONVERT_ASSIGN_TO_ALWAYS and not is_top_level:
                         result_lines.insert(i, f"{target_indent}always @(*) begin\n{target_indent}    {temp_var} = {info['expr']};\n{target_indent}end")
                     else:
                         result_lines.insert(i, f"{target_indent}assign {temp_var} = {info['expr']};")
                 else:
-                    # 否则直接插入
+                    # 过程块内部，直接插入赋值语句
                     result_lines.insert(i, f"{target_indent}{temp_var} = {info['expr']};")
                 break  # 只插入一次，跳出当前变量的查找
     
@@ -2103,7 +2294,7 @@ def main():
             print(f"Error: Input file '{args.file}' does not exist", file=sys.stderr)
             sys.exit(1)
         input_dir = input_path.parent
-        files_arg = input_path.name  # 只需要文件名，因为我们会切换到目录
+        files_arg = f'"{input_path.name}"'  # 只需要文件名，因为我们会切换到目录
     elif args.filelist:
         # filelist模式
         filelist_path = Path(args.filelist).resolve()
@@ -2152,7 +2343,7 @@ def main():
             sys.exit(1)
 
         # 使用变量构造命令
-        cmd = f"{verilator_bin} {files_arg} --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
+        cmd = f"{verilator_bin} {files_arg} -I. --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
                 -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble --timing -Wno-fatal "
         
         # 构造JSON文件路径
