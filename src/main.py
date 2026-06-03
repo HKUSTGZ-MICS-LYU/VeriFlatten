@@ -1874,15 +1874,28 @@ class VerilogGenerator:
                 warning_msg = f"Error in COND: {str(e)}"
                 print(f"Warning: {warning_msg}")
                 return f"/* Warning: {warning_msg} */ 1'b0"
+        elif node_type == "VARXREF":
+            # 处理层次化变量引用 (e.g., or1200_except.wb_pc)
+            dotted = node.get("dotted", "")
+            name = node.get("name", "")
+            if dotted:
+                return f"{dotted}.{name}"
+            return name
+        elif node_type == "SAMPLED":
+            # 处理SAMPLED节点 (采样信号)，直接返回内部表达式
+            exprp = node.get("exprp", [])
+            if exprp:
+                return self.handle_expression(exprp[0])
+            return ""
         elif node_type == "CEXPR":
             # 处理CEXPR节点，通常包含TEXT节点
             results = []
-            for child in node.get("nodesp", []):
+            for child in node.get("exprsp", node.get("nodesp", [])):
                 results.append(self.handle_expression(child))
             return "".join(results)
         elif node_type == "TEXT":
             # 处理TEXT节点，直接返回其内容
-            return node.get("text", "")
+            return node.get("shortText", node.get("text", ""))
         else:
             loc = node.get("loc")
             warning_msg = f"Unknown expression type: {node_type} in line {loc}"
@@ -2267,6 +2280,582 @@ def insert_sel_temp_statements(verilog_code: str, sel_temp_dict: dict) -> str:
     
     return '\n'.join(result_lines)
 
+# =========================================================================
+# Assertion extraction from verilator assert-stage dump
+# =========================================================================
+
+def extract_assertions_from_flattened_json(ast, top_module_name):
+    """Extract assertion ALWAYS blocks from flattened JSON (generated with --assert --flatten --json-only).
+
+    In the flattened JSON, assertions are stored in TOPSCOPE -> SCOPE(name=TOP) -> blocksp
+    as ALWAYS blocks with SFORMATF containing "ASSERTION VIOLATION" message.
+
+    Returns list of assertion info dicts with keys: name, clock, condition, message
+    """
+    assertions = []
+
+    for module in ast.get("modulesp", []):
+        if module.get("name") == "$root":
+            # Find TOPSCOPE
+            for stmt in module.get("stmtsp", []):
+                if stmt.get("type") == "TOPSCOPE":
+                    scopep = stmt.get("scopep", [])
+                    for scope in scopep:
+                        if scope.get("name") == "TOP":
+                            blocksp = scope.get("blocksp", [])
+                            for block in blocksp:
+                                if block.get("type") == "ALWAYS":
+                                    # Try to extract assertion info from this ALWAYS block
+                                    assertion_info = extract_assertion_from_always(block, top_module_name)
+                                    if assertion_info:
+                                        assertions.append(assertion_info)
+
+    return assertions
+
+
+def extract_assertion_from_always(always_node, top_module_name):
+    """Extract assertion info from an ALWAYS block in flattened JSON.
+
+    Structure:
+    ALWAYS -> stmtsp[0]=IF(CEXPR guard) -> thensp[0]=IF(cond) -> thensp[0]=DISPLAY(SFORMATF message)
+                                                          \-> elsesp=DISPLAY (violation message)
+    """
+    try:
+        stmtsp = always_node.get("stmtsp", [])
+        if not stmtsp:
+            return None
+
+        # Get clock signal from sensesp
+        clock_signal = None
+        sensesp = always_node.get("sensesp", [])
+        if sensesp:
+            sentree = sensesp[0]
+            senitems = sentree.get("sensesp", [])
+            if senitems:
+                senitem = senitems[0]
+                sensp = senitem.get("sensp", [])
+                if sensp:
+                    clock_var = sensp[0]
+                    if clock_var.get("type") == "VARREF":
+                        clock_signal = clock_var.get("name", "")
+                        # Convert "adder_32bit.carry" to "adder_32bit___carry"
+                        clock_signal = clock_signal.replace(".", "___")
+
+        # Navigate through IF statements to find assertion
+        outer_if = stmtsp[0]
+        if outer_if.get("type") != "IF":
+            return None
+
+        # Skip the CEXPR guard, go to thensp
+        thensp = outer_if.get("thensp", [])
+        if not thensp:
+            return None
+
+        inner_if = thensp[0]
+        if inner_if.get("type") != "IF":
+            return None
+
+        # Extract condition
+        condp = inner_if.get("condp", [])
+        if not condp:
+            return None
+
+        condition = convert_flattened_assertion_expr(condp[0], top_module_name)
+
+        # Extract violation message from elsesp (the DISPLAY when assertion fails)
+        # Note: In flattened JSON, the structure is:
+        # IF(cond) { DISPLAY(violation) } else { }
+        # Actually looking at the structure, when cond is TRUE (assertion passes), nothing happens
+        # When cond is FALSE (assertion fails), DISPLAY is called
+        # So the DISPLAY is in thensp, not elsesp
+        message = "ASSERTION VIOLATION"
+        inner_thensp = inner_if.get("thensp", [])
+        if inner_thensp:
+            for item in inner_thensp:
+                if item.get("type") == "DISPLAY":
+                    fmtp = item.get("fmtp", [])
+                    if fmtp:
+                        message = fmtp[0].get("name", message)
+
+        # Generate assertion name from message (e.g., "p1")
+        name = "assertion"
+        match = re.search(r'(p\d+)', message)
+        if match:
+            name = match.group(1)
+
+        return {
+            "name": name,
+            "clock": clock_signal or "clk",
+            "condition": condition,
+            "message": message
+        }
+
+    except Exception as e:
+        print(f"  Warning: Error extracting assertion: {e}")
+        return None
+
+
+def convert_flattened_assertion_expr(node, top_module_name):
+    """Convert assertion condition from flattened JSON to Verilog expression.
+
+    In flattened JSON, signal names are already in format "top_module.signal" or "top_module.sub.signal".
+    We need to convert them to "top_module___signal" or "top_module___sub___signal".
+    """
+    if not node:
+        return ""
+
+    node_type = node.get("type", "")
+
+    if node_type == "VARREF":
+        name = node.get("name", "")
+        # Convert "adder_32bit.carry" to "adder_32bit___carry"
+        return name.replace(".", "___")
+
+    elif node_type == "CONST":
+        return node.get("name", "")
+
+    elif node_type == "SAMPLED":
+        exprp = node.get("exprp", [])
+        if exprp:
+            return convert_flattened_assertion_expr(exprp[0], top_module_name)
+        return ""
+
+    elif node_type == "EXTEND" or node_type == "EXTENDS":
+        lhsp = node.get("lhsp", [])
+        if lhsp:
+            return convert_flattened_assertion_expr(lhsp[0], top_module_name)
+        return ""
+
+    elif node_type in ("EQ", "NEQ"):
+        lhs = convert_flattened_assertion_expr(node["lhsp"][0], top_module_name) if node.get("lhsp") else ""
+        rhs = convert_flattened_assertion_expr(node["rhsp"][0], top_module_name) if node.get("rhsp") else ""
+        op = "==" if node_type == "EQ" else "!="
+        return f"({lhs} {op} {rhs})"
+
+    elif node_type in ("GT", "LT", "GTE", "LTE"):
+        lhs = convert_flattened_assertion_expr(node["lhsp"][0], top_module_name) if node.get("lhsp") else ""
+        rhs = convert_flattened_assertion_expr(node["rhsp"][0], top_module_name) if node.get("rhsp") else ""
+        op_map = {"GT": ">", "LT": "<", "GTE": ">=", "LTE": "<="}
+        return f"({lhs} {op_map[node_type]} {rhs})"
+
+    elif node_type in ("LOGOR", "LOGAND"):
+        lhs = convert_flattened_assertion_expr(node["lhsp"][0], top_module_name) if node.get("lhsp") else ""
+        rhs = convert_flattened_assertion_expr(node["rhsp"][0], top_module_name) if node.get("rhsp") else ""
+        op = "||" if node_type == "LOGOR" else "&&"
+        return f"({lhs} {op} {rhs})"
+
+    elif node_type in ("AND", "OR", "XOR"):
+        lhs = convert_flattened_assertion_expr(node["lhsp"][0], top_module_name) if node.get("lhsp") else ""
+        rhs = convert_flattened_assertion_expr(node["rhsp"][0], top_module_name) if node.get("rhsp") else ""
+        op_map = {"AND": "&", "OR": "|", "XOR": "^"}
+        return f"({lhs} {op_map[node_type]} {rhs})"
+
+    elif node_type in ("ADD", "SUB", "MUL", "SHIFTL", "SHIFTR", "SHIFTRS"):
+        lhs = convert_flattened_assertion_expr(node["lhsp"][0], top_module_name) if node.get("lhsp") else ""
+        rhs = convert_flattened_assertion_expr(node["rhsp"][0], top_module_name) if node.get("rhsp") else ""
+        op_map = {"ADD": "+", "SUB": "-", "MUL": "*", "SHIFTL": "<<", "SHIFTR": ">>", "SHIFTRS": ">>>"}
+        return f"({lhs} {op_map[node_type]} {rhs})"
+
+    elif node_type == "NOT":
+        lhsp = node.get("lhsp", [])
+        if lhsp:
+            return f"~({convert_flattened_assertion_expr(lhsp[0], top_module_name)})"
+        return ""
+
+    elif node_type == "NEGATE":
+        lhsp = node.get("lhsp", [])
+        if lhsp:
+            return f"-({convert_flattened_assertion_expr(lhsp[0], top_module_name)})"
+        return ""
+
+    elif node_type in ("REDOR", "REDAND", "REDXOR"):
+        lhsp = node.get("lhsp", [])
+        if lhsp:
+            op_map = {"REDOR": "|", "REDAND": "&", "REDXOR": "^"}
+            return f"{op_map[node_type]}({convert_flattened_assertion_expr(lhsp[0], top_module_name)})"
+        return ""
+
+    elif node_type == "SEL":
+        fromp = node.get("fromp", [])
+        if not fromp:
+            return ""
+        base = convert_flattened_assertion_expr(fromp[0], top_module_name)
+        lsb_node = node.get("lsbp", [])
+        width_const = node.get("widthConst")
+        if lsb_node:
+            lsb = convert_flattened_assertion_expr(lsb_node[0], top_module_name)
+            if width_const is not None and width_const == 1:
+                return f"{base}[{lsb}]"
+            elif width_const is not None:
+                return f"{base}[{lsb}+:{width_const}]"
+        return base
+
+    elif node_type == "CONCAT":
+        exprsp = node.get("exprsp", [])
+        parts = [convert_flattened_assertion_expr(e, top_module_name) for e in exprsp]
+        return "{" + ", ".join(parts) + "}"
+
+    elif node_type == "COND":
+        condp = node.get("condp", [])
+        thenp = node.get("thenp", [])
+        elsep = node.get("elsep", [])
+        if condp and thenp and elsep:
+            cond = convert_flattened_assertion_expr(condp[0], top_module_name)
+            true_expr = convert_flattened_assertion_expr(thenp[0], top_module_name)
+            false_expr = convert_flattened_assertion_expr(elsep[0], top_module_name)
+            return f"({cond} ? {true_expr} : {false_expr})"
+        return ""
+
+    else:
+        return f"/* unhandled: {node_type} */"
+
+
+def generate_assertions_block_flattened(assertions, top_module_name):
+    """Generate assertions block from pre-flattened assertion info.
+
+    Since signal names are already flattened, we just need to format them properly.
+    """
+    lines = [
+        "",
+        "// =========================================================================",
+        "// Security Properties / Assertions (from verilator --assert --flatten --json-only)",
+        "// =========================================================================",
+        "",
+        "`ifndef SYNTHESIS",
+        "",
+    ]
+    for a in assertions:
+        line = f'  {a["name"]}: assert property (@(posedge {a["clock"]}) {a["condition"]}) else $display("{a["message"]}");'
+        lines.append(line)
+    lines.append("")
+    lines.append("`endif")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def extract_assertions_from_dump(dump_path, cpu_module_name="or1200_cpu"):
+    """Extract assertion BEGIN blocks from verilator's assert-stage dump JSON."""
+    with open(dump_path) as f:
+        data = json.load(f)
+
+    for module in data.get("modulesp", []):
+        if module.get("name") == cpu_module_name:
+            assertions = []
+            for stmt in module.get("stmtsp", []):
+                if stmt.get("type") == "BEGIN" and re.match(r'p\d+', stmt.get("name", "")):
+                    assertions.append(stmt)
+            return assertions
+    return []
+
+
+def convert_assertion_expr(node):
+    """Convert assertion condition AST node to Verilog expression string.
+
+    This handles the specific node types found in verilator's assert-stage dump,
+    which includes VARXREF (hierarchical references), SAMPLED, etc.
+    """
+    if not node:
+        return ""
+
+    node_type = node.get("type", "")
+
+    if node_type == "VARXREF":
+        dotted = node.get("dotted", "")
+        name = node.get("name", "")
+        if dotted:
+            return f"{dotted}.{name}"
+        return name
+
+    elif node_type == "VARREF":
+        return node.get("name", "")
+
+    elif node_type == "CONST":
+        return node.get("name", "")
+
+    elif node_type == "SAMPLED":
+        exprp = node.get("exprp", [])
+        if exprp:
+            return convert_assertion_expr(exprp[0])
+        return ""
+
+    elif node_type == "EXTEND" or node_type == "EXTENDS":
+        lhsp = node.get("lhsp", [])
+        if lhsp:
+            return convert_assertion_expr(lhsp[0])
+        return ""
+
+    elif node_type in ("EQ", "NEQ"):
+        lhs = convert_assertion_expr(node["lhsp"][0]) if node.get("lhsp") else ""
+        rhs = convert_assertion_expr(node["rhsp"][0]) if node.get("rhsp") else ""
+        op = "==" if node_type == "EQ" else "!="
+        return f"({lhs} {op} {rhs})"
+
+    elif node_type in ("GT", "LT", "GTE", "LTE"):
+        lhs = convert_assertion_expr(node["lhsp"][0]) if node.get("lhsp") else ""
+        rhs = convert_assertion_expr(node["rhsp"][0]) if node.get("rhsp") else ""
+        op_map = {"GT": ">", "LT": "<", "GTE": ">=", "LTE": "<="}
+        return f"({lhs} {op_map[node_type]} {rhs})"
+
+    elif node_type in ("LOGOR", "LOGAND"):
+        lhs = convert_assertion_expr(node["lhsp"][0]) if node.get("lhsp") else ""
+        rhs = convert_assertion_expr(node["rhsp"][0]) if node.get("rhsp") else ""
+        op = "||" if node_type == "LOGOR" else "&&"
+        return f"({lhs} {op} {rhs})"
+
+    elif node_type in ("AND", "OR", "XOR"):
+        lhs = convert_assertion_expr(node["lhsp"][0]) if node.get("lhsp") else ""
+        rhs = convert_assertion_expr(node["rhsp"][0]) if node.get("rhsp") else ""
+        op_map = {"AND": "&", "OR": "|", "XOR": "^"}
+        return f"({lhs} {op_map[node_type]} {rhs})"
+
+    elif node_type in ("ADD", "SUB", "MUL", "SHIFTL", "SHIFTR", "SHIFTRS"):
+        lhs = convert_assertion_expr(node["lhsp"][0]) if node.get("lhsp") else ""
+        rhs = convert_assertion_expr(node["rhsp"][0]) if node.get("rhsp") else ""
+        op_map = {"ADD": "+", "SUB": "-", "MUL": "*", "SHIFTL": "<<", "SHIFTR": ">>", "SHIFTRS": ">>>"}
+        return f"({lhs} {op_map[node_type]} {rhs})"
+
+    elif node_type == "NOT":
+        lhsp = node.get("lhsp", [])
+        if lhsp:
+            return f"~({convert_assertion_expr(lhsp[0])})"
+        return ""
+
+    elif node_type == "NEGATE":
+        lhsp = node.get("lhsp", [])
+        if lhsp:
+            return f"-({convert_assertion_expr(lhsp[0])})"
+        return ""
+
+    elif node_type in ("REDOR", "REDAND", "REDXOR"):
+        lhsp = node.get("lhsp", [])
+        if lhsp:
+            op_map = {"REDOR": "|", "REDAND": "&", "REDXOR": "^"}
+            return f"{op_map[node_type]}({convert_assertion_expr(lhsp[0])})"
+        return ""
+
+    elif node_type == "SEL":
+        fromp = node.get("fromp", [])
+        if not fromp:
+            return ""
+        base = convert_assertion_expr(fromp[0])
+        lsb_node = node.get("lsbp", [])
+        width_const = node.get("widthConst")
+        widthp = node.get("widthp", [])
+        if lsb_node:
+            lsb = convert_assertion_expr(lsb_node[0])
+            if width_const is not None:
+                if width_const == 1:
+                    return f"{base}[{lsb}]"
+                lsb_val = None
+                try:
+                    lsb_val = int(lsb) if lsb.isdigit() else None
+                except (ValueError, AttributeError):
+                    pass
+                if lsb_val is not None:
+                    msb = lsb_val + width_const - 1
+                    return f"{base}[{msb}:{lsb}]"
+                return f"{base}[{lsb}+:{width_const}]"
+            elif widthp:
+                width = convert_assertion_expr(widthp[0])
+                return f"{base}[{lsb}+:{width}]"
+            else:
+                return f"{base}[{lsb}]"
+        return base
+
+    elif node_type == "REPLICATE":
+        countp = node.get("countp", [])
+        srcp = node.get("srcp", [])
+        if countp and srcp:
+            count = convert_assertion_expr(countp[0])
+            src = convert_assertion_expr(srcp[0])
+            return f"{{{count}{{{src}}}}}"
+        return ""
+
+    elif node_type == "CONCAT":
+        exprsp = node.get("exprsp", [])
+        parts = [convert_assertion_expr(e) for e in exprsp]
+        return "{" + ", ".join(parts) + "}"
+
+    elif node_type == "COND":
+        condp = node.get("condp", [])
+        thenp = node.get("thenp", [])
+        elsep = node.get("elsep", [])
+        if condp and thenp and elsep:
+            cond = convert_assertion_expr(condp[0])
+            true_expr = convert_assertion_expr(thenp[0])
+            false_expr = convert_assertion_expr(elsep[0])
+            return f"({cond} ? {true_expr} : {false_expr})"
+        return ""
+
+    else:
+        return f"/* unhandled assertion expr: {node_type} */"
+
+
+def generate_sva_assertion(assertion_node, top_module_name):
+    """Generate one SVA assert property line from a BEGIN assertion node.
+
+    Structure: BEGIN{name="pN"} → ALWAYS@(posedge clk) → IF{CEXPR guard} → IF{cond, elsesp: DISPLAY}
+
+    Args:
+        assertion_node: The BEGIN node containing the assertion
+        top_module_name: The top module name to prefix flattened signal names
+    """
+    try:
+        name = assertion_node.get("name", "")
+        # Navigate: BEGIN → stmtsp[0]=ALWAYS → stmtsp[0]=IF(outer) → thensp[0]=IF(inner)
+        always_node = assertion_node["stmtsp"][0]
+
+        # Extract clock signal from ALWAYS's sensesp
+        clock_signal = "clk"  # default fallback
+        sensesp = always_node.get("sensesp", [])
+        if sensesp:
+            # sensesp is a SENTREE containing SENITEM nodes
+            sentree = sensesp[0]
+            senitems = sentree.get("sensesp", [])
+            if senitems:
+                senitem = senitems[0]
+                sensp = senitem.get("sensp", [])
+                if sensp:
+                    # sensp contains the actual clock signal VARREF
+                    clock_var = sensp[0]
+                    clock_signal = convert_assertion_expr(clock_var)
+                    # Add top module prefix if not already present
+                    if clock_signal and not clock_signal.startswith(f"{top_module_name}___"):
+                        clock_signal = f"{top_module_name}___{clock_signal}"
+
+        outer_if = always_node["stmtsp"][0]
+
+        # The outer IF has a CEXPR guard (assertion enable check) - skip it
+        # Go to thensp which contains the inner IF
+        thensp = outer_if.get("thensp", [])
+        if not thensp:
+            return f"  // {name}: no thensp found"
+
+        inner_if = thensp[0]
+
+        # Extract condition from inner IF's condp
+        condp = inner_if.get("condp", [])
+        if not condp:
+            return f"  // {name}: no condp found"
+
+        condition = convert_assertion_expr(condp[0])
+
+        # Add top module prefix to signal names in condition
+        # The convert_assertion_expr returns dotted.name format for VARXREF
+        # We need to convert it to flattened format with top module prefix
+        condition = prefix_assertion_signals(condition, top_module_name)
+
+        # Extract violation message from inner IF's elsesp
+        elsesp = inner_if.get("elsesp", [])
+        msg = f"ASSERTION VIOLATION: {name}"
+        if elsesp:
+            display_node = elsesp[0]
+            fmtp = display_node.get("fmtp", [])
+            if fmtp:
+                msg = fmtp[0].get("name", msg)
+
+        return f'  {name}: assert property (@(posedge {clock_signal}) {condition}) else $display("{msg}");'
+
+    except Exception as e:
+        return f"  // Error generating assertion {assertion_node.get('name', '?')}: {e}"
+
+
+def prefix_assertion_signals(expr, top_module_name):
+    """Add top module prefix to signal names in assertion expression.
+
+    The convert_assertion_expr returns expressions like:
+    - "dotted.name" for VARXREF (e.g., "lower_half.upper_half.cout")
+    - "name" for VARREF (e.g., "carry")
+
+    After flattening, these should become:
+    - "top_module___dotted___name" (e.g., "adder_32bit___lower_half___upper_half___cout")
+    - "top_module___name" (e.g., "adder_32bit___carry")
+    """
+    import re
+
+    # Find all signal references in the expression
+    # Signal names can be: identifier, dotted.identifier, dotted.identifier[index], etc.
+    # We need to be careful not to modify operators, parentheses, constants, etc.
+
+    # Pattern to match signal names (word characters, possibly with dots and brackets)
+    # Exclude things that look like operators or constants
+    # Pattern: sequence of identifiers separated by dots, possibly followed by [index]
+    signal_pattern = r'([a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)*(?:\[[^\]]*\])?)'
+
+    def add_prefix(match):
+        signal = match.group(1)
+        # Skip if it's a number constant (like 'h1, 'b0, etc.) or already has prefix
+        if signal.startswith("'") or signal.startswith(f"{top_module_name}___"):
+            return signal
+        # Skip if it's inside a $display or other system function
+        if signal.startswith("$"):
+            return signal
+        # Convert dotted notation to flattened notation with prefix
+        flattened = signal.replace(".", "___")
+        return f"{top_module_name}___{flattened}"
+
+    # Apply prefix to all signal references
+    # But we need to be careful with expressions inside brackets
+    result = expr
+
+    # Simple approach: find dotted references and single identifiers
+    # First handle dotted references (cross-module signals)
+    dotted_pattern = r'([a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)*)'
+    for match in re.finditer(dotted_pattern, expr):
+        signal = match.group(1)
+        if not signal.startswith(f"{top_module_name}___"):
+            flattened = signal.replace(".", "___")
+            result = result.replace(signal, f"{top_module_name}___{flattened}")
+
+    # Then handle single identifiers (local signals) that are not part of dotted refs
+    # and not constants/operators
+    single_pattern = r'\b([a-zA-Z_][a-zA-Z0-9_]*)\b'
+    keywords_and_operators = {'posedge', 'negedge', 'and', 'or', 'not', 'if', 'else', 'true', 'false'}
+
+    for match in re.finditer(single_pattern, result):
+        signal = match.group(1)
+        # Skip keywords, already prefixed, or part of a flattened dotted ref
+        if signal in keywords_and_operators:
+            continue
+        if signal.startswith(f"{top_module_name}___"):
+            continue
+        if f"{top_module_name}___{signal}" in result:  # already processed as part of dotted
+            continue
+        # Check if this is actually a signal (not inside quotes or special constructs)
+        # Simple heuristic: if it's surrounded by spaces/operators/parentheses, treat as signal
+        result = re.sub(rf'\b{signal}\b', f"{top_module_name}___{signal}", result, count=1)
+
+    return result
+
+
+def generate_assertions_block(assertions, top_module_name):
+    """Generate the full assertions block for insertion into flattened Verilog."""
+    lines = [
+        "",
+        "// =========================================================================",
+        "// Security Properties / Assertions (from verilator assert-stage dump)",
+        "// =========================================================================",
+        "",
+        "`ifndef SYNTHESIS",
+        "",
+    ]
+    for a in assertions:
+        lines.append(generate_sva_assertion(a, top_module_name))
+    lines.append("")
+    lines.append("`endif")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def inject_assertions_into_verilog(verilog_code, assertion_code):
+    """Insert assertion code before the last endmodule in the Verilog output."""
+    last_endmodule_idx = verilog_code.rfind("endmodule")
+    if last_endmodule_idx == -1:
+        print("Warning: Could not find endmodule to inject assertions")
+        return verilog_code
+    return verilog_code[:last_endmodule_idx] + assertion_code + "\n" + verilog_code[last_endmodule_idx:]
+
+
 def main():
     parser = argparse.ArgumentParser(description='Verilog AST to Source Code Generator')
     input_group = parser.add_mutually_exclusive_group(required=True)
@@ -2280,6 +2869,8 @@ def main():
                         help='Output Verilog file path')
     parser.add_argument('--force', action='store_true',
                         help='Force overwrite output file if it exists')
+    parser.add_argument('-I', '--include', type=str, action='append', default=[],
+                        help='Include directory for verilator (can be specified multiple times)')
 
     args = parser.parse_args()
 
@@ -2342,8 +2933,13 @@ def main():
             print(f"Error: Verilator not found at {verilator_bin}", file=sys.stderr)
             sys.exit(1)
 
+        # 构造 -I 参数
+        include_args = "-I."
+        for inc_dir in args.include:
+            include_args += f" -I{inc_dir}"
+
         # 使用变量构造命令
-        cmd = f"{verilator_bin} {files_arg} -I. --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
+        cmd = f"{verilator_bin} {files_arg} {include_args} --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
                 -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble --timing -Wno-fatal "
         
         # 构造JSON文件路径
@@ -2401,10 +2997,49 @@ def main():
         
         verilog_code = insert_resultp_statements(verilog_code, generator.resultp_dict)
         verilog_code = insert_sel_temp_statements(verilog_code, generator.sel_temp_dict)
-        
+
         verilog_code = verilog_code.replace("$root", args.top)
         verilog_code = verilog_code.replace(".", "___")
         verilog_code = re.sub(r'\[(\d+)\]___', r'\1___', verilog_code)
+
+        # --- Assertion extraction from verilator assert-stage dump ---
+        # We use --dump-tree-json --lint-only --assert to get assertion info with original hierarchical references.
+        # The --flatten --json-only mode loses the original cross-module signal references in assertions.
+        os.chdir(input_dir)
+        assert_json_path = input_dir / "obj_dir" / f"V{args.top}_017_assert.tree.json"
+
+        if not assert_json_path.exists():
+            # Run verilator with --dump-tree-json --lint-only --assert to get assertion dump
+            assert_cmd = f"{verilator_bin} {files_arg} {include_args} --flatten --top {args.top} --dump-tree-json --lint-only --assert -Wno-fatal"
+            print(f"\n--- Running verilator for assertion extraction ---")
+            assert_result = subprocess.run(
+                assert_cmd,
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+            if assert_result.stdout:
+                print(assert_result.stdout)
+            if assert_result.stderr:
+                for line in assert_result.stderr.splitlines():
+                    if "Error" in line or "Warning" in line or "assert" in line.lower():
+                        print(f"  [assert] {line}")
+
+        if assert_json_path.exists():
+            print(f"\n--- Extracting assertions from {assert_json_path.name} ---")
+            assertions = extract_assertions_from_dump(assert_json_path, cpu_module_name=args.top.replace("_top", "_cpu"))
+            if assertions:
+                assertion_code = generate_assertions_block(assertions, args.top)
+                assertion_code = assertion_code.replace("$root", args.top)
+                verilog_code = inject_assertions_into_verilog(verilog_code, assertion_code)
+                print(f"  Injected {len(assertions)} assertions into output")
+            else:
+                print("  No assertions found in assert-stage dump")
+        else:
+            print(f"  Warning: Assert dump not found at {assert_json_path}")
+
+        os.chdir(original_dir)
 
         # 写入输出文件
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -2412,13 +3047,16 @@ def main():
             f.write(verilog_code)
 
         # 用 sv2v 再处理一次输出文件
-        sv2v_cmd = f"sv2v {args.output} > {args.output}.tmp && mv {args.output}.tmp {args.output}"
-        sv2v_result = subprocess.run(sv2v_cmd, shell=True, capture_output=True, text=True)
-        if sv2v_result.returncode != 0:
-            print(f"Error: sv2v failed!\n{sv2v_result.stderr}", file=sys.stderr)
-            sys.exit(1)
+        sv2v_bin = project_root / "oss-cad-suite" / "bin" / "sv2v"
+        if sv2v_bin.exists() and not sv2v_bin.is_symlink():
+            sv2v_cmd = f"{sv2v_bin} {args.output} > {args.output}.tmp && mv {args.output}.tmp {args.output}"
+            sv2v_result = subprocess.run(sv2v_cmd, shell=True, capture_output=True, text=True)
+            if sv2v_result.returncode != 0:
+                print(f"Warning: sv2v failed, using raw output.\n{sv2v_result.stderr}", file=sys.stderr)
+            else:
+                print(f"sv2v conversion complete: '{args.output}'")
         else:
-            print(f"sv2v conversion complete: '{args.output}'")
+            print(f"Warning: sv2v not found at {sv2v_bin}, skipping sv2v conversion.")
 
         print(f"Successfully generated Verilog code in '{args.output}'")
 
