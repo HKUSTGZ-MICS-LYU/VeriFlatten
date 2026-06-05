@@ -1074,17 +1074,17 @@ class VerilogGenerator:
                                 edge_type = senitem.get("edgeType", "")
                                 if not senitem.get("sensp"):
                                     continue
-                                
+
                                 signal = senitem["sensp"][0]
                                 signal_name = signal.get("name", "")
-                                
+
                                 if edge_type == "POS":
                                     sensitivity_list.append(f"posedge {signal_name}")
                                 elif edge_type == "NEG":
                                     sensitivity_list.append(f"negedge {signal_name}")
                                 elif edge_type == "CHANGED":
                                     sensitivity_list.append(signal_name)
-            
+
             # 处理旧版本的 sensesp 格式（向后兼容）
             elif sensesp:
                 # 获取 SENTREE 节点
@@ -2940,7 +2940,7 @@ def main():
 
         # 使用变量构造命令
         cmd = f"{verilator_bin} {files_arg} {include_args} --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
-                -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble --timing -Wno-fatal "
+                -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN "
         
         # 构造JSON文件路径
         json_path = input_dir / "obj_dir" / f"V{args.top}.tree.json"
@@ -3010,7 +3010,7 @@ def main():
 
         if not assert_json_path.exists():
             # Run verilator with --dump-tree-json --lint-only --assert to get assertion dump
-            assert_cmd = f"{verilator_bin} {files_arg} {include_args} --flatten --top {args.top} --dump-tree-json --lint-only --assert -Wno-fatal"
+            assert_cmd = f"{verilator_bin} {files_arg} {include_args} --flatten --top {args.top} --dump-tree-json --lint-only --assert -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN"
             print(f"\n--- Running verilator for assertion extraction ---")
             assert_result = subprocess.run(
                 assert_cmd,

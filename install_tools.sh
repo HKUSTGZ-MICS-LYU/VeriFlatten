@@ -1,4 +1,12 @@
 #!/bin/bash
+#
+# Install OSS CAD Suite (full, no pruning) + sv2v
+#
+# Keeps everything from oss-cad-suite — all tools, all libraries,
+# all share files, etc. This is the complete installation.
+#
+
+set -euo pipefail
 
 # Detect architecture
 ARCH=$(uname -m)
@@ -16,13 +24,15 @@ else
 fi
 
 INSTALL_DIR="$(pwd)/oss-cad-suite"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # Check if already installed
 if [ -d "$INSTALL_DIR" ]; then
     echo "oss-cad-suite directory already exists at $INSTALL_DIR"
-    echo "Skipping verilator installation."
+    echo "Skipping installation."
 else
     echo "Downloading oss-cad-suite from $URL..."
+    cd "$SCRIPT_DIR"
     wget -c "$URL" -O "$ARCHIVE_NAME"
 
     if [ $? -ne 0 ]; then
@@ -49,30 +59,7 @@ else
         exit 1
     fi
 
-    # ==========================================
-    # Aggressive Cleanup for Verilator Only
-    # ==========================================
-    echo "Pruning installation to keep only Verilator..."
-    cd "$INSTALL_DIR" || exit
-
-    # 1. Clean BIN directory
-    # Keep only files starting with "verilator" (verilator, verilator_bin, verilator_coverage, etc.)
-    # We use 'find' to delete everything that does NOT match the pattern.
-    find bin/ -type f -not -name "verilator*" -delete
-    find bin/ -type l -not -name "verilator*" -delete
-
-    # 2. Clean SHARE directory
-    # Verilator needs 'share/verilator' (contains include files like verilated.cpp).
-    # Remove all other folders in share/ (like yosys, ghdl, trellis, etc.)
-    find share/ -mindepth 1 -maxdepth 1 -type d -not -name "verilator" -exec rm -rf {} +
-
-    # 3. Clean Root directories
-    # Remove folders that Verilator definitely doesn't use.
-    # We KEEP 'lib' because binaries in 'bin' often depend on shared libraries in 'lib'.
-    # We KEEP 'libexec' as requested.
-    rm -rf py3bin examples super_prove environment environment.fish manifest.json
-
-    cd ..
+    echo "oss-cad-suite extracted in full (no pruning)."
 fi
 
 # ==========================================
@@ -133,7 +120,6 @@ EOF
 
     # Copy binary to installation directory
     echo "Installing sv2v binary..."
-    # sv2v is built in bin/ subdirectory
     if [ -f "bin/sv2v" ]; then
         cp bin/sv2v "$SV2V_BIN"
     else
@@ -152,5 +138,8 @@ fi
 
 echo ""
 echo "Installation complete."
+echo "  oss-cad-suite: $INSTALL_DIR (full)"
 echo "  Verilator: $INSTALL_DIR/bin/verilator"
+echo "  yosys:     $INSTALL_DIR/bin/yosys"
+echo "  sby:       $INSTALL_DIR/bin/sby"
 echo "  sv2v:      $INSTALL_DIR/bin/sv2v"

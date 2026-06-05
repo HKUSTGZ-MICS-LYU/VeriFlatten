@@ -10,4 +10,4 @@ bin/
 
 oss-cad-suite/
 oss-cad-suite-*.tgz
-eq_check/sby
+backup_eq_check/
