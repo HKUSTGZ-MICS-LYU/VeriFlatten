@@ -4,7 +4,7 @@
 import subprocess, sys, shutil, tempfile
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[2]
 OSS_BIN = ROOT / "oss-cad-suite" / "bin"
 YOSYS = str(OSS_BIN / "yosys")
 SBY = str(OSS_BIN / "sby")

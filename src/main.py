@@ -191,10 +191,12 @@ class VerilogGenerator:
             return 0
 
     def handle_unpackarraydtype(self, node: Dict[str, Any]) -> Tuple[str, str]:
-        """处理解包数组类型定义，返回(基础类型位宽, 数组范围)"""
+        """处理解包数组类型定义，返回(基础类型位宽, 数组范围)
+        支持嵌套的解包数组类型，例如 wire [63:0] a [4:0][4:0];
+        """
         base_width = ""
         array_range = ""
-        
+
         try:
             # 处理基础类型的位宽
             if node.get("refDTypep"):
@@ -202,12 +204,29 @@ class VerilogGenerator:
                 if ref_type and "range" in ref_type:
                     range_str = ref_type["range"]
                     base_width = f"[{range_str}]"
-            
+
             # 获取数组维度
             array_range = node.get("declRange", "")
-            
+
+            # 检查refDTypep是否指向另一个UNPACKARRAYDTYPE（嵌套解包数组）
+            ref_node = node.get("refDTypep")
+            if ref_node:
+                ref_type = self.type_table.get(ref_node.strip("()"))
+                if ref_type and ref_type.get("type") == "UNPACKARRAYDTYPE":
+                    # 递归获取内层解包数组的维度
+                    inner_base, inner_range = self.handle_unpackarraydtype(ref_type)
+                    # 内层解包数组的array_range作为额外的数组维度
+                    if inner_range:
+                        if array_range:
+                            array_range = f"{array_range}{inner_range}"
+                        else:
+                            array_range = inner_range
+                    # 如果内层还找到了base_width，使用它（可能从更内层的基础类型来）
+                    if inner_base and not base_width:
+                        base_width = inner_base
+
             return (base_width, array_range)
-                
+
         except Exception as e:
             warning_msg = f"Error in UNPACKARRAYDTYPE: {str(e)}"
             print(f"Warning: {warning_msg}")
@@ -959,15 +978,19 @@ class VerilogGenerator:
         """处理INITIAL块"""
         if not node.get("stmtsp"):
             return ""
-        
+
         result = []
         temp_stmts = []
-        
+
         # 处理所有语句，收集未初始化的变量的赋值语句
         for stmt in node.get("stmtsp", []):
             if stmt.get("type") == "ASSIGN":
                 lhs_node = stmt["lhsp"][0]
                 var_name = lhs_node.get("name", "")
+                # Skip genvar initializations (_gv_i) - they are implicit and
+                # don't have VAR declarations in Verilator's AST
+                if "_gv_i" in var_name:
+                    continue
                 if var_name not in self.initialized_vars:
                     stmt_result = self.handle_statement(stmt)
                     if stmt_result:
@@ -977,23 +1000,18 @@ class VerilogGenerator:
                 stmt_result = self.handle_statement(stmt)
                 if stmt_result:
                     temp_stmts.append(stmt_result)
-        
+
         if len(temp_stmts) > 1:
             print("Warning: Multiple initialization statements found in INITIAL block.")
         # 如果有需要初始化的语句，才生成initial块
-        if temp_stmts and SEPARATE_INITIAL_ASSIGN:
-            # pass
+        if temp_stmts:
             result.append(f"{self.indent()}initial")
             result.append(f"{self.indent()}begin")
             self.indent_level += 1
             result.extend(f"{self.indent()}{stmt}" for stmt in temp_stmts)
             self.indent_level -= 1
             result.append(f"{self.indent()}end")
-        elif temp_stmts and SEPARATE_ASSIGN_FOR_EQ_CHECK:
-            result.extend(f"assign{self.indent()}{stmt}" for stmt in temp_stmts)
-        
-            
-            
+
         return "\n".join(filter(None, result))
 
     def handle_scope(self, node: Dict[str, Any]) -> str:
@@ -1044,11 +1062,29 @@ class VerilogGenerator:
         # 而不是一个时序或组合逻辑块 (always @...)
         if node.get("keyword") == "cont_assign":
             result = []
-            for stmt in node.get("stmtsp", []):
-                # 调用 handle_statement 获取 "lhs = rhs;" 部分
-                stmt_str = self.handle_statement(stmt)
-                # 加上 "assign" 关键字
-                result.append(f"{self.indent()}assign {stmt_str}")
+            stmts = node.get("stmtsp", [])
+            # Check if any statement in this block is a control-flow statement
+            # (CASE, LOOP, BEGIN) that needs to be inside always @(*) rather than assign
+            has_control_flow = any(
+                s.get("type") in ("CASE", "LOOP", "BEGIN") for s in stmts
+            )
+            if has_control_flow:
+                result.append(f"{self.indent()}always @(*) begin")
+                self.indent_level += 1
+                for stmt in stmts:
+                    stmt_str = self.handle_statement(stmt)
+                    if stmt_str:
+                        result.append(stmt_str)
+                self.indent_level -= 1
+                result.append(f"{self.indent()}end")
+            else:
+                for stmt in stmts:
+                    stmt_str = self.handle_statement(stmt)
+                    if stmt_str:
+                        if stmt.get("type") == "COMMENT":
+                            result.append(stmt_str)
+                        else:
+                            result.append(f"{self.indent()}assign {stmt_str}")
             return "\n".join(result)
         # --- 修改结束 ---
 
@@ -1077,6 +1113,8 @@ class VerilogGenerator:
 
                                 signal = senitem["sensp"][0]
                                 signal_name = signal.get("name", "")
+                                if not signal_name:
+                                    continue
 
                                 if edge_type == "POS":
                                     sensitivity_list.append(f"posedge {signal_name}")
@@ -1097,6 +1135,8 @@ class VerilogGenerator:
 
                         signal = senitem["sensp"][0]
                         signal_name = signal.get("name", "")
+                        if not signal_name:
+                            continue
 
                         if edge_type == "POS":
                             sensitivity_list.append(f"posedge {signal_name}")
@@ -1136,7 +1176,7 @@ class VerilogGenerator:
             fmtp = node.get("fmtp", [])
             if not fmtp:
                 return ""
-            
+
             # 获取第一个format项
             fmt = fmtp[0]
             if fmt.get("type") == "SFORMATF":
@@ -1146,8 +1186,12 @@ class VerilogGenerator:
                     # 清理格式化字符串
                     msg = self.clean_format_string(msg)
                     return f"{self.indent()}$error(\"{msg}\");"
-                
-            return f"{self.indent()}placeholder = 1;"
+                else:
+                    # Non-error display: convert to $display
+                    clean_msg = self.clean_format_string(msg)
+                    return f"{self.indent()}$display(\"{clean_msg}\");"
+
+            return ""
             
         except Exception as e:
             warning_msg = f"Error in DISPLAY: {str(e)}"
@@ -1594,28 +1638,51 @@ class VerilogGenerator:
                     pass
             
             # 重新精确解析LOOP节点结构
-            # 通常结构: [LOOPTEST, BODY_STMT, INCREMENT_STMT]
-            if len(stmtsp) >= 1 and stmtsp[0].get("type") == "LOOPTEST":
-                test_node = stmtsp[0]
+            # 可能的结构:
+            #   [LOOPTEST, BODY..., INCREMENT]  (标准情况)
+            #   [ASSIGN(init), LOOPTEST, BODY..., INCREMENT]  (带初始化的情况)
+
+            init_str = ""
+            looptest_idx = -1
+
+            # 找到LOOPTEST的位置
+            for idx, stmt in enumerate(stmtsp):
+                if stmt.get("type") == "LOOPTEST":
+                    looptest_idx = idx
+                    break
+
+            if looptest_idx >= 0:
+                # LOOPTEST之前可能有初始化语句
+                if looptest_idx > 0:
+                    init_node = stmtsp[0]
+                    if init_node.get("type") == "ASSIGN":
+                        lhs = self.handle_expression(init_node["lhsp"][0])
+                        rhs = self.handle_expression(init_node["rhsp"][0])
+                        init_str = f"{lhs} = {rhs}"
+
+                test_node = stmtsp[looptest_idx]
                 if "condp" in test_node and test_node["condp"]:
                     condition = self.handle_expression(test_node["condp"][0])
-            
+
             # 寻找递增表达式 (通常是最后一个语句，且类型为ASSIGN)
-            if len(stmtsp) >= 3:
+            if len(stmtsp) >= 3 and looptest_idx >= 0:
                 inc_node = stmtsp[-1]
                 if inc_node.get("type") == "ASSIGN":
                     lhs = self.handle_expression(inc_node["lhsp"][0])
                     rhs = self.handle_expression(inc_node["rhsp"][0])
                     increment = f"{lhs} = {rhs}"
-                    body_statements = stmtsp[1:-1]
+                    body_statements = stmtsp[looptest_idx + 1:-1]
                 else:
-                    body_statements = stmtsp[1:]
-            elif len(stmtsp) >= 2:
-                body_statements = stmtsp[1:]
+                    body_statements = stmtsp[looptest_idx + 1:]
+            elif len(stmtsp) >= 2 and looptest_idx >= 0:
+                body_statements = stmtsp[looptest_idx + 1:]
 
             # 构建for循环语句
-            # 注意：初始化部分(i=0)通常在LOOP节点之前已经生成了
-            loop_header = f"{indent_str}for (; {condition}; {increment}) begin"
+            # 如果已经有初始化语句，使用它；否则留空
+            if init_str:
+                loop_header = f"{indent_str}for ({init_str}; {condition}; {increment}) begin"
+            else:
+                loop_header = f"{indent_str}for (; {condition}; {increment}) begin"
             result.append(loop_header)
             
             # 增加缩进级别处理循环体
