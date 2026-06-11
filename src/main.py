@@ -3006,8 +3006,9 @@ def main():
             include_args += f" -I{inc_dir}"
 
         # 使用变量构造命令
-        cmd = f"{verilator_bin} {files_arg} {include_args} --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
-                -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN "
+        # cmd = f"{verilator_bin} {files_arg} {include_args} --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
+        #         -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN "
+        cmd = f"{verilator_bin} {files_arg} {include_args} -O3 --flatten --top {args.top}  --no-std --json-only --no-json-edit-nums  --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN "
         
         # 构造JSON文件路径
         json_path = input_dir / "obj_dir" / f"V{args.top}.tree.json"
