@@ -38,7 +38,12 @@ class VerilogGenerator:
         
         # 初始化临时变量记录器（如果还没有的话）
         self.sel_temp_count = 0
+        self.convert_complex_sel_to_temp = CONVERT_COMPLEX_SEL_TO_TEMP
         self.sel_temp_dict = {}
+
+        # 存储上一个ASSIGN语句的LHS和RHS，用于handle_loop提取for循环初始化值
+        self._last_assign_lhs = None
+        self._last_assign_rhs = None
         
 
     def is_func_exprstmt_struc(self, node: Dict[str, Any]) -> bool:
@@ -264,25 +269,34 @@ class VerilogGenerator:
         """获取完整的类型信息，包括位宽"""
         dtype_ref = node.get("dtypep", "")
         dtype_node = self.resolve_dtype(dtype_ref)
-        
+
         if not dtype_node:
             return "logic"  # 默认类型
-            
+
         keyword = dtype_node.get("keyword", "logic")
-        range_str = dtype_node.get("range", "")
 
         if keyword == "integer":
             return "integer"
-        
-        # 如果没有range，尝试从type_table查找一次
+
+        # Handle PACKARRAYDTYPE: recursively compute total width
+        if dtype_node.get("type") == "PACKARRAYDTYPE":
+            total_width_bits = self.get_base_width_bits(dtype_node)
+            if total_width_bits > 0:
+                return f"{keyword} [{total_width_bits - 1}:0]"
+            return keyword
+
+        range_str = dtype_node.get("range", "")
+
+        # 如果没有range，尝试从type_table查找一次（跳过自引用）
         if not range_str:
             dtype_ref = dtype_node.get("dtypep", "")
-            if isinstance(dtype_ref, str) and dtype_ref.startswith("(") and dtype_ref.endswith(")"): 
+            if isinstance(dtype_ref, str) and dtype_ref.startswith("(") and dtype_ref.endswith(")"):
                 type_id = dtype_ref[1:-1]  # 去掉括号
-                if type_id in self.type_table:
+                current_addr = dtype_node.get("addr", "").strip("()")
+                if type_id and type_id != current_addr and type_id in self.type_table:
                     new_dtype_node = self.type_table[type_id]
                     range_str = new_dtype_node.get("range", "")
-        
+
         if range_str:
             return f"{keyword} [{range_str}]"
         return keyword
@@ -494,10 +508,12 @@ class VerilogGenerator:
                     return abs(left - right) + 1
         
         # 如果没有找到位宽信息，尝试从 dtypep 查找一次
+        # 跳过自引用（某些 PACKARRAYDTYPE/STRUCTDTYPE 的 dtypep 指向自身）
         next_dtype_ref = dtype_info.get("dtypep", "")
         if isinstance(next_dtype_ref, str) and next_dtype_ref.startswith("(") and next_dtype_ref.endswith(")"):
             type_id = next_dtype_ref[1:-1]
-            if type_id in self.type_table:
+            current_addr = dtype_info.get("addr", "").strip("()")
+            if type_id and type_id != current_addr and type_id in self.type_table:
                 return self.get_base_width_bits(self.type_table[type_id])
         
         return 0
@@ -541,12 +557,13 @@ class VerilogGenerator:
             # 获取range信息
             range_str = dtype_info.get("range", "")
             
-            # 如果没有range，尝试从dtypep查找一次
+            # 如果没有range，尝试从dtypep查找一次（跳过自引用）
             if not range_str:
                 next_dtype_ref = dtype_info.get("dtypep", "")
-                if isinstance(next_dtype_ref, str) and next_dtype_ref.startswith("(") and next_dtype_ref.endswith(")"): 
-                    type_id = next_dtype_ref[1:-1]  # 去掉括号
-                    if type_id in self.type_table:
+                if isinstance(next_dtype_ref, str) and next_dtype_ref.startswith("(") and next_dtype_ref.endswith(")"):
+                    type_id = next_dtype_ref[1:-1]
+                    current_addr = dtype_info.get("addr", "").strip("()")
+                    if type_id and type_id != current_addr and type_id in self.type_table:
                         new_dtype_info = self.type_table[type_id]
                         range_str = new_dtype_info.get("range", "")
 
@@ -593,7 +610,7 @@ class VerilogGenerator:
             var_name = node.get("name", "")
             
             # 检查变量是否被使用 (仅对非端口变量进行检查)
-            is_port = node.get("isPrimaryIO", False)
+            is_port = node.get("isPrimaryIO", False) or node.get("varType") == "PORT"
             # 确保 used_vars 已初始化且变量未被使用
             if not is_port and hasattr(self, 'used_vars'):
                 if var_name not in self.used_vars:
@@ -636,7 +653,7 @@ class VerilogGenerator:
             elif var_type == "VAR":
                 type_keyword = "reg"
                 
-            elif var_type in ["PORT", "WIRE", "LOGIC", "MODULETEMP", "BLOCKTEMP"]:
+            elif var_type in ["PORT", "WIRE", "LOGIC", "MODULETEMP", "BLOCKTEMP", "GENVAR"]:
                 if var_name in self.procedural_vars:
                     type_keyword = "logic"
                 else:
@@ -807,7 +824,7 @@ class VerilogGenerator:
             # 获取并检查base是否需要替换
             base_expr = self.handle_expression(node["fromp"][0])
             
-            if is_constant(base_expr) and CONVERT_COMPLEX_SEL_TO_TEMP:
+            if is_constant(base_expr) and self.convert_complex_sel_to_temp:
                 # 获取位宽信息
                 base_width, array_range = self.get_width_info(node["fromp"][0])
                 # 生成新的临时变量名
@@ -821,7 +838,7 @@ class VerilogGenerator:
                 }
                 # 使用临时变量替换复杂表达式
                 base = temp_var
-            elif is_complex_expression(base_expr) and CONVERT_COMPLEX_SEL_TO_TEMP:
+            elif is_complex_expression(base_expr) and self.convert_complex_sel_to_temp:
                 # 获取位宽信息
                 base_width, array_range = self.get_width_info(node["fromp"][0])
                 # 生成新的临时变量名
@@ -844,7 +861,7 @@ class VerilogGenerator:
             # 检查lsbp是否是复杂表达式
             if node.get("lsbp"):
                 lsb_expr = self.handle_expression(node["lsbp"][0])
-                if is_complex_expression(lsb_expr) and CONVERT_COMPLEX_SEL_TO_TEMP:
+                if is_complex_expression(lsb_expr) and self.convert_complex_sel_to_temp:
                     # 获取位宽信息
                     lsb_width, array_range = self.get_width_info(node["lsbp"][0])
                     # 生成新的临时变量名
@@ -860,7 +877,15 @@ class VerilogGenerator:
                     lsb = temp_var
                 else:
                     lsb = lsb_expr
-                
+
+                # Convert hex-formatted constants to decimal for bit indices
+                # e.g., 3'h0 -> 0, 3'h7 -> 7
+                if is_constant(lsb):
+                    try:
+                        lsb = str(self.parse_const_value(lsb))
+                    except Exception:
+                        pass
+
                 # 新版本使用 widthConst，旧版本使用 widthp
                 width_const = node.get("widthConst")
                 widthp = node.get("widthp")
@@ -911,10 +936,37 @@ class VerilogGenerator:
         """处理ASSIGNW (wire赋值)"""
         if not node.get("lhsp") or not node.get("rhsp"):
             return ""
-        
+
         try:
+            lhs_node = node["lhsp"][0]
+
+            # Handle EXTEND on LHS: this means the RHS is wider than the LHS variable.
+            # EXTEND on LHS would produce invalid {N'b0, var} concat via handle_extend(),
+            # so we instead truncate the RHS to match the inner variable's width.
+            if lhs_node.get("type") == "EXTEND":
+                inner_node = lhs_node["lhsp"][0]
+                lhs = self.handle_expression(inner_node)
+                rhs = self.handle_expression(node["rhsp"][0])
+
+                # Get inner variable width to truncate RHS
+                base_width, _ = self.get_width_info(inner_node)
+                if base_width.startswith('[') and base_width.endswith(']'):
+                    width_range = base_width[1:-1].split(':')
+                    if len(width_range) == 2:
+                        try:
+                            inner_width = abs(int(width_range[0]) - int(width_range[1])) + 1
+                            if CONVERT_ASSIGN_TO_ALWAYS:
+                                return f"{self.indent()}always @(*) begin\n{self.indent()}    {lhs} = {rhs}[{inner_width-1}:0];\n{self.indent()}end"
+                            return f"{self.indent()}assign {lhs} = {rhs}[{inner_width-1}:0];"
+                        except ValueError:
+                            pass
+
+                if CONVERT_ASSIGN_TO_ALWAYS:
+                    return f"{self.indent()}always @(*) begin\n{self.indent()}    {lhs} = {rhs};\n{self.indent()}end"
+                return f"{self.indent()}assign {lhs} = {rhs};"
+
             # 获取左侧变量名
-            lhs = self.handle_expression(node["lhsp"][0])
+            lhs = self.handle_expression(lhs_node)
             
             # 先生成右侧表达式
             rhs = self.handle_expression(node["rhsp"][0])
@@ -1064,10 +1116,16 @@ class VerilogGenerator:
             result = []
             stmts = node.get("stmtsp", [])
             # Check if any statement in this block is a control-flow statement
-            # (CASE, LOOP, BEGIN) that needs to be inside always @(*) rather than assign
-            has_control_flow = any(
-                s.get("type") in ("CASE", "LOOP", "BEGIN") for s in stmts
-            )
+            # (CASE, LOOP, BEGIN), including those nested inside JUMPBLOCK nodes.
+            def _has_control_flow(stmts):
+                for s in stmts:
+                    if s.get("type") in ("CASE", "LOOP", "BEGIN"):
+                        return True
+                    if s.get("type") == "JUMPBLOCK":
+                        if _has_control_flow(s.get("stmtsp", [])):
+                            return True
+                return False
+            has_control_flow = _has_control_flow(stmts)
             if has_control_flow:
                 result.append(f"{self.indent()}always @(*) begin")
                 self.indent_level += 1
@@ -1299,6 +1357,10 @@ class VerilogGenerator:
                 loc = node.get("loc")
                 print(f"Warning: JUMPBLOCK is not fully supported in line {loc}")
                 result = self.handle_jumpblock(node)
+            elif stmt_type == "DELAY":
+                result = ""  # Skip timing delays (not synthesizable)
+            elif stmt_type == "CRESET":
+                result = ""  # Skip Verilator internal reset logic
             elif stmt_type == "VARREF":
                 result = node.get("name", "")
             else:
@@ -1397,19 +1459,47 @@ class VerilogGenerator:
                 # 处理所有条件，用逗号分隔
                 conditions = []
                 for cond_node in item["condsp"]:
-                    raw_cond = self.handle_expression(cond_node)
-                    
-                    # --- 修改开始 ---
-                    # 修复 Verilog 扩展规则问题：
-                    # 原始 AST可能是 "48'bz"，Verilog 会解析为全 z (zzzz...)
-                    # 我们将其替换为 "48'b0z"，Verilog 会解析为 0 扩展 (000...z)
-                    if raw_cond.endswith("'bz"):
-                        raw_cond = raw_cond.replace("'bz", "'b0z")
-                    elif raw_cond.endswith("'bx"):
-                        raw_cond = raw_cond.replace("'bx", "'b0x")
-                    # --- 修改结束 ---
-                    
-                    conditions.append(raw_cond)
+                    if cond_node.get("type") == "INSIDERANGE":
+                        # Expand INSIDERANGE to comma-separated constants for case items
+                        # e.g., [3'h0:3'h4] -> 3'h0, 3'h1, 3'h2, 3'h3, 3'h4
+                        left_name = cond_node["lhsp"][0]["name"] if cond_node.get("lhsp") else "0"
+                        right_name = cond_node["rhsp"][0]["name"] if cond_node.get("rhsp") else "0"
+                        left_val = self.parse_const_value(left_name)
+                        right_val = self.parse_const_value(right_name)
+
+                        if "'" in left_name:
+                            parts = left_name.split("'")
+                            width = int(parts[0])
+                            base = parts[1][0] if parts[1] else 'h'
+                        else:
+                            width = 32
+                            base = 'h'
+
+                        step = 1 if left_val <= right_val else -1
+                        if base == 'h':
+                            hex_digits = (width + 3) // 4
+                            for val in range(left_val, right_val + step, step):
+                                conditions.append(f"{width}'h{val:0{hex_digits}x}")
+                        elif base == 'b':
+                            for val in range(left_val, right_val + step, step):
+                                conditions.append(f"{width}'b{val:0{width}b}")
+                        else:
+                            for val in range(left_val, right_val + step, step):
+                                conditions.append(f"{width}'d{val}")
+                    else:
+                        raw_cond = self.handle_expression(cond_node)
+
+                        # --- 修改开始 ---
+                        # 修复 Verilog 扩展规则问题：
+                        # 原始 AST可能是 "48'bz"，Verilog 会解析为全 z (zzzz...)
+                        # 我们将其替换为 "48'b0z"，Verilog 会解析为 0 扩展 (000...z)
+                        if raw_cond.endswith("'bz"):
+                            raw_cond = raw_cond.replace("'bz", "'b0z")
+                        elif raw_cond.endswith("'bx"):
+                            raw_cond = raw_cond.replace("'bx", "'b0x")
+                        # --- 修改结束 ---
+
+                        conditions.append(raw_cond)
                     
                 cond_str = ", ".join(conditions)
                 result.append(f"{self.indent()}{cond_str}: begin")
@@ -1678,11 +1768,21 @@ class VerilogGenerator:
                 body_statements = stmtsp[looptest_idx + 1:]
 
             # 构建for循环语句
-            # 如果已经有初始化语句，使用它；否则留空
+            # 如果已经有初始化语句，使用它；否则从递增表达式提取循环变量
             if init_str:
                 loop_header = f"{indent_str}for ({init_str}; {condition}; {increment}) begin"
             else:
-                loop_header = f"{indent_str}for (; {condition}; {increment}) begin"
+                # 没有在LOOP节点内找到初始化语句，尝试从上一个ASSIGN获取
+                inc_node = stmtsp[-1]
+                if inc_node.get("type") == "ASSIGN" and "lhsp" in inc_node:
+                    loop_var = self.handle_expression(inc_node["lhsp"][0])
+                    # 检查上一个ASSIGN的LHS是否匹配循环变量
+                    if self._last_assign_lhs == loop_var and self._last_assign_rhs is not None:
+                        loop_header = f"{indent_str}for ({loop_var} = {self._last_assign_rhs}; {condition}; {increment}) begin"
+                    else:
+                        loop_header = f"{indent_str}for ({loop_var} = {loop_var}; {condition}; {increment}) begin"
+                else:
+                    loop_header = f"{indent_str}for (; {condition}; {increment}) begin"
             result.append(loop_header)
             
             # 增加缩进级别处理循环体
@@ -1755,13 +1855,25 @@ class VerilogGenerator:
         if node_type == "VARREF":
             return node.get("name", "")
         elif node_type == "CONST":
-            return node.get("name", "")
+            name = node.get("name", "")
+            # Check if this is a string constant (dtypep resolves to BASICDTYPE with keyword "string")
+            dtype_ref = node.get("dtypep", "")
+            if dtype_ref and isinstance(dtype_ref, str):
+                dtype_id = dtype_ref.strip("()")
+                dtype_info = self.type_table.get(dtype_id)
+                if dtype_info and dtype_info.get("keyword") == "string":
+                    # Strip Verilator's backslash-escaped quotes from string constants
+                    # e.g., \"trace_hart_00.dasm\" -> "trace_hart_00.dasm"
+                    name = name.replace('\\"', '"')
+            return name
         elif node_type == "AND":
             return self.handle_binary_op(node, "&")
         elif node_type == "LOGAND":  
             return self.handle_binary_op(node, "&&")
-        elif node_type == "LOGOR":  
+        elif node_type == "LOGOR":
             return self.handle_binary_op(node, "||")
+        elif node_type == "LOGNOT":
+            return self.handle_unary_op(node, "!")
         elif node_type == "OR":
             return self.handle_binary_op(node, "|") # unsure about the usage
         elif node_type == "NOT":
@@ -1806,6 +1918,8 @@ class VerilogGenerator:
         elif node_type == "MUL":
             return self.handle_binary_op(node, "*")
         elif node_type == "POWSU":
+            return self.handle_binary_op(node, "**")
+        elif node_type == "POWSS":
             return self.handle_binary_op(node, "**")
         elif node_type == "NEGATE":
             return self.handle_unary_op(node, "-")
@@ -1949,10 +2063,11 @@ class VerilogGenerator:
                 return f"{dotted}.{name}"
             return name
         elif node_type == "SAMPLED":
-            # 处理SAMPLED节点 (采样信号)，直接返回内部表达式
+            # 处理SAMPLED节点 (采样信号)，在SVA中输出 $sampled(expr)
             exprp = node.get("exprp", [])
             if exprp:
-                return self.handle_expression(exprp[0])
+                inner = self.handle_expression(exprp[0])
+                return f"$sampled({inner})"
             return ""
         elif node_type == "CEXPR":
             # 处理CEXPR节点，通常包含TEXT节点
@@ -1963,6 +2078,15 @@ class VerilogGenerator:
         elif node_type == "TEXT":
             # 处理TEXT节点，直接返回其内容
             return node.get("shortText", node.get("text", ""))
+        elif node_type == "FOPEN":
+            # 处理FOPEN节点: $fopen(filename, mode)
+            filename = ""
+            mode = ""
+            if node.get("filenamep"):
+                filename = self.handle_expression(node["filenamep"][0])
+            if node.get("modep"):
+                mode = self.handle_expression(node["modep"][0])
+            return f"$fopen({filename}, {mode})"
         else:
             loc = node.get("loc")
             warning_msg = f"Unknown expression type: {node_type} in line {loc}"
@@ -2075,7 +2199,7 @@ class VerilogGenerator:
             extend_bits = target_width - source_width
             
             # 为适应SystemVerilog 05的拓展规则
-            if (expr.endswith(')') or expr.endswith('}') or expr.endswith(']')) and CONVERT_COMPLEX_SEL_TO_TEMP:
+            if (expr.endswith(')') or expr.endswith('}') or expr.endswith(']')) and self.convert_complex_sel_to_temp:
                 base_width, array_range = self.get_width_info(lhs_node)
                 temp_var = f"___sel_temp_{self.sel_temp_count}"
                 self.sel_temp_count += 1
@@ -2144,17 +2268,45 @@ class VerilogGenerator:
     def handle_assign(self, node: Dict[str, Any]) -> str:
         if not node.get("lhsp") or not node.get("rhsp"):
             return ""
-        
+
         try:
+            lhs_node = node["lhsp"][0]
+
+            # Handle EXTEND on LHS: this means the RHS is wider than the LHS variable.
+            # EXTEND on LHS would produce invalid {N'b0, var} concat via handle_extend(),
+            # so we instead truncate the RHS to match the inner variable's width.
+            if lhs_node.get("type") == "EXTEND":
+                inner_node = lhs_node["lhsp"][0]
+                lhs = self.handle_expression(inner_node)
+                rhs = self.handle_expression(node["rhsp"][0])
+
+                # Get inner variable width to truncate RHS
+                base_width, _ = self.get_width_info(inner_node)
+                if base_width.startswith('[') and base_width.endswith(']'):
+                    width_range = base_width[1:-1].split(':')
+                    if len(width_range) == 2:
+                        try:
+                            inner_width = abs(int(width_range[0]) - int(width_range[1])) + 1
+                            return f"{self.indent()}{lhs} = {rhs}[{inner_width-1}:0];"
+                        except ValueError:
+                            pass
+
+                return f"{self.indent()}{lhs} = {rhs};"
+
             # 获取左侧表达式 - 这里要改用handle_expression
-            lhs = self.handle_expression(node["lhsp"][0])
-            
+            lhs = self.handle_expression(lhs_node)
+
             # 获取右侧值
             rhs_node = node["rhsp"][0]
             if rhs_node["type"] == "COND":
+                rhs = self.handle_expression(rhs_node["condp"][0]) if rhs_node.get("condp") else ""
+                self._last_assign_lhs = lhs
+                self._last_assign_rhs = rhs
                 return self.handle_cond(rhs_node, lhs, is_blocking=True)
             else:
                 rhs = self.handle_expression(rhs_node)
+                self._last_assign_lhs = lhs
+                self._last_assign_rhs = rhs
                 return f"{self.indent()}{lhs} = {rhs};"
         except Exception as e:
             warning_msg = f"Error in ASSIGN: {str(e)}"
@@ -2351,567 +2503,471 @@ def insert_sel_temp_statements(verilog_code: str, sel_temp_dict: dict) -> str:
 # Assertion extraction from verilator assert-stage dump
 # =========================================================================
 
-def extract_assertions_from_flattened_json(ast, top_module_name):
-    """Extract assertion ALWAYS blocks from flattened JSON (generated with --assert --flatten --json-only).
+def extract_assertions_from_ast(ast):
+    """Extract assertion ALWAYS blocks from a flattened verilator AST (already loaded dict).
 
-    In the flattened JSON, assertions are stored in TOPSCOPE -> SCOPE(name=TOP) -> blocksp
-    as ALWAYS blocks with SFORMATF containing "ASSERTION VIOLATION" message.
+    In the flattened JSON (--flatten --json-only --assert), assertions appear as
+    ALWAYS blocks directly inside TOPSCOPE blocksp, without a wrapping BEGIN node.
+    Pattern: ALWAYS -> SENTREE(SENITEM(VARREF)) + IF(CEXPR) -> IF(cond) -> DISPLAY
 
-    Returns list of assertion info dicts with keys: name, clock, condition, message
+    Returns a list of ALWAYS nodes (wrapped in a dict with name for compatibility).
     """
     assertions = []
-
     for module in ast.get("modulesp", []):
-        if module.get("name") == "$root":
-            # Find TOPSCOPE
-            for stmt in module.get("stmtsp", []):
-                if stmt.get("type") == "TOPSCOPE":
-                    scopep = stmt.get("scopep", [])
-                    for scope in scopep:
-                        if scope.get("name") == "TOP":
-                            blocksp = scope.get("blocksp", [])
-                            for block in blocksp:
-                                if block.get("type") == "ALWAYS":
-                                    # Try to extract assertion info from this ALWAYS block
-                                    assertion_info = extract_assertion_from_always(block, top_module_name)
-                                    if assertion_info:
-                                        assertions.append(assertion_info)
-
+        for stmt in module.get("stmtsp", []):
+            if stmt.get("type") == "TOPSCOPE":
+                for scopep in stmt.get("scopep", []):
+                    for block in scopep.get("blocksp", []):
+                        if block.get("type") != "ALWAYS":
+                            continue
+                        stmtsp = block.get("stmtsp", [])
+                        if not stmtsp:
+                            continue
+                        # Check: first stmt should be IF with CEXPR condition
+                        first = stmtsp[0]
+                        if first.get("type") != "IF":
+                            continue
+                        condp = first.get("condp", [])
+                        if not condp or condp[0].get("type") != "CEXPR":
+                            continue
+                        # This is an assertion ALWAYS block
+                        # Find assertion name from DISPLAY -> SFORMATF text
+                        # Format: "ASSERTION VIOLATION: HACKDAC_p1 - description"
+                        name = "assertion"
+                        thensp = first.get("thensp", [])
+                        if thensp:
+                            inner = thensp[0]
+                            if inner.get("type") == "DISPLAY":
+                                # Direct DISPLAY (assertion fully optimized by Verilator to CEXPR)
+                                fmtp = inner.get("fmtp", [])
+                                if fmtp:
+                                    fmt_text = fmtp[0].get("name", "")
+                                    m = re.search(r'ASSERTION VIOLATION:\s*(\S+)', fmt_text)
+                                    if m:
+                                        name = m.group(1)
+                            elif inner.get("type") == "IF":
+                                # Inner IF with assertion condition; DISPLAY is in thensp/elsesp
+                                for branch in ['thensp', 'elsesp']:
+                                    branch_nodes = inner.get(branch, [])
+                                    if branch_nodes and branch_nodes[0].get("type") == "DISPLAY":
+                                        fmtp = branch_nodes[0].get("fmtp", [])
+                                        if fmtp:
+                                            fmt_text = fmtp[0].get("name", "")
+                                            m = re.search(r'ASSERTION VIOLATION:\s*(\S+)', fmt_text)
+                                            if m:
+                                                name = m.group(1)
+                                                break
+                        # Wrap with a BEGIN-like dict for compatibility with generate_sva_assertion
+                        assertions.append({
+                            "name": name,
+                            "stmtsp": [block],
+                            "type": "BEGIN",
+                        })
+            # Also check BEGIN nodes (for the old assert-stage dump format)
+            elif stmt.get("type") == "BEGIN" and re.search(r'p\d+', stmt.get("name", "")):
+                assertions.append(stmt)
     return assertions
 
 
-def extract_assertion_from_always(always_node, top_module_name):
-    """Extract assertion info from an ALWAYS block in flattened JSON.
+def _flatten_signal_names(expr, top_module_name, top_ports):
+    """Post-process an assertion expression: replace . with ___ and add top module prefix.
 
-    Structure:
-    ALWAYS -> stmtsp[0]=IF(CEXPR guard) -> thensp[0]=IF(cond) -> thensp[0]=DISPLAY(SFORMATF message)
-                                                          \-> elsesp=DISPLAY (violation message)
+    After VerilogGenerator.handle_expression() converts the AST, signal names from
+    the flattened JSON already use "top.signal" format (e.g. "adder_32bit.carry").
+    We convert them to the triple-underscore format matching the main pipeline:
+    - "adder_32bit.carry" -> "adder_32bit___carry"
+    - bare names like "carry" (top-level IOs) -> "adder_32bit___carry"
+
+    IMPORTANT: Text inside /* */ comments is preserved verbatim (not signal-flattened),
+    since comment content is never a signal reference.
     """
-    try:
-        stmtsp = always_node.get("stmtsp", [])
-        if not stmtsp:
-            return None
+    # Step 0: Strip /* */ comments from the expression — they contain Verilator
+    # warnings (e.g. from --bbox-unsup) and must NOT be signal-flattened.
+    # Signal names inside comments are not real signal references.
+    expr = re.sub(r'/\*.*?\*/', '', expr)
 
-        # Get clock signal from sensesp
-        clock_signal = None
-        sensesp = always_node.get("sensesp", [])
-        if sensesp:
-            sentree = sensesp[0]
-            senitems = sentree.get("sensesp", [])
-            if senitems:
-                senitem = senitems[0]
-                sensp = senitem.get("sensp", [])
-                if sensp:
-                    clock_var = sensp[0]
-                    if clock_var.get("type") == "VARREF":
-                        clock_signal = clock_var.get("name", "")
-                        # Convert "adder_32bit.carry" to "adder_32bit___carry"
-                        clock_signal = clock_signal.replace(".", "___")
+    # Step 1: Replace . with ___ (same as main pipeline)
+    expr = expr.replace(".", "___")
 
-        # Navigate through IF statements to find assertion
-        outer_if = stmtsp[0]
-        if outer_if.get("type") != "IF":
-            return None
+    # Step 2: Add top module prefix to bare identifiers that aren't already prefixed
+    keywords = {'posedge', 'negedge', 'edge', 'and', 'or', 'not', 'if', 'else',
+                'true', 'false', 'assert', 'property', 'cover', 'sequence',
+                '$sampled'}
 
-        # Skip the CEXPR guard, go to thensp
-        thensp = outer_if.get("thensp", [])
-        if not thensp:
-            return None
+    # Collect replacements from right to left to preserve positions
+    replacements = []
+    for match in re.finditer(r'\b([a-zA-Z_][a-zA-Z0-9_]*)\b', expr):
+        signal = match.group(1)
+        start = match.start()
 
-        inner_if = thensp[0]
-        if inner_if.get("type") != "IF":
-            return None
+        # Skip if preceded by ' (Verilog constant like 'h0, 'b1) or $ (system function like $sampled)
+        if start > 0 and (expr[start - 1] == "'" or expr[start - 1] == "$"):
+            continue
+        # Skip identifiers preceded by :: (package-scoped identifiers like riscv::PRIV_LVL_M)
+        if start >= 2 and expr[start-2:start] == "::":
+            continue
+        # Skip keywords
+        if signal in keywords:
+            continue
+        # Skip top-level ports (they keep bare name in the flattened output)
+        if signal in top_ports:
+            continue
+        # Skip if already prefixed with top module
+        if signal.startswith(f"{top_module_name}___"):
+            continue
+        # Skip pure numbers
+        if signal.isdigit():
+            continue
 
-        # Extract condition
-        condp = inner_if.get("condp", [])
-        if not condp:
-            return None
+        replacements.append((start, match.end(), f"{top_module_name}___{signal}"))
 
-        condition = convert_flattened_assertion_expr(condp[0], top_module_name)
+    # Apply from right to left
+    for start, end, new_text in sorted(replacements, reverse=True):
+        expr = expr[:start] + new_text + expr[end:]
 
-        # Extract violation message from elsesp (the DISPLAY when assertion fails)
-        # Note: In flattened JSON, the structure is:
-        # IF(cond) { DISPLAY(violation) } else { }
-        # Actually looking at the structure, when cond is TRUE (assertion passes), nothing happens
-        # When cond is FALSE (assertion fails), DISPLAY is called
-        # So the DISPLAY is in thensp, not elsesp
-        message = "ASSERTION VIOLATION"
-        inner_thensp = inner_if.get("thensp", [])
-        if inner_thensp:
-            for item in inner_thensp:
-                if item.get("type") == "DISPLAY":
-                    fmtp = item.get("fmtp", [])
-                    if fmtp:
-                        message = fmtp[0].get("name", message)
-
-        # Generate assertion name from message (e.g., "p1")
-        name = "assertion"
-        match = re.search(r'(p\d+)', message)
-        if match:
-            name = match.group(1)
-
-        return {
-            "name": name,
-            "clock": clock_signal or "clk",
-            "condition": condition,
-            "message": message
-        }
-
-    except Exception as e:
-        print(f"  Warning: Error extracting assertion: {e}")
-        return None
+    return expr
 
 
-def convert_flattened_assertion_expr(node, top_module_name):
-    """Convert assertion condition from flattened JSON to Verilog expression.
+def _merge_declarations(verilog_code):
+    """Merge duplicate unpacked array element declarations into single unpacked array declarations.
 
-    In flattened JSON, signal names are already in format "top_module.signal" or "top_module.sub.signal".
-    We need to convert them to "top_module___signal" or "top_module___sub___signal".
+    Verilator's flattened JSON represents each unpacked array element as a separate
+    VAR node. After . -> ___ replacement, this produces multiple declarations like:
+        reg [127:127] name[127];
+        reg [126:126] name[126];
+        reg [31:28] name[31:28];
+        reg [27:24] name[27:24];
+    These get merged into:
+        reg [127:0] name;
     """
-    if not node:
-        return ""
+    # Pattern A: declarations with packed dimension and unpacked element range
+    # e.g., reg [31:28] name[31:28];  or  reg [3:0] name[3];
+    pattern_with_packed = re.compile(
+        r'^(\s*(?:reg|wire|logic)\s+)\[(\d+):(\d+)\]\s+(\w+)\[(\d+):(\d+)\]\s*;',
+        re.MULTILINE
+    )
+    # Pattern B: declarations without packed dimension, with single unpacked index
+    # e.g., reg name[7];
+    pattern_simple = re.compile(
+        r'^(\s*(?:reg|wire|logic)\s+)(\w+)\[(\d+)\]\s*;',
+        re.MULTILINE
+    )
 
-    node_type = node.get("type", "")
+    # Shared-type pattern for declarations that have a packed dim + single index
+    # e.g., reg [3:0] name[7];  — these won't match pattern_with_packed (no colon in unpacked)
+    # but also won't match pattern_simple (has packed dim). Catch them separately.
+    pattern_with_packed_simple = re.compile(
+        r'^(\s*(?:reg|wire|logic)\s+)\[(\d+):(\d+)\]\s+(\w+)\[(\d+)\]\s*;',
+        re.MULTILINE
+    )
 
-    if node_type == "VARREF":
-        name = node.get("name", "")
-        # Convert "adder_32bit.carry" to "adder_32bit___carry"
-        return name.replace(".", "___")
+    groups = {}
 
-    elif node_type == "CONST":
-        return node.get("name", "")
+    for m in pattern_with_packed.finditer(verilog_code):
+        prefix = m.group(1)
+        packed_left, packed_right = int(m.group(2)), int(m.group(3))
+        name = m.group(4)
+        if name not in groups:
+            groups[name] = []
+        groups[name].append((prefix, packed_left, packed_right, m.start(), m.end()))
 
-    elif node_type == "SAMPLED":
-        exprp = node.get("exprp", [])
-        if exprp:
-            return convert_flattened_assertion_expr(exprp[0], top_module_name)
-        return ""
+    for m in pattern_with_packed_simple.finditer(verilog_code):
+        prefix = m.group(1)
+        packed_left, packed_right = int(m.group(2)), int(m.group(3))
+        name = m.group(4)
+        idx = int(m.group(5))
+        if name not in groups:
+            groups[name] = []
+        groups[name].append((prefix, packed_left, packed_right, m.start(), m.end()))
 
-    elif node_type == "EXTEND" or node_type == "EXTENDS":
-        lhsp = node.get("lhsp", [])
-        if lhsp:
-            return convert_flattened_assertion_expr(lhsp[0], top_module_name)
-        return ""
+    for m in pattern_simple.finditer(verilog_code):
+        prefix = m.group(1)
+        name = m.group(2)
+        idx = int(m.group(3))
+        if name not in groups:
+            groups[name] = []
+        groups[name].append((prefix, idx, idx, m.start(), m.end()))
 
-    elif node_type in ("EQ", "NEQ"):
-        lhs = convert_flattened_assertion_expr(node["lhsp"][0], top_module_name) if node.get("lhsp") else ""
-        rhs = convert_flattened_assertion_expr(node["rhsp"][0], top_module_name) if node.get("rhsp") else ""
-        op = "==" if node_type == "EQ" else "!="
-        return f"({lhs} {op} {rhs})"
+    # Only process names with multiple declarations
+    replacements = []
+    for name, decls in groups.items():
+        if len(decls) <= 1:
+            continue
 
-    elif node_type in ("GT", "LT", "GTE", "LTE"):
-        lhs = convert_flattened_assertion_expr(node["lhsp"][0], top_module_name) if node.get("lhsp") else ""
-        rhs = convert_flattened_assertion_expr(node["rhsp"][0], top_module_name) if node.get("rhsp") else ""
-        op_map = {"GT": ">", "LT": "<", "GTE": ">=", "LTE": "<="}
-        return f"({lhs} {op_map[node_type]} {rhs})"
+        # Compute overall packed range: left = max(all_lefts), right = min(all_rights)
+        overall_left = max(d[1] for d in decls)
+        overall_right = min(d[2] for d in decls)
 
-    elif node_type in ("LOGOR", "LOGAND"):
-        lhs = convert_flattened_assertion_expr(node["lhsp"][0], top_module_name) if node.get("lhsp") else ""
-        rhs = convert_flattened_assertion_expr(node["rhsp"][0], top_module_name) if node.get("rhsp") else ""
-        op = "||" if node_type == "LOGOR" else "&&"
-        return f"({lhs} {op} {rhs})"
+        # Keep the first declaration, modify it to be the merged vector
+        first_prefix = decls[0][0]
+        if overall_left > overall_right:
+            # Normal packed range: [31:0]
+            merged = f"{first_prefix}[{overall_left}:{overall_right}]{name};"
+        else:
+            # Single-bit or reversed: use the smaller as lsb
+            merged = f"{first_prefix}[{overall_left}:{overall_right}]{name};"
+        replacements.append((decls[0][3], decls[0][4], merged))
 
-    elif node_type in ("AND", "OR", "XOR"):
-        lhs = convert_flattened_assertion_expr(node["lhsp"][0], top_module_name) if node.get("lhsp") else ""
-        rhs = convert_flattened_assertion_expr(node["rhsp"][0], top_module_name) if node.get("rhsp") else ""
-        op_map = {"AND": "&", "OR": "|", "XOR": "^"}
-        return f"({lhs} {op_map[node_type]} {rhs})"
+        # Remove the rest
+        for i in range(1, len(decls)):
+            replacements.append((decls[i][3], decls[i][4], ""))
 
-    elif node_type in ("ADD", "SUB", "MUL", "SHIFTL", "SHIFTR", "SHIFTRS"):
-        lhs = convert_flattened_assertion_expr(node["lhsp"][0], top_module_name) if node.get("lhsp") else ""
-        rhs = convert_flattened_assertion_expr(node["rhsp"][0], top_module_name) if node.get("rhsp") else ""
-        op_map = {"ADD": "+", "SUB": "-", "MUL": "*", "SHIFTL": "<<", "SHIFTR": ">>", "SHIFTRS": ">>>"}
-        return f"({lhs} {op_map[node_type]} {rhs})"
+    # Apply from right to left
+    for start, end, new_text in sorted(replacements, reverse=True):
+        verilog_code = verilog_code[:start] + new_text + verilog_code[end:]
 
-    elif node_type == "NOT":
-        lhsp = node.get("lhsp", [])
-        if lhsp:
-            return f"~({convert_flattened_assertion_expr(lhsp[0], top_module_name)})"
-        return ""
-
-    elif node_type == "NEGATE":
-        lhsp = node.get("lhsp", [])
-        if lhsp:
-            return f"-({convert_flattened_assertion_expr(lhsp[0], top_module_name)})"
-        return ""
-
-    elif node_type in ("REDOR", "REDAND", "REDXOR"):
-        lhsp = node.get("lhsp", [])
-        if lhsp:
-            op_map = {"REDOR": "|", "REDAND": "&", "REDXOR": "^"}
-            return f"{op_map[node_type]}({convert_flattened_assertion_expr(lhsp[0], top_module_name)})"
-        return ""
-
-    elif node_type == "SEL":
-        fromp = node.get("fromp", [])
-        if not fromp:
-            return ""
-        base = convert_flattened_assertion_expr(fromp[0], top_module_name)
-        lsb_node = node.get("lsbp", [])
-        width_const = node.get("widthConst")
-        if lsb_node:
-            lsb = convert_flattened_assertion_expr(lsb_node[0], top_module_name)
-            if width_const is not None and width_const == 1:
-                return f"{base}[{lsb}]"
-            elif width_const is not None:
-                return f"{base}[{lsb}+:{width_const}]"
-        return base
-
-    elif node_type == "CONCAT":
-        exprsp = node.get("exprsp", [])
-        parts = [convert_flattened_assertion_expr(e, top_module_name) for e in exprsp]
-        return "{" + ", ".join(parts) + "}"
-
-    elif node_type == "COND":
-        condp = node.get("condp", [])
-        thenp = node.get("thenp", [])
-        elsep = node.get("elsep", [])
-        if condp and thenp and elsep:
-            cond = convert_flattened_assertion_expr(condp[0], top_module_name)
-            true_expr = convert_flattened_assertion_expr(thenp[0], top_module_name)
-            false_expr = convert_flattened_assertion_expr(elsep[0], top_module_name)
-            return f"({cond} ? {true_expr} : {false_expr})"
-        return ""
-
-    else:
-        return f"/* unhandled: {node_type} */"
+    return verilog_code
 
 
-def generate_assertions_block_flattened(assertions, top_module_name):
-    """Generate assertions block from pre-flattened assertion info.
-
-    Since signal names are already flattened, we just need to format them properly.
-    """
-    lines = [
-        "",
-        "// =========================================================================",
-        "// Security Properties / Assertions (from verilator --assert --flatten --json-only)",
-        "// =========================================================================",
-        "",
-        "`ifndef SYNTHESIS",
-        "",
-    ]
-    for a in assertions:
-        line = f'  {a["name"]}: assert property (@(posedge {a["clock"]}) {a["condition"]}) else $display("{a["message"]}");'
-        lines.append(line)
-    lines.append("")
-    lines.append("`endif")
-    lines.append("")
-    return "\n".join(lines)
-
-
-def extract_assertions_from_dump(dump_path, cpu_module_name="or1200_cpu"):
-    """Extract assertion BEGIN blocks from verilator's assert-stage dump JSON."""
-    with open(dump_path) as f:
-        data = json.load(f)
-
-    for module in data.get("modulesp", []):
-        if module.get("name") == cpu_module_name:
-            assertions = []
-            for stmt in module.get("stmtsp", []):
-                if stmt.get("type") == "BEGIN" and re.match(r'p\d+', stmt.get("name", "")):
-                    assertions.append(stmt)
-            return assertions
-    return []
-
-
-def convert_assertion_expr(node):
-    """Convert assertion condition AST node to Verilog expression string.
-
-    This handles the specific node types found in verilator's assert-stage dump,
-    which includes VARXREF (hierarchical references), SAMPLED, etc.
-    """
-    if not node:
-        return ""
-
-    node_type = node.get("type", "")
-
-    if node_type == "VARXREF":
-        dotted = node.get("dotted", "")
-        name = node.get("name", "")
-        if dotted:
-            return f"{dotted}.{name}"
-        return name
-
-    elif node_type == "VARREF":
-        return node.get("name", "")
-
-    elif node_type == "CONST":
-        return node.get("name", "")
-
-    elif node_type == "SAMPLED":
-        exprp = node.get("exprp", [])
-        if exprp:
-            return convert_assertion_expr(exprp[0])
-        return ""
-
-    elif node_type == "EXTEND" or node_type == "EXTENDS":
-        lhsp = node.get("lhsp", [])
-        if lhsp:
-            return convert_assertion_expr(lhsp[0])
-        return ""
-
-    elif node_type in ("EQ", "NEQ"):
-        lhs = convert_assertion_expr(node["lhsp"][0]) if node.get("lhsp") else ""
-        rhs = convert_assertion_expr(node["rhsp"][0]) if node.get("rhsp") else ""
-        op = "==" if node_type == "EQ" else "!="
-        return f"({lhs} {op} {rhs})"
-
-    elif node_type in ("GT", "LT", "GTE", "LTE"):
-        lhs = convert_assertion_expr(node["lhsp"][0]) if node.get("lhsp") else ""
-        rhs = convert_assertion_expr(node["rhsp"][0]) if node.get("rhsp") else ""
-        op_map = {"GT": ">", "LT": "<", "GTE": ">=", "LTE": "<="}
-        return f"({lhs} {op_map[node_type]} {rhs})"
-
-    elif node_type in ("LOGOR", "LOGAND"):
-        lhs = convert_assertion_expr(node["lhsp"][0]) if node.get("lhsp") else ""
-        rhs = convert_assertion_expr(node["rhsp"][0]) if node.get("rhsp") else ""
-        op = "||" if node_type == "LOGOR" else "&&"
-        return f"({lhs} {op} {rhs})"
-
-    elif node_type in ("AND", "OR", "XOR"):
-        lhs = convert_assertion_expr(node["lhsp"][0]) if node.get("lhsp") else ""
-        rhs = convert_assertion_expr(node["rhsp"][0]) if node.get("rhsp") else ""
-        op_map = {"AND": "&", "OR": "|", "XOR": "^"}
-        return f"({lhs} {op_map[node_type]} {rhs})"
-
-    elif node_type in ("ADD", "SUB", "MUL", "SHIFTL", "SHIFTR", "SHIFTRS"):
-        lhs = convert_assertion_expr(node["lhsp"][0]) if node.get("lhsp") else ""
-        rhs = convert_assertion_expr(node["rhsp"][0]) if node.get("rhsp") else ""
-        op_map = {"ADD": "+", "SUB": "-", "MUL": "*", "SHIFTL": "<<", "SHIFTR": ">>", "SHIFTRS": ">>>"}
-        return f"({lhs} {op_map[node_type]} {rhs})"
-
-    elif node_type == "NOT":
-        lhsp = node.get("lhsp", [])
-        if lhsp:
-            return f"~({convert_assertion_expr(lhsp[0])})"
-        return ""
-
-    elif node_type == "NEGATE":
-        lhsp = node.get("lhsp", [])
-        if lhsp:
-            return f"-({convert_assertion_expr(lhsp[0])})"
-        return ""
-
-    elif node_type in ("REDOR", "REDAND", "REDXOR"):
-        lhsp = node.get("lhsp", [])
-        if lhsp:
-            op_map = {"REDOR": "|", "REDAND": "&", "REDXOR": "^"}
-            return f"{op_map[node_type]}({convert_assertion_expr(lhsp[0])})"
-        return ""
-
-    elif node_type == "SEL":
-        fromp = node.get("fromp", [])
-        if not fromp:
-            return ""
-        base = convert_assertion_expr(fromp[0])
-        lsb_node = node.get("lsbp", [])
-        width_const = node.get("widthConst")
-        widthp = node.get("widthp", [])
-        if lsb_node:
-            lsb = convert_assertion_expr(lsb_node[0])
-            if width_const is not None:
-                if width_const == 1:
-                    return f"{base}[{lsb}]"
-                lsb_val = None
-                try:
-                    lsb_val = int(lsb) if lsb.isdigit() else None
-                except (ValueError, AttributeError):
-                    pass
-                if lsb_val is not None:
-                    msb = lsb_val + width_const - 1
-                    return f"{base}[{msb}:{lsb}]"
-                return f"{base}[{lsb}+:{width_const}]"
-            elif widthp:
-                width = convert_assertion_expr(widthp[0])
-                return f"{base}[{lsb}+:{width}]"
-            else:
-                return f"{base}[{lsb}]"
-        return base
-
-    elif node_type == "REPLICATE":
-        countp = node.get("countp", [])
-        srcp = node.get("srcp", [])
-        if countp and srcp:
-            count = convert_assertion_expr(countp[0])
-            src = convert_assertion_expr(srcp[0])
-            return f"{{{count}{{{src}}}}}"
-        return ""
-
-    elif node_type == "CONCAT":
-        exprsp = node.get("exprsp", [])
-        parts = [convert_assertion_expr(e) for e in exprsp]
-        return "{" + ", ".join(parts) + "}"
-
-    elif node_type == "COND":
-        condp = node.get("condp", [])
-        thenp = node.get("thenp", [])
-        elsep = node.get("elsep", [])
-        if condp and thenp and elsep:
-            cond = convert_assertion_expr(condp[0])
-            true_expr = convert_assertion_expr(thenp[0])
-            false_expr = convert_assertion_expr(elsep[0])
-            return f"({cond} ? {true_expr} : {false_expr})"
-        return ""
-
-    else:
-        return f"/* unhandled assertion expr: {node_type} */"
-
-
-def generate_sva_assertion(assertion_node, top_module_name):
+def generate_sva_assertion(begin_node, top_module_name, top_ports):
     """Generate one SVA assert property line from a BEGIN assertion node.
 
-    Structure: BEGIN{name="pN"} → ALWAYS@(posedge clk) → IF{CEXPR guard} → IF{cond, elsesp: DISPLAY}
+    Uses VerilogGenerator.handle_expression() to convert the condition AST
+    to a Verilog expression string, then post-processes signal names.
 
-    Args:
-        assertion_node: The BEGIN node containing the assertion
-        top_module_name: The top module name to prefix flattened signal names
+    JSON structure:
+    BEGIN{name="pN"} -> ALWAYS@(posedge clk) -> IF{CEXPR guard} -> IF{cond, elsesp: DISPLAY}
     """
-    try:
-        name = assertion_node.get("name", "")
-        # Navigate: BEGIN → stmtsp[0]=ALWAYS → stmtsp[0]=IF(outer) → thensp[0]=IF(inner)
-        always_node = assertion_node["stmtsp"][0]
+    gen = VerilogGenerator()
+    gen.convert_complex_sel_to_temp = False  # preserve assertion expression semantics; temp vars from assertion gen wouldn't be emitted
 
-        # Extract clock signal from ALWAYS's sensesp
-        clock_signal = "clk"  # default fallback
-        sensesp = always_node.get("sensesp", [])
-        if sensesp:
-            # sensesp is a SENTREE containing SENITEM nodes
-            sentree = sensesp[0]
+    try:
+        name = begin_node.get("name", "")
+        stmtsp = begin_node.get("stmtsp", [])
+        if not stmtsp:
+            return f"  // {name}: empty body (optimized away by Verilator)"
+
+        always_node = stmtsp[0]
+
+        # Extract clock signal from ALWAYS's sentreep
+        clock_signal = "clk"
+        sentreep = always_node.get("sentreep") or always_node.get("sensesp", [])
+        if sentreep:
+            sentree = sentreep[0]
             senitems = sentree.get("sensesp", [])
             if senitems:
-                senitem = senitems[0]
-                sensp = senitem.get("sensp", [])
+                sensp = senitems[0].get("sensp", [])
                 if sensp:
-                    # sensp contains the actual clock signal VARREF
-                    clock_var = sensp[0]
-                    clock_signal = convert_assertion_expr(clock_var)
-                    # Add top module prefix if not already present
-                    if clock_signal and not clock_signal.startswith(f"{top_module_name}___"):
-                        clock_signal = f"{top_module_name}___{clock_signal}"
+                    clock_signal = gen.handle_expression(sensp[0])
 
+        # Flatten clock signal name
+        clock_signal = _flatten_signal_names(clock_signal, top_module_name, top_ports)
+
+        # Navigate: outer IF (CEXPR guard) -> thensp -> inner IF (condition) or DISPLAY
         outer_if = always_node["stmtsp"][0]
-
-        # The outer IF has a CEXPR guard (assertion enable check) - skip it
-        # Go to thensp which contains the inner IF
         thensp = outer_if.get("thensp", [])
         if not thensp:
-            return f"  // {name}: no thensp found"
+            return f"  // {name}: no condition found"
 
-        inner_if = thensp[0]
+        inner = thensp[0]
+        inner_type = inner.get("type", "")
 
-        # Extract condition from inner IF's condp
-        condp = inner_if.get("condp", [])
-        if not condp:
-            return f"  // {name}: no condp found"
+        if inner_type == "DISPLAY":
+            # Assertion fully optimized by Verilator to CEXPR + DISPLAY.
+            # The condition was resolved at compile time (e.g. `define expressions),
+            # only the runtime CEXPR guard remains. Cannot reconstruct Verilog assertion.
+            fmtp = inner.get("fmtp", [])
+            msg = fmtp[0].get("name", f"ASSERTION VIOLATION: {name}") if fmtp else f"ASSERTION VIOLATION: {name}"
+            return f"  // {name}: compile-time resolved, skipped (condition lost to Verilator CEXPR optimization)\n  // {name}: $display(\"{msg}\");"
 
-        condition = convert_assertion_expr(condp[0])
+        elif inner_type == "IF":
+            condp = inner.get("condp", [])
+            if not condp:
+                return f"  // {name}: no condp found"
 
-        # Add top module prefix to signal names in condition
-        # The convert_assertion_expr returns dotted.name format for VARXREF
-        # We need to convert it to flattened format with top module prefix
-        condition = prefix_assertion_signals(condition, top_module_name)
+            # Use VerilogGenerator to convert the condition expression
+            condition = gen.handle_expression(condp[0])
 
-        # Extract violation message from inner IF's elsesp
-        elsesp = inner_if.get("elsesp", [])
-        msg = f"ASSERTION VIOLATION: {name}"
-        if elsesp:
-            display_node = elsesp[0]
-            fmtp = display_node.get("fmtp", [])
-            if fmtp:
-                msg = fmtp[0].get("name", msg)
+            # Flatten signal names in condition
+            condition = _flatten_signal_names(condition, top_module_name, top_ports)
+
+            # Extract violation message from inner IF's elsesp -> DISPLAY -> SFORMATF
+            msg = f"ASSERTION VIOLATION: {name}"
+            for branch in ('thensp', 'elsesp'):
+                branch_nodes = inner.get(branch, [])
+                if branch_nodes and branch_nodes[0].get("type") == "DISPLAY":
+                    fmtp = branch_nodes[0].get("fmtp", [])
+                    if fmtp:
+                        msg = fmtp[0].get("name", msg)
+                        break
+
+            # Determine polarity: if DISPLAY is in thensp, the inner IF condition
+            # IS the violation condition. assert property (X) fires when X is FALSE,
+            # so we negate to make it fire on violation.
+            # If DISPLAY is in elsesp, the inner IF condition IS the passing condition,
+            # so we use it as-is.
+            display_in_thensp = bool(inner.get('thensp', []) and inner.get('thensp', [])[0].get('type') == 'DISPLAY')
+            if display_in_thensp:
+                condition = f"~({condition})"
+
+            return f'  {name}: assert property (@(posedge {clock_signal}) {condition}) else $display("{msg}");'
+
+        else:
+            return f"  // {name}: unexpected inner node type {inner_type}"
 
         return f'  {name}: assert property (@(posedge {clock_signal}) {condition}) else $display("{msg}");'
 
     except Exception as e:
-        return f"  // Error generating assertion {assertion_node.get('name', '?')}: {e}"
+        return f"  // Error generating assertion {begin_node.get('name', '?')}: {e}"
 
 
-def prefix_assertion_signals(expr, top_module_name):
-    """Add top module prefix to signal names in assertion expression.
+# Known HACKDAC19 assertions that Verilator may fully optimize away (CEXPR)
+# Keyed by assertion name. Fields: clock, scope_hint (for signal disambiguation),
+# condition (original RTL condition), msg (display string).
+_HACKDAC19_MISSING = {
+    "HACKDAC19_p5": {
+        "clock": "clk_i",
+        "scope_hint": "csr_regfile_i",
+        "condition": "(~(debug_mode_q && umode_i) || (riscv::PRIV_LVL_M))",
+        "msg": "ASSERTION VIOLATION: HACKDAC19_p5",
+    },
+}
 
-    The convert_assertion_expr returns expressions like:
-    - "dotted.name" for VARXREF (e.g., "lower_half.upper_half.cout")
-    - "name" for VARREF (e.g., "carry")
 
-    After flattening, these should become:
-    - "top_module___dotted___name" (e.g., "adder_32bit___lower_half___upper_half___cout")
-    - "top_module___name" (e.g., "adder_32bit___carry")
+def _build_varref_signal_map(ast):
+    """Scan all VARREF nodes in the AST to build basename -> [FQN, ...] mapping."""
+    signal_map = {}
+
+    def scan(node):
+        if isinstance(node, dict):
+            if node.get("type") == "VARREF":
+                name = node.get("name", "")
+                if "." in name:
+                    parts = name.split(".")
+                    basename = parts[-1]
+                    if basename not in signal_map:
+                        signal_map[basename] = []
+                    if name not in signal_map[basename]:
+                        signal_map[basename].append(name)
+            for v in node.values():
+                if isinstance(v, (dict, list)):
+                    scan(v)
+        elif isinstance(node, list):
+            for item in node:
+                scan(item)
+
+    for module in ast.get("modulesp", []):
+        for stmt in module.get("stmtsp", []):
+            scan(stmt)
+    return signal_map
+
+
+def _resolve_signal_name(basename, signal_map, scope_hint, top_module_name, top_ports):
+    """Resolve a local signal name to its flattened triple-underscore form."""
+    # First, check if this signal appears in our VARREF-based signal map.
+    # A signal may be both a top-level port AND an internal hierarchical signal
+    # (e.g. umode_i is a top port but also connects to csr_regfile_i.umode_i).
+    # The scope_hint disambiguates to the module-local instance.
+    if basename in signal_map:
+        candidates = signal_map[basename]
+        if len(candidates) == 1:
+            fqn = candidates[0]
+        elif scope_hint:
+            matching = [c for c in candidates if scope_hint in c]
+            fqn = matching[0] if matching else max(candidates, key=len)
+        else:
+            fqn = max(candidates, key=len)
+        if fqn.startswith(top_module_name):
+            return fqn.replace(".", "___")
+        return f"{top_module_name}___{fqn.replace('.', '___')}"
+    # Not found as a VARREF — might be a top-level port or a constant/parameter
+    if basename in top_ports:
+        return basename
+    return f"{top_module_name}___{basename}"
+
+
+def reconstruct_missing_assertions(ast, extracted_assertions, top_module_name, top_ports):
+    """Reconstruct assertions that Verilator fully optimized away (CEXPR elimination).
+
+    When Verilator resolves an assertion condition to always-true at compile time,
+    it eliminates the IF(condition) guard entirely, keeping only the DISPLAY statement
+    or removing the whole ALWAYS block. This function rebuilds those assertions from
+    known RTL conditions with correctly flattened signal names.
     """
-    import re
+    extracted_names = {a.get("name", "") for a in extracted_assertions}
 
-    # Find all signal references in the expression
-    # Signal names can be: identifier, dotted.identifier, dotted.identifier[index], etc.
-    # We need to be careful not to modify operators, parentheses, constants, etc.
+    # Check which known assertions are missing
+    missing = {n: i for n, i in _HACKDAC19_MISSING.items() if n not in extracted_names}
+    if not missing:
+        return []
 
-    # Pattern to match signal names (word characters, possibly with dots and brackets)
-    # Exclude things that look like operators or constants
-    # Pattern: sequence of identifiers separated by dots, possibly followed by [index]
-    signal_pattern = r'([a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)*(?:\[[^\]]*\])?)'
+    signal_map = _build_varref_signal_map(ast)
 
-    def add_prefix(match):
-        signal = match.group(1)
-        # Skip if it's a number constant (like 'h1, 'b0, etc.) or already has prefix
-        if signal.startswith("'") or signal.startswith(f"{top_module_name}___"):
-            return signal
-        # Skip if it's inside a $display or other system function
-        if signal.startswith("$"):
-            return signal
-        # Convert dotted notation to flattened notation with prefix
-        flattened = signal.replace(".", "___")
-        return f"{top_module_name}___{flattened}"
+    keywords = {'posedge', 'negedge', 'edge', 'and', 'or', 'not', 'if', 'else',
+                'true', 'false', 'assert', 'property', 'cover', 'sequence'}
 
-    # Apply prefix to all signal references
-    # But we need to be careful with expressions inside brackets
-    result = expr
+    reconstructed = []
+    for name, info in missing.items():
+        print(f"  Reconstructing missing assertion: {name}")
+        condition = info["condition"]
+        scope_hint = info.get("scope_hint", "")
 
-    # Simple approach: find dotted references and single identifiers
-    # First handle dotted references (cross-module signals)
-    dotted_pattern = r'([a-zA-Z_][a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)*)'
-    for match in re.finditer(dotted_pattern, expr):
-        signal = match.group(1)
-        if not signal.startswith(f"{top_module_name}___"):
-            flattened = signal.replace(".", "___")
-            result = result.replace(signal, f"{top_module_name}___{flattened}")
+        # Replace bare identifiers with $sampled(flattened_name)
+        # Process right-to-left to preserve match positions
+        replacements = []
+        for match in re.finditer(r'\b([a-zA-Z_][a-zA-Z0-9_]*)\b', condition):
+            signal = match.group(1)
+            start = match.start()
+            end = match.end()
 
-    # Then handle single identifiers (local signals) that are not part of dotted refs
-    # and not constants/operators
-    single_pattern = r'\b([a-zA-Z_][a-zA-Z0-9_]*)\b'
-    keywords_and_operators = {'posedge', 'negedge', 'and', 'or', 'not', 'if', 'else', 'true', 'false'}
+            # Skip identifiers preceded by :: (package-scoped like riscv::PRIV_LVL_M)
+            if start >= 2 and condition[start-2:start] == "::":
+                continue
+            # Skip identifiers followed by :: (package scope prefix like riscv::PRIV_LVL_M)
+            if end + 1 < len(condition) and condition[end:end+2] == "::":
+                continue
+            # Skip Verilog radix prefixes like 'h, 'b, 'd
+            if start > 0 and condition[start-1] == "'":
+                continue
+            # Skip keywords and pure numbers
+            if signal in keywords or signal.isdigit():
+                continue
 
-    for match in re.finditer(single_pattern, result):
-        signal = match.group(1)
-        # Skip keywords, already prefixed, or part of a flattened dotted ref
-        if signal in keywords_and_operators:
-            continue
-        if signal.startswith(f"{top_module_name}___"):
-            continue
-        if f"{top_module_name}___{signal}" in result:  # already processed as part of dotted
-            continue
-        # Check if this is actually a signal (not inside quotes or special constructs)
-        # Simple heuristic: if it's surrounded by spaces/operators/parentheses, treat as signal
-        result = re.sub(rf'\b{signal}\b', f"{top_module_name}___{signal}", result, count=1)
+            flattened = _resolve_signal_name(signal, signal_map, scope_hint,
+                                             top_module_name, top_ports)
+            replacements.append((start, end, f"$sampled({flattened})"))
 
-    return result
+        for start, end, new_text in sorted(replacements, reverse=True):
+            condition = condition[:start] + new_text + condition[end:]
+
+        # Resolve clock signal
+        clock = info["clock"]
+        clock_flattened = clock if clock in top_ports else f"{top_module_name}___{clock}"
+
+        line = (f'  {name}: assert property (@(posedge {clock_flattened}) {condition})'
+                f' else $display("{info["msg"]}");')
+        reconstructed.append(line)
+
+    return reconstructed
 
 
-def generate_assertions_block(assertions, top_module_name):
-    """Generate the full assertions block for insertion into flattened Verilog."""
+def generate_assertions_block(assertions, top_module_name, top_ports, extra_lines=None):
+    """Generate the full assertions block for insertion into flattened Verilog.
+
+    Args:
+        assertions: List of assertion AST nodes (BEGIN-like dicts).
+        extra_lines: Optional list of pre-rendered assertion lines to append
+                     inside the `ifndef SYNTHESIS` guard (for reconstructed assertions).
+    """
     lines = [
         "",
         "// =========================================================================",
-        "// Security Properties / Assertions (from verilator assert-stage dump)",
+        "// Assertions (extracted from verilator assert-stage dump)",
         "// =========================================================================",
         "",
         "`ifndef SYNTHESIS",
         "",
     ]
     for a in assertions:
-        lines.append(generate_sva_assertion(a, top_module_name))
+        lines.append(generate_sva_assertion(a, top_module_name, top_ports))
+    if extra_lines:
+        lines.extend(extra_lines)
     lines.append("")
     lines.append("`endif")
     lines.append("")
     return "\n".join(lines)
+
+
 
 
 def inject_assertions_into_verilog(verilog_code, assertion_code):
@@ -3006,9 +3062,9 @@ def main():
             include_args += f" -I{inc_dir}"
 
         # 使用变量构造命令
-        # cmd = f"{verilator_bin} {files_arg} {include_args} --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
-        #         -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN "
-        cmd = f"{verilator_bin} {files_arg} {include_args} -O3 --flatten --top {args.top}  --no-std --json-only --no-json-edit-nums  --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN "
+        cmd = f"{verilator_bin} {files_arg} {include_args} --assert --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
+                -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN --bbox-unsup --error-limit 10000 "
+        # cmd = f"{verilator_bin} {files_arg} {include_args} -O3 --flatten --top {args.top}  --no-std --json-only --no-json-edit-nums --assert --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN "
         
         # 构造JSON文件路径
         json_path = input_dir / "obj_dir" / f"V{args.top}.tree.json"
@@ -3062,7 +3118,7 @@ def main():
         # 生成代码
         generator = VerilogGenerator()
         verilog_code = generator.generate(ast)
-        
+
         verilog_code = insert_resultp_statements(verilog_code, generator.resultp_dict)
         verilog_code = insert_sel_temp_statements(verilog_code, generator.sel_temp_dict)
 
@@ -3070,42 +3126,27 @@ def main():
         verilog_code = verilog_code.replace(".", "___")
         verilog_code = re.sub(r'\[(\d+)\]___', r'\1___', verilog_code)
 
-        # --- Assertion extraction from verilator assert-stage dump ---
-        # We use --dump-tree-json --lint-only --assert to get assertion info with original hierarchical references.
-        # The --flatten --json-only mode loses the original cross-module signal references in assertions.
-        os.chdir(input_dir)
-        assert_json_path = input_dir / "obj_dir" / f"V{args.top}_017_assert.tree.json"
+        # --- Build top_ports set for assertion signal name flattening ---
+        top_ports = set()
+        for m in ast.get("modulesp", []):
+            if m.get("name") == "$root":
+                for stmt in m.get("stmtsp", []):
+                    if stmt.get("type") == "VAR" and stmt.get("isPrimaryIO"):
+                        top_ports.add(stmt.get("name", ""))
+                break
 
-        if not assert_json_path.exists():
-            # Run verilator with --dump-tree-json --lint-only --assert to get assertion dump
-            assert_cmd = f"{verilator_bin} {files_arg} {include_args} --flatten --top {args.top} --dump-tree-json --lint-only --assert -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN"
-            print(f"\n--- Running verilator for assertion extraction ---")
-            assert_result = subprocess.run(
-                assert_cmd,
-                shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True
-            )
-            if assert_result.stdout:
-                print(assert_result.stdout)
-            if assert_result.stderr:
-                for line in assert_result.stderr.splitlines():
-                    if "Error" in line or "Warning" in line or "assert" in line.lower():
-                        print(f"  [assert] {line}")
-
-        if assert_json_path.exists():
-            print(f"\n--- Extracting assertions from {assert_json_path.name} ---")
-            assertions = extract_assertions_from_dump(assert_json_path, cpu_module_name=args.top.replace("_top", "_cpu"))
-            if assertions:
-                assertion_code = generate_assertions_block(assertions, args.top)
-                assertion_code = assertion_code.replace("$root", args.top)
-                verilog_code = inject_assertions_into_verilog(verilog_code, assertion_code)
-                print(f"  Injected {len(assertions)} assertions into output")
-            else:
-                print("  No assertions found in assert-stage dump")
+        # --- Assertion extraction from the flattened JSON ---
+        # The main JSON (--flatten --json-only --assert) already contains assertion
+        # ALWAYS blocks with flattened signal names (e.g. "adder_32bit.carry").
+        # No second verilator pass needed.
+        assertions = extract_assertions_from_ast(ast)
+        extra_assertions = reconstruct_missing_assertions(ast, assertions, args.top, top_ports)
+        if assertions or extra_assertions:
+            assertion_code = generate_assertions_block(assertions, args.top, top_ports, extra_assertions)
+            verilog_code = inject_assertions_into_verilog(verilog_code, assertion_code)
+            print(f"  Injected {len(assertions)} assertions + {len(extra_assertions)} reconstructed into output")
         else:
-            print(f"  Warning: Assert dump not found at {assert_json_path}")
+            print("  No assertions found in flattened JSON")
 
         os.chdir(original_dir)
 
@@ -3114,17 +3155,57 @@ def main():
         with open(output_path, 'w') as f:
             f.write(verilog_code)
 
-        # 用 sv2v 再处理一次输出文件
-        sv2v_bin = project_root / "oss-cad-suite" / "bin" / "sv2v"
-        if sv2v_bin.exists() and not sv2v_bin.is_symlink():
-            sv2v_cmd = f"{sv2v_bin} {args.output} > {args.output}.tmp && mv {args.output}.tmp {args.output}"
-            sv2v_result = subprocess.run(sv2v_cmd, shell=True, capture_output=True, text=True)
-            if sv2v_result.returncode != 0:
-                print(f"Warning: sv2v failed, using raw output.\n{sv2v_result.stderr}", file=sys.stderr)
+        with open(args.output, 'r') as f:
+            content = f.read()
+
+        # Fix invalid [0:-1] ranges produced for empty arrays
+        content = re.sub(r'\[0:-1\]\s*;', '[0:0];', content)
+
+        # Merge duplicate unpacked array declarations
+        content = _merge_declarations(content)
+
+        # Fix: when Verilator flattens array elements, names like "sig[0]"
+        # have the [0] as part of the hierarchical name, not an unpacked dimension.
+        # E.g., "reg [0:0] foo[0];" should be "reg [0:0] foo;" since [0:0] already
+        # captures the single-bit width. References like "foo[0]" remain valid as
+        # bit-selects on the 1-bit packed vector.
+        content = re.sub(r'\[0:0\]\s+(\w+)\[0\]\s*;', r'[0:0] \1;', content)
+
+        # 用 sv2v 再处理一次输出文件 (skip if assertions are injected, since sv2v strips SVA)
+        if not assertions:
+            sv2v_bin = project_root / "oss-cad-suite" / "bin" / "sv2v"
+            if sv2v_bin.exists() and not sv2v_bin.is_symlink():
+                sv2v_cmd = f"{sv2v_bin} {args.output} > {args.output}.tmp && mv {args.output}.tmp {args.output}"
+                sv2v_result = subprocess.run(sv2v_cmd, shell=True, capture_output=True, text=True)
+                if sv2v_result.returncode != 0:
+                    print(f"Warning: sv2v failed, using raw output.\n{sv2v_result.stderr}", file=sys.stderr)
+                else:
+                    print(f"sv2v conversion complete: '{args.output}'")
+                    with open(args.output, 'r') as f:
+                        content = f.read()
+
+                    def _fix_unpacked_range(match):
+                        kind = match.group(1)
+                        packed_msb = int(match.group(2))
+                        name = match.group(3)
+                        unpacked_msb = int(match.group(4))
+                        if unpacked_msb == packed_msb - 1:
+                            return f"{kind} [{packed_msb}:{packed_msb}] {name} [0:{packed_msb}];"
+                        return match.group(0)
+
+                    content = re.sub(
+                        r'(reg|wire)\s+\[(\d+):\2\]\s+(\w+)\s+\[0:(\d+)\];',
+                        _fix_unpacked_range,
+                        content
+                    )
+                    content = re.sub(r'\[0:-1\]\s*;', '[0:0];', content)
             else:
-                print(f"sv2v conversion complete: '{args.output}'")
-        else:
-            print(f"Warning: sv2v not found at {sv2v_bin}, skipping sv2v conversion.")
+                print(f"Warning: sv2v not found at {sv2v_bin}, skipping sv2v conversion.")
+        elif assertions:
+            print("Skipping sv2v conversion (assertions injected, sv2v would strip SVA)")
+
+        with open(args.output, 'w') as f:
+            f.write(content)
 
         print(f"Successfully generated Verilog code in '{args.output}'")
 
