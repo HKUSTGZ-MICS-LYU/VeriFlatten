@@ -128,8 +128,10 @@ module ariane_verilog_wrap #(
   );
 
   ariane #(
+`ifdef PITON_ARIANE
     .SwapEndianess ( SwapEndianess ),
     .CachedAddrEnd ( CachedAddrEnd ),
+`endif
     .CachedAddrBeg ( CachedAddrBeg )
   ) ariane (
     .clk_i       ( clk_i      ),

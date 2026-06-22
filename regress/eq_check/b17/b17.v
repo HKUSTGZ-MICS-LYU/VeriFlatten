@@ -800,8 +800,7 @@ module b17(clock, reset, datai, datao, hold, na, bs16, address1, address2, wr, d
    input         clock;
    input         reset;
    input [31:0]  datai;
-   output        datao;
-   integer       datao;
+   output integer datao;
    input         hold;
    input         na;
    input         bs16;

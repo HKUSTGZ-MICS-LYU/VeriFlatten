@@ -6,9 +6,11 @@ rtl/reg_intf_pkg.sv
 rtl/riscv_pkg.sv
 rtl/serpent_cache_pkg.sv
 rtl/std_cache_pkg.sv
+rtl/ariane_soc_pkg.sv
 rtl/axi_intf.sv
 rtl/axi_node_intf_wrap.sv
 rtl/reg_intf.sv
+rtl/apb_intf.sv
 rtl/aes_wrapper.sv
 rtl/alu.sv
 rtl/amo_alu.sv

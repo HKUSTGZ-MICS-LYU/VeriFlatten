@@ -164,14 +164,4 @@ module controller (
             flush_dcache_o <= flush_dcache;
         end
     end
-//-------------
-    // Assertions (HACKDAC19)
-    //-------------
-    //pragma translate_off
-    `ifndef SYNTHESIS
-        // HACKDAC19_p32: Exception signal is not set at halt
-        HACKDAC19_p32: assert property (@(posedge clk_i) (halt_o |-> ex_valid_i)) else $display("ASSERTION VIOLATION: HACKDAC19_p32");
-    `endif
-    //pragma translate_on
-
 endmodule

@@ -27,10 +27,10 @@ module axi_to_reg #(
   REG_BUS.out  reg_o
 );
 
-  AXI_LITE_BUS #(
+  AXI_LITE #(
     .AXI_ADDR_WIDTH ( ADDR_WIDTH ),
     .AXI_DATA_WIDTH ( DATA_WIDTH )
-  ) axi_lite (clk_i);
+  ) axi_lite ();
 
   //  convert axi to axi-lite
   axi_to_axi_lite #(

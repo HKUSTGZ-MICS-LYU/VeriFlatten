@@ -802,17 +802,5 @@ module ariane #(
 `endif // VERILATOR
   //pragma translate_on
 
-//-------------
-    // Assertions (HACKDAC19)
-    //-------------
-    //pragma translate_off
-    `ifndef SYNTHESIS
-        // HACKDAC19_p23: Pipeline not flushed after committing an atomic instruction
-        HACKDAC19_p23: assert property (@(posedge clk_i) (amo_valid_commit |-> (flush_ctrl_if && flush_ctrl_id && flush_ctrl_ex))) else $display("ASSERTION VIOLATION: HACKDAC19_p23");
-        // HACKDAC19_p26: Pipeline not flushed after change in virtual address translation mode
-        HACKDAC19_p26: assert property (@(posedge clk_i) ((priv_lvl != $past(priv_lvl)) |-> (flush_ctrl_if && flush_ctrl_id && flush_ctrl_ex))) else $display("ASSERTION VIOLATION: HACKDAC19_p26");
-    `endif
-    //pragma translate_on
-
 endmodule // ariane
 

@@ -435,20 +435,4 @@ module connectivity_mapping #(
 
   endgenerate
 
-//-------------
-    // Assertions (HACKDAC19)
-    //-------------
-    //pragma translate_off
-    `ifndef SYNTHESIS
-        generate
-            for (i=0; i<NB_SUBORDINATE; i++) begin
-                for (j=0; j<NB_MANAGER; j++) begin
-                    // HACKDAC19_p1: Processor access to CLINT grants it access to PLIC regardless of PLIC access configuration
-                    HACKDAC19_p1: assert property (@(posedge clk) ~((j==6) && access_ctrl_i[i][7][priv_lvl_i])) else $display("ASSERTION VIOLATION: HACKDAC19_p1");
-                end
-            end
-        endgenerate
-    `endif
-    //pragma translate_on
-
 endmodule

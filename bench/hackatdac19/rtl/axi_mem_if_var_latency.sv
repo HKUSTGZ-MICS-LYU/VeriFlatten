@@ -442,7 +442,6 @@ module   axi_mem_if_var_latency
         .AXI4_WDATA_WIDTH(AXI4_WDATA_WIDTH),
         .AXI4_ID_WIDTH(AXI4_ID_WIDTH),
         .AXI4_USER_WIDTH(AXI4_USER_WIDTH),
-        .MEM_ADDR_WIDTH(MEM_ADDR_WIDTH),
         .BUFF_DEPTH_SLAVE(BUFF_DEPTH_SLAVE)
     )
     axi_mem_if_i

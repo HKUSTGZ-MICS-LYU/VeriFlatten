@@ -483,6 +483,18 @@ class VerilogGenerator:
             
             return base_width_bits * array_size
         
+        # ENUMDTYPE: follow refDTypep to get the underlying type's width
+        if dtype_info.get("type") == "ENUMDTYPE":
+            ref_dtype_id = dtype_info.get("refDTypep", "").strip("()")
+            if ref_dtype_id and ref_dtype_id in self.type_table:
+                return self.get_base_width_bits(self.type_table[ref_dtype_id])
+
+        # REFDTYPE: follow refDTypep to get the underlying type's width
+        if dtype_info.get("type") == "REFDTYPE":
+            ref_dtype_id = dtype_info.get("refDTypep", "").strip("()")
+            if ref_dtype_id and ref_dtype_id in self.type_table:
+                return self.get_base_width_bits(self.type_table[ref_dtype_id])
+
         # 检查是否有 range 字段
         range_str = dtype_info.get("range", "")
         if range_str:
@@ -645,7 +657,20 @@ class VerilogGenerator:
             
             # 获取位宽信息和数组维度
             base_width, array_range = self.get_width_info(node)
-            
+
+            # Verilator将packed bit range编码到变量名中（如data_AUX_int[70:0]）
+            # 这个[left:right]后缀会被错误地当成unpacked array维度，
+            # 生成 reg [X:0] ...name[X:0]（2元素数组）而非 reg [X:0] ...name（标量）。
+            # 无论base_width是否已由get_width_info解析，都必须从var_name中剥离此后缀。
+            import re as _re
+            name_range_match = _re.search(r'\[(\d+):\d+\]$', var_name)
+            if name_range_match:
+                # 如果get_width_info未能解析位宽，则用名称中的range作为packed width
+                if not base_width:
+                    base_width = var_name[var_name.rfind('['):]
+                # 始终从变量名中剥离[left:right]后缀，避免创建unpacked array
+                var_name = var_name[:var_name.rfind('[')]
+
             # 处理不同类型的变量
             if var_type in ["GPARAM", "PARAM", "LPARAM"]:
                 return self.handle_parameter(node)
@@ -663,7 +688,6 @@ class VerilogGenerator:
                 warning = f"Warning: Unhandled var type: {var_type}"
                 print(warning)
                 return f"{self.indent()}// {warning}"
-            
             # 根据是否有位宽和数组维度组装声明
             declaration = ""
             if base_width and array_range:
@@ -1093,18 +1117,19 @@ class VerilogGenerator:
         return "\n".join(filter(None, result))
     
     def handle_jumpblock(self, node: Dict[str, Any]) -> str:
-        """处理JUMPBLOCK节点，主要是通过转发到其中的CASE语句"""
+        """处理JUMPBLOCK节点，处理所有语句，遇到JUMPGO时停止"""
         if not node:
             return ""
 
-        # 如果存在stmtsp，处理第一个语句（通常是CASE语句）
+        # 处理所有语句，遇到JUMPGO时break
+        results = []
         if "stmtsp" in node and node["stmtsp"]:
-            # 检查第一个语句是否是CASE
-            stmt = node["stmtsp"][0]
-            # 如果不是CASE，直接处理
-            return self.handle_statement(stmt)
-        
-        return ""
+            for stmt in node["stmtsp"]:
+                if stmt.get("type") == "JUMPGO":
+                    break  # JUMPGO is Verilator internal jump; stop processing this block
+                results.append(self.handle_statement(stmt))
+
+        return "\n".join(filter(None, results))
             
     
     
@@ -1359,6 +1384,8 @@ class VerilogGenerator:
                 result = self.handle_jumpblock(node)
             elif stmt_type == "DELAY":
                 result = ""  # Skip timing delays (not synthesizable)
+            elif stmt_type == "JUMPGO":
+                result = ""  # JUMPGO is Verilator internal jump; in flattened output it is a no-op
             elif stmt_type == "CRESET":
                 result = ""  # Skip Verilator internal reset logic
             elif stmt_type == "VARREF":
@@ -1951,9 +1978,9 @@ class VerilogGenerator:
         elif node_type == "EQ":
             return self.handle_binary_op(node, "==")
         elif node_type == "EQWILD":
-            loc = node.get("loc")
-            print(f"Warning: EQWILD is not fully supported in line {loc}")
-            return self.handle_binary_op(node, "==")
+            return self.handle_binary_op(node, "==?")
+        elif node_type == "NEQWILD":
+            return self.handle_binary_op(node, "!=?")
         elif node_type == "GT":
             return self.handle_binary_op(node, ">")
         elif node_type == "GTS":  # 添加GTS处理
@@ -2043,6 +2070,13 @@ class VerilogGenerator:
                 warning_msg = f"Error in REPLICATE: {str(e)}"
                 print(f"Warning: {warning_msg}")
                 return f"/* Warning: {warning_msg} */ 1'b0"
+        elif node_type == "ONEHOT":
+            expr = self.handle_expression(node["lhsp"][0])
+            return f"$onehot({expr})"
+        elif node_type == "STREAML":
+            expr = self.handle_expression(node["lhsp"][0])
+            slice_size = self.handle_expression(node["rhsp"][0]) if node.get("rhsp") else "1"
+            return f"{{<<{slice_size}{{{expr}}}}}"
         elif node_type == "EXPRSTMT":
             return self.handle_exprstmt(node)
         elif node_type == "COND":
@@ -2180,7 +2214,25 @@ class VerilogGenerator:
                         target_width = abs(int(width_range[0]) - int(width_range[1])) + 1
                     except ValueError:
                         pass
-            else:
+
+            # Fallback 1: Try widthConst attribute on the EXTEND node
+            if target_width == 0:
+                width_const = node.get("widthConst", "")
+                if width_const:
+                    try:
+                        target_width = int(width_const)
+                    except ValueError:
+                        pass
+
+            # Fallback 2: Try dtypep direct lookup in type_table
+            if target_width == 0:
+                dtype_ref = node.get("dtypep", "")
+                if isinstance(dtype_ref, str) and dtype_ref.startswith("(") and dtype_ref.endswith(")"):
+                    dtype_id = dtype_ref[1:-1]
+                    if dtype_id in self.type_table:
+                        target_width = self.get_base_width_bits(self.type_table[dtype_id])
+
+            if target_width == 0:
                 loc = node.get("loc")
                 print(f"Error in EXTEND: Invalid width range in line {loc}")
 
@@ -2194,6 +2246,16 @@ class VerilogGenerator:
                         source_width = abs(int(width_range[0]) - int(width_range[1])) + 1
                     except ValueError:
                         pass
+
+            # Fallback for source_width: try dtypep on lhs_node
+            if source_width == 1 and lhs_base_width == "":
+                lhs_dtype_ref = lhs_node.get("dtypep", "")
+                if isinstance(lhs_dtype_ref, str) and lhs_dtype_ref.startswith("(") and lhs_dtype_ref.endswith(")"):
+                    lhs_dtype_id = lhs_dtype_ref[1:-1]
+                    if lhs_dtype_id in self.type_table:
+                        sw = self.get_base_width_bits(self.type_table[lhs_dtype_id])
+                        if sw > 0:
+                            source_width = sw
 
             # 计算需要扩展的位数
             extend_bits = target_width - source_width
@@ -2719,7 +2781,7 @@ def _merge_declarations(verilog_code):
     return verilog_code
 
 
-def generate_sva_assertion(begin_node, top_module_name, top_ports):
+def generate_sva_assertion(begin_node, top_module_name, top_ports, type_table=None, _counter=[0]):
     """Generate one SVA assert property line from a BEGIN assertion node.
 
     Uses VerilogGenerator.handle_expression() to convert the condition AST
@@ -2730,9 +2792,15 @@ def generate_sva_assertion(begin_node, top_module_name, top_ports):
     """
     gen = VerilogGenerator()
     gen.convert_complex_sel_to_temp = False  # preserve assertion expression semantics; temp vars from assertion gen wouldn't be emitted
+    if type_table:
+        gen.type_table = type_table
 
     try:
         name = begin_node.get("name", "")
+        # Make generic assertion names unique to avoid "Duplicate declaration of block"
+        if not name or name == "assertion":
+            _counter[0] += 1
+            name = f"assertion_{_counter[0]}"
         stmtsp = begin_node.get("stmtsp", [])
         if not stmtsp:
             return f"  // {name}: empty body (optimized away by Verilator)"
@@ -2768,6 +2836,7 @@ def generate_sva_assertion(begin_node, top_module_name, top_ports):
             # only the runtime CEXPR guard remains. Cannot reconstruct Verilog assertion.
             fmtp = inner.get("fmtp", [])
             msg = fmtp[0].get("name", f"ASSERTION VIOLATION: {name}") if fmtp else f"ASSERTION VIOLATION: {name}"
+            msg = gen.clean_format_string(msg)
             return f"  // {name}: compile-time resolved, skipped (condition lost to Verilator CEXPR optimization)\n  // {name}: $display(\"{msg}\");"
 
         elif inner_type == "IF":
@@ -2790,6 +2859,7 @@ def generate_sva_assertion(begin_node, top_module_name, top_ports):
                     if fmtp:
                         msg = fmtp[0].get("name", msg)
                         break
+            msg = gen.clean_format_string(msg)
 
             # Determine polarity: if DISPLAY is in thensp, the inner IF condition
             # IS the violation condition. assert property (X) fires when X is FALSE,
@@ -2818,7 +2888,7 @@ _HACKDAC19_MISSING = {
     "HACKDAC19_p5": {
         "clock": "clk_i",
         "scope_hint": "csr_regfile_i",
-        "condition": "(~(debug_mode_q && umode_i) || (riscv::PRIV_LVL_M))",
+        "condition": "(~(debug_mode_q && umode_i) || (2'b11))",
         "msg": "ASSERTION VIOLATION: HACKDAC19_p5",
     },
 }
@@ -2941,7 +3011,7 @@ def reconstruct_missing_assertions(ast, extracted_assertions, top_module_name, t
     return reconstructed
 
 
-def generate_assertions_block(assertions, top_module_name, top_ports, extra_lines=None):
+def generate_assertions_block(assertions, top_module_name, top_ports, extra_lines=None, type_table=None):
     """Generate the full assertions block for insertion into flattened Verilog.
 
     Args:
@@ -2959,7 +3029,7 @@ def generate_assertions_block(assertions, top_module_name, top_ports, extra_line
         "",
     ]
     for a in assertions:
-        lines.append(generate_sva_assertion(a, top_module_name, top_ports))
+        lines.append(generate_sva_assertion(a, top_module_name, top_ports, type_table))
     if extra_lines:
         lines.extend(extra_lines)
     lines.append("")
@@ -3062,9 +3132,9 @@ def main():
             include_args += f" -I{inc_dir}"
 
         # 使用变量构造命令
-        cmd = f"{verilator_bin} {files_arg} {include_args} --assert --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
-                -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN --bbox-unsup --error-limit 10000 "
-        # cmd = f"{verilator_bin} {files_arg} {include_args} -O3 --flatten --top {args.top}  --no-std --json-only --no-json-edit-nums --assert --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN "
+        # cmd = f"{verilator_bin} {files_arg} {include_args} --assert --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
+        #         -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN --bbox-unsup --error-limit 10000 "
+        cmd = f"{verilator_bin} {files_arg} {include_args} -O3 --flatten --top {args.top}  --no-std --json-only --no-json-edit-nums --assert --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN --bbox-unsup --error-limit 10000 "
         
         # 构造JSON文件路径
         json_path = input_dir / "obj_dir" / f"V{args.top}.tree.json"
@@ -3142,7 +3212,7 @@ def main():
         assertions = extract_assertions_from_ast(ast)
         extra_assertions = reconstruct_missing_assertions(ast, assertions, args.top, top_ports)
         if assertions or extra_assertions:
-            assertion_code = generate_assertions_block(assertions, args.top, top_ports, extra_assertions)
+            assertion_code = generate_assertions_block(assertions, args.top, top_ports, extra_assertions, generator.type_table)
             verilog_code = inject_assertions_into_verilog(verilog_code, assertion_code)
             print(f"  Injected {len(assertions)} assertions + {len(extra_assertions)} reconstructed into output")
         else:

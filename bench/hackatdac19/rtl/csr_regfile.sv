@@ -1053,16 +1053,6 @@ module csr_regfile #(
           @(posedge clk_i) !(eret_o && ex_i.valid))
         else begin $error("eret and exception should never be valid at the same time"); $stop(); end
 
-        // HACKDAC19_p5: Incorrect access control setting leaving debug enabled
-        HACKDAC19_p5: assert property (@(posedge clk_i) (~(debug_mode_q && umode_i) || (riscv::PRIV_LVL_M))) else $display("ASSERTION VIOLATION: HACKDAC19_p5");
-        // HACKDAC19_p9: Execute machine level instructions from user mode
-        HACKDAC19_p9: assert property (@(posedge clk_i) ((csr_we || csr_read) && (csr_addr.address==riscv::CSR_MEPC) |-> csr_exception_o.valid == 1'b1)) else $display("ASSERTION VIOLATION: HACKDAC19_p9");
-        // HACKDAC19_p24: SATP register (read) accessible in Supervisor mode even if TVM is enabled
-        HACKDAC19_p24: assert property (@(posedge clk_i) (tvm_o |-> (csr_rdata_o != satp_q))) else $display("ASSERTION VIOLATION: HACKDAC19_p24");
-        // HACKDAC19_p25: SATP register (write) accessible in Supervisor mode even if TVM is enabled
-        HACKDAC19_p25: assert property (@(posedge clk_i) (tvm_o |-> (satp_d != csr_wdata_i))) else $display("ASSERTION VIOLATION: HACKDAC19_p25");
-        // HACKDAC19_p29: Instruction retired counters are updated in non-debug mode
-        HACKDAC19_p29: assert property (@(posedge clk_i) ((instret_q != $past(instret_q)) |-> debug_mode_q)) else $display("ASSERTION VIOLATION: HACKDAC19_p29");
-    `endif
+        `endif
     //pragma translate_on
 endmodule

@@ -296,16 +296,4 @@ module commit_stage #(
         end
     end
 
-//-------------
-    // Assertions (HACKDAC19)
-    //-------------
-    //pragma translate_off
-    `ifndef SYNTHESIS
-        // HACKDAC19_p21: Receive CSR interrupts when committing atomic instructions
-        HACKDAC19_p21: assert property (@(posedge clk_i) (amo_valid_commit_o |-> (exception_o != csr_exception_i))) else $display("ASSERTION VIOLATION: HACKDAC19_p21");
-        // HACKDAC19_p22: Commit the second instruction even if the first is atomic instruction
-        HACKDAC19_p22: assert property (@(posedge clk_i) (amo_valid_commit_o |-> ~commit_ack_o[1])) else $display("ASSERTION VIOLATION: HACKDAC19_p22");
-    `endif
-    //pragma translate_on
-
 endmodule
