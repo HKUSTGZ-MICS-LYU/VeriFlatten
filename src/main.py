@@ -3329,6 +3329,12 @@ def main():
             sampled_signals = set()
             for m in _re_assert.finditer(r'\$sampled\s*\(\s*(' + _re_assert.escape(top_name) + r'___\w+)\s*\)', content):
                 sampled_signals.add(m.group(1))
+            # Also find signals in @(posedge signal) / @(negedge signal) of assertions
+            for m in _re_assert.finditer(
+                r'@\s*\(\s*(?:posedge|negedge)\s+(' + _re_assert.escape(top_name) + r'___\w+)\s*\)',
+                content
+            ):
+                sampled_signals.add(m.group(1))
             if sampled_signals:
                 # Check which ones lack declarations
                 missing_decls = []
