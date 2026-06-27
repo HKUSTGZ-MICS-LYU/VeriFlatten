@@ -1168,7 +1168,7 @@ class VerilogGenerator:
             # (CASE, LOOP, BEGIN), including those nested inside JUMPBLOCK nodes.
             def _has_control_flow(stmts):
                 for s in stmts:
-                    if s.get("type") in ("CASE", "LOOP", "BEGIN"):
+                    if s.get("type") in ("CASE", "LOOP", "BEGIN", "WHILE"):
                         return True
                     if s.get("type") == "JUMPBLOCK":
                         if _has_control_flow(s.get("stmtsp", [])):
