@@ -2127,6 +2127,12 @@ class VerilogGenerator:
                 inner = self.handle_expression(exprp[0])
                 return f"$sampled({inner})"
             return ""
+        elif node_type == "ISUNKNOWN":
+            lhsp = node.get("lhsp", [])
+            if lhsp:
+                inner = self.handle_expression(lhsp[0])
+                return f"$isunknown({inner})"
+            return "$isunknown()"
         elif node_type == "CEXPR":
             # 处理CEXPR节点，通常包含TEXT节点
             results = []

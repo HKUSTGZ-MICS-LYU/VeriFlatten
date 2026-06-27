@@ -369,9 +369,9 @@ wire [31:0] sp_attack_enable;
 reg [31:0] prev_epcr;
 reg [31:0] prev_eear;
 reg prev_sr0;
-reg [31:0] prev_esr;
+reg [`OR1200_SR_WIDTH-1:0] prev_esr;
 reg [31:0] prev_if_insn;
-reg [31:0] prev_id_freeze;
+reg prev_id_freeze;
 reg [31:0] prev_ex_insn;
 
 
@@ -1021,4 +1021,90 @@ wire insn_clk = ~ex_void & ~ex_freeze & (ex_pc[31:27] == 5'b0);
 
 assign sp_assertions_violated = sp_assertions_violated_b; 
  
+
+// =========================================================================
+// Security Properties / Assertions (from properties.md)
+// =========================================================================
+
+
+  // --- Control Flow (CWE-1281) ---
+  p1: assert property (@(posedge clk) (or1200_except.wb_pc == or1200_sprs.spr_dat_ppc) || (rst == 1)) else $display("ASSERTION VIOLATION: p1 (Control Flow, CWE-1281)");
+  p2: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 1) )) || (or1200_ctrl.ex_pc == or1200_sprs.spr_dat_npc) || (rst == 1)) else $display("ASSERTION VIOLATION: p2 (Control Flow, CWE-1281)");
+  p3: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 2) )) || (or1200_ctrl.ex_pc == or1200_sprs.spr_dat_npc) || (rst == 1)) else $display("ASSERTION VIOLATION: p3 (Control Flow, CWE-1281)");
+  p4: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 3) )) || (or1200_ctrl.ex_pc == or1200_sprs.spr_dat_npc) || (rst == 1)) else $display("ASSERTION VIOLATION: p4 (Control Flow, CWE-1281)");
+  p5: assert property (@(posedge clk) ~(((or1200_ctrl.ex_insn & 'hFFE00000) >> 21 == 1826) && (operand_a > operand_b)) || (or1200_sprs.to_sr[9] == 1) || (rst == 1)) else $display("ASSERTION VIOLATION: p5 (Control Flow, CWE-1281)");
+  p6: assert property (@(posedge clk) ~(((or1200_ctrl.ex_insn & 'hFFE00000) >> 21 == 1829) && (operand_a <= operand_b)) || (or1200_sprs.to_sr[9] == 1) || (rst == 1)) else $display("ASSERTION VIOLATION: p6 (Control Flow, CWE-1281)");
+  p7: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000)>>26==1)) || (or1200_rf.rf_addrw==9) || (rst == 1)) else $display("ASSERTION VIOLATION: p7 (Control Flow, CWE-1281)");
+  p8: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 2) )) || (or1200_rf.rf_addrw != 9) || (rst == 1)) else $display("ASSERTION VIOLATION: p8 (Control Flow, CWE-1281)");
+  // --- Privilege escalation / deescalation (CWE-1198) ---
+  p9: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 1) )) || (or1200_sprs.sr[0] == prev_sr0) || (rst == 1)) else $display("ASSERTION VIOLATION: p9 (Privilege escalation / deescalation, CWE-1198)");
+  p10: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 2) )) || (or1200_sprs.sr[0] == prev_sr0) || (rst == 1)) else $display("ASSERTION VIOLATION: p10 (Privilege escalation / deescalation, CWE-1198)");
+  p11: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 3) & ((or1200_ctrl.ex_insn & 'h3C000000) != 0))) || (or1200_sprs.sr[0] == prev_sr0) || (rst == 1)) else $display("ASSERTION VIOLATION: p11 (Privilege escalation / deescalation, CWE-1198)");
+  p12: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 1) )) || (or1200_except.epcr == prev_epcr) || (rst == 1)) else $display("ASSERTION VIOLATION: p12 (Privilege escalation / deescalation, CWE-1198)");
+  p13: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 2) )) || (or1200_except.epcr == prev_epcr) || (rst == 1)) else $display("ASSERTION VIOLATION: p13 (Privilege escalation / deescalation, CWE-1198)");
+  p14: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 3) )) || (or1200_except.epcr == prev_epcr) || (rst == 1)) else $display("ASSERTION VIOLATION: p14 (Privilege escalation / deescalation, CWE-1198)");
+  p15: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 1) )) || (or1200_except.eear == prev_eear) || (rst == 1)) else $display("ASSERTION VIOLATION: p15 (Privilege escalation / deescalation, CWE-1198)");
+  p16: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 2) )) || (or1200_except.eear == prev_eear) || (rst == 1)) else $display("ASSERTION VIOLATION: p16 (Privilege escalation / deescalation, CWE-1198)");
+  p17: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 3) )) || (or1200_except.eear == prev_eear) || (rst == 1)) else $display("ASSERTION VIOLATION: p17 (Privilege escalation / deescalation, CWE-1198)");
+  p18: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 1) )) || (or1200_except.esr == prev_esr) || (rst == 1)) else $display("ASSERTION VIOLATION: p18 (Privilege escalation / deescalation, CWE-1198)");
+  p19: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 2) )) || (or1200_except.esr == prev_esr) || (rst == 1)) else $display("ASSERTION VIOLATION: p19 (Privilege escalation / deescalation, CWE-1198)");
+  p20: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 3) & ((or1200_ctrl.ex_insn & 'h3C000000) != 0))) || (or1200_except.esr == prev_esr) || (rst == 1)) else $display("ASSERTION VIOLATION: p20 (Privilege escalation / deescalation, CWE-1198)");
+  p21: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 9) )) || (or1200_except.eear == prev_eear) || (rst == 1)) else $display("ASSERTION VIOLATION: p21 (Privilege escalation / deescalation, CWE-1198)");
+  p22: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 9) )) || (or1200_except.epcr == prev_epcr) || (rst == 1)) else $display("ASSERTION VIOLATION: p22 (Privilege escalation / deescalation, CWE-1198)");
+  p23: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 9) )) || (or1200_except.esr == prev_esr) || (rst == 1)) else $display("ASSERTION VIOLATION: p23 (Privilege escalation / deescalation, CWE-1198)");
+  p24: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 9)) || (or1200_genpc.pc == or1200_except.epcr) || (rst == 1)) else $display("ASSERTION VIOLATION: p24 (Privilege escalation / deescalation, CWE-1198)");
+  p25: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 9)) || (or1200_sprs.to_sr == or1200_except.esr) || (rst == 1)) else $display("ASSERTION VIOLATION: p25 (Privilege escalation / deescalation, CWE-1198)");
+  p26: assert property (@(posedge clk) (~((prev_ex_insn & 'hFFFF0000) >> 16 == 8192)) || (~((or1200_ctrl.ex_insn & 'hFFFF0000) >> 16 != 8192)) || (or1200_except.lsu_addr == or1200_except.eear) || (rst == 1)) else $display("ASSERTION VIOLATION: p26 (Privilege escalation / deescalation, CWE-1198)");
+  p27: assert property (@(posedge clk) (~((prev_ex_insn & 'hFFFF0000) >> 16 == 8192)) || (~((or1200_ctrl.ex_insn & 'hFFFF0000) >> 16 != 8192)) || (or1200_except.spr_dat_npc == or1200_except.epcr) || (rst == 1)) else $display("ASSERTION VIOLATION: p27 (Privilege escalation / deescalation, CWE-1198)");
+  p28: assert property (@(posedge clk) (~((or1200_ctrl.wb_insn & 'hFFFF0000) >> 16 == 8192)) || (or1200_except.lsu_addr == or1200_except.eear) || (rst == 1)) else $display("ASSERTION VIOLATION: p28 (Privilege escalation / deescalation, CWE-1198)");
+  p29: assert property (@(posedge clk) (~((or1200_ctrl.wb_insn & 'hFFFF0000) >> 16 == 8192)) || (or1200_except.spr_dat_npc == or1200_except.epcr) || (rst == 1)) else $display("ASSERTION VIOLATION: p29 (Privilege escalation / deescalation, CWE-1198)");
+  p30: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFFFF0000) >> 16 == 8192)) || (or1200_rf.rf_addrw == or1200_ctrl.ex_insn[25:21]) || (rst == 1)) else $display("ASSERTION VIOLATION: p30 (Privilege escalation / deescalation, CWE-1198)");
+  // --- Update registers (CWE-1262) ---
+  p31: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 47) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p31 (Update registers, CWE-1262)");
+  p32: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 57) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p32 (Update registers, CWE-1262)");
+  p33: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 51) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p33 (Update registers, CWE-1262)");
+  p34: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 52) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p34 (Update registers, CWE-1262)");
+  p35: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 53) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p35 (Update registers, CWE-1262)");
+  p36: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 54) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p36 (Update registers, CWE-1262)");
+  p37: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 55) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p37 (Update registers, CWE-1262)");
+  p38: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 48) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p38 (Update registers, CWE-1262)");
+  p39: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFF000000) >> 24 == 21) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p39 (Update registers, CWE-1262)");
+  p40: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 9) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p40 (Update registers, CWE-1262)");
+  p41: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 17) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p41 (Update registers, CWE-1262)");
+  p42: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 0) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p42 (Update registers, CWE-1262)");
+  p43: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 4) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p43 (Update registers, CWE-1262)");
+  p44: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 3) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p44 (Update registers, CWE-1262)");
+  p45: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 8) )) || (or1200_rf.we == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p45 (Update registers, CWE-1262)");
+  p46: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 48)) || (or1200_sprs.spr_dat_o == operand_b)) else $display("ASSERTION VIOLATION: p46 (Update registers, CWE-1262)");
+  // --- Correct results (CWE-1221) ---
+  p47: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 2) )) || (or1200_ctrl.ex_insn[25:21] == or1200_rf.addrw) || (rst == 1)) else $display("ASSERTION VIOLATION: p47 (Correct results, CWE-1221)");
+  p48: assert property (@(posedge clk) (~(((or1200_ctrl.ex_insn & 'hC0000000) >> 30 == 3) )) || (or1200_ctrl.ex_insn[25:21] == or1200_rf.addrw) || (rst == 1)) else $display("ASSERTION VIOLATION: p48 (Correct results, CWE-1221)");
+  // --- Instruction executed (CWE-1281) ---
+  p49: assert property (@(posedge clk) ((or1200_ctrl.ex_insn & 'hFC000000) >> 26 != 'h1c) || (rst == 1)) else $display("ASSERTION VIOLATION: p49 (Instruction executed, CWE-1281)");
+  p50: assert property (@(posedge clk) (id_insn == 32'h14410000) || (id_insn == 32'h14610000) || (id_insn == prev_if_insn) || (prev_id_freeze) || (rst == 1)) else $display("ASSERTION VIOLATION: p50 (Instruction executed, CWE-1281)");
+  p51: assert property (@(posedge clk) (if_insn == 32'h14610000) || (if_insn == 32'h14410000) || (if_insn == icpu_dat_i ) || (if_insn == 0) || (rst == 1) || (if_insn == or1200_if.insn_saved)) else $display("ASSERTION VIOLATION: p51 (Instruction executed, CWE-1281)");
+  // --- Memory access (CWE-1202) ---
+  p52: assert property (@(posedge clk) (operand_b == dcpu_dat_o) || (rst == 1)) else $display("ASSERTION VIOLATION: p52 (Memory access, CWE-1202)");
+  p53: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 32)) || (or1200_rf.rf_dataw == dcpu_dat_o) || (rst == 1)) else $display("ASSERTION VIOLATION: p53 (Memory access, CWE-1202)");
+  p54: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 33)) || (or1200_rf.rf_dataw == dcpu_dat_o) || (rst == 1)) else $display("ASSERTION VIOLATION: p54 (Memory access, CWE-1202)");
+  p55: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 34)) || (or1200_rf.rf_dataw == dcpu_dat_o) || (rst == 1)) else $display("ASSERTION VIOLATION: p55 (Memory access, CWE-1202)");
+  p56: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 35)) || (or1200_rf.rf_dataw == dcpu_dat_o) || (rst == 1)) else $display("ASSERTION VIOLATION: p56 (Memory access, CWE-1202)");
+  p57: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 36)) || (or1200_rf.rf_dataw == dcpu_dat_o) || (rst == 1)) else $display("ASSERTION VIOLATION: p57 (Memory access, CWE-1202)");
+  p58: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 37)) || (or1200_rf.rf_dataw == dcpu_dat_o) || (rst == 1)) else $display("ASSERTION VIOLATION: p58 (Memory access, CWE-1202)");
+  p59: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 38)) || (or1200_rf.rf_dataw == dcpu_dat_o) || (rst == 1)) else $display("ASSERTION VIOLATION: p59 (Memory access, CWE-1202)");
+  p60: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 32)) || (dcpu_adr_o == operand_a + ex_simm) || (rst == 1)) else $display("ASSERTION VIOLATION: p60 (Memory access, CWE-1202)");
+  p61: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 33)) || (dcpu_adr_o == operand_a + ex_simm) || (rst == 1)) else $display("ASSERTION VIOLATION: p61 (Memory access, CWE-1202)");
+  p62: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 34)) || (dcpu_adr_o == operand_a + ex_simm) || (rst == 1)) else $display("ASSERTION VIOLATION: p62 (Memory access, CWE-1202)");
+  p63: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 35)) || (dcpu_adr_o == operand_a + ex_simm) || (rst == 1)) else $display("ASSERTION VIOLATION: p63 (Memory access, CWE-1202)");
+  p64: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 36)) || (dcpu_adr_o == operand_a + ex_simm) || (rst == 1)) else $display("ASSERTION VIOLATION: p64 (Memory access, CWE-1202)");
+  p65: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 37)) || (dcpu_adr_o == operand_a + ex_simm) || (rst == 1)) else $display("ASSERTION VIOLATION: p65 (Memory access, CWE-1202)");
+  p66: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 38)) || (dcpu_adr_o == operand_a + ex_simm) || (rst == 1)) else $display("ASSERTION VIOLATION: p66 (Memory access, CWE-1202)");
+  p67: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 37)) || ((or1200_lsu.or1200_mem2reg.regdata & 32'hFFFF0000) == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p67 (Memory access, CWE-1202)");
+  p68: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC000000) >> 26 == 53)) || ((or1200_lsu.or1200_reg2mem.memdata & 32'h0000FFFF) == (or1200_lsu.or1200_reg2mem.regdata & 32'h0000FFFF)) || (rst == 1)) else $display("ASSERTION VIOLATION: p68 (Memory access, CWE-1202)");
+  p69: assert property (@(posedge clk) (or1200_lsu.dcpu_dat_i == or1200_lsu.or1200_mem2reg.memdata) || (rst == 1)) else $display("ASSERTION VIOLATION: p69 (Memory access, CWE-1202)");
+  p70: assert property (@(posedge clk) (~((or1200_rf.rf_we == 1) && (or1200_rf.rf_addrw == 0))) || (or1200_rf.rf_dataw == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p70 (Memory access, CWE-1202)");
+  p71: assert property (@(posedge clk) (~((or1200_ctrl.ex_insn & 'hFC0003CF) == 'hE00000C8)) || (((operand_a << (6'd32 - {1'b0, operand_b[4:0]})) | (operand_a >> operand_b[4:0])) == or1200_rf.rf_dataw) || (or1200_rf.rf_dataw == 0) || (rst == 1)) else $display("ASSERTION VIOLATION: p71 (Memory access, CWE-1202)");
+
+
+
 endmodule
