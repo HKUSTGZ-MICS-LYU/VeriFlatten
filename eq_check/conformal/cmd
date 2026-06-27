@@ -1,1 +1,0 @@
-lec -Dofile verify.lec -NOGui -LOGfile verify.log

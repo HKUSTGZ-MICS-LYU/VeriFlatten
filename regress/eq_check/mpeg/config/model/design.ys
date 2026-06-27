@@ -1,0 +1,19 @@
+# running in config/src/
+read -formal mpeg_golden.v
+prep -top main
+design -stash golden
+
+read -formal f_mpeg.v
+prep -top main
+design -stash revised
+
+design -load golden
+design -copy-from revised -as revised main
+miter -equiv -flatten -make_outputs main revised miter
+clk2fflogic
+prep -top miter
+
+hierarchy -smtcheck
+rename -witness
+write_jny -no-connections ../model/design.json
+write_rtlil ../model/design.il

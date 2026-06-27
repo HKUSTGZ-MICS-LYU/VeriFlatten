@@ -318,12 +318,28 @@ class VerilogGenerator:
 
     def handle_netlist(self, node: Dict[str, Any]) -> str:
         result = []
-        
+
         # 处理模块列表
         if "modulesp" in node and isinstance(node["modulesp"], list):
+            # 第一遍：收集 IFACE (接口) 节点中的变量声明
+            # Verilator 将 AXI 总线结构体展平为独立的 VAR 节点放在 IFACE 中，
+            # 但模块的 stmtsp 中只有对这些变量的 VARREF 引用，没有声明。
+            # 注意：多个 IFACE 可能有重名的变量 (如 b_valid)，需要去重
+            self.iface_var_nodes = []
+            seen_iface_vars = set()
             for module in node["modulesp"]:
-                result.append(self.generate(module))
-        
+                if module.get("type") == "IFACE":
+                    for stmt in module.get("stmtsp", []):
+                        if stmt.get("type") == "VAR":
+                            name = stmt.get("name", "")
+                            if name and name not in seen_iface_vars:
+                                seen_iface_vars.add(name)
+                                self.iface_var_nodes.append(stmt)
+
+            for module in node["modulesp"]:
+                if module.get("type") != "IFACE":
+                    result.append(self.generate(module))
+
         return "\n\n".join(result)
 
     def handle_module(self, node: Dict[str, Any]) -> str:
@@ -340,7 +356,15 @@ class VerilogGenerator:
             self.used_vars = set()
             self.procedural_vars = set()  # 重置程序化变量集合
             self.collect_used_vars(node["stmtsp"])
-            
+
+            # 添加 IFACE (接口) 中收集到的变量声明
+            # 这些变量 (如 AXI 总线信号 b_valid, r_data 等) 被模块引用但声明在 IFACE 节点中
+            if hasattr(self, 'iface_var_nodes'):
+                for var_node in self.iface_var_nodes:
+                    var_decl = self.handle_var(var_node)
+                    if var_decl:
+                        declarations.append(var_decl)
+
             for stmt in node["stmtsp"]:
                 if stmt.get("type") == "VAR" and stmt.get("isPrimaryIO"):
                     ports.append(self.generate_port(stmt))
@@ -3064,6 +3088,8 @@ def main():
                         help='Force overwrite output file if it exists')
     parser.add_argument('-I', '--include', type=str, action='append', default=[],
                         help='Include directory for verilator (can be specified multiple times)')
+    parser.add_argument('--skip-sv2v', action='store_true',
+                        help='Skip sv2v conversion step')
 
     args = parser.parse_args()
 
@@ -3132,9 +3158,9 @@ def main():
             include_args += f" -I{inc_dir}"
 
         # 使用变量构造命令
-        # cmd = f"{verilator_bin} {files_arg} {include_args} --assert --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
-        #         -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN --bbox-unsup --error-limit 10000 "
-        cmd = f"{verilator_bin} {files_arg} {include_args} -O3 --flatten --top {args.top}  --no-std --json-only --no-json-edit-nums --assert --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN --bbox-unsup --error-limit 10000 "
+        cmd = f"{verilator_bin} {files_arg} {include_args} --assert --flatten --top {args.top} -fno-acyc-simp -fno-const-before-dfg -fno-combine -fno-const -fno-const-bit-op-tree -fno-expand -fno-merge-cond -fno-merge-cond-motion \
+                -fno-subst-const -fno-subst -fno-table -fno-dfg --no-std --json-only --no-json-edit-nums  -fno-life -fno-assemble --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN --bbox-unsup --error-limit 10000 "
+        # cmd = f"{verilator_bin} {files_arg} {include_args} -O3 --flatten --top {args.top}  --no-std --json-only --no-json-edit-nums --assert --timing -Wno-fatal -Wno-BLKANDNBLK -Wno-ASSIGNIN --bbox-unsup --error-limit 10000 "
         
         # 构造JSON文件路径
         json_path = input_dir / "obj_dir" / f"V{args.top}.tree.json"
@@ -3241,10 +3267,12 @@ def main():
         # bit-selects on the 1-bit packed vector.
         content = re.sub(r'\[0:0\]\s+(\w+)\[0\]\s*;', r'[0:0] \1;', content)
 
-        # 用 sv2v 再处理一次输出文件 (skip if assertions are injected, since sv2v strips SVA)
-        if not assertions:
+        # Run sv2v on the output (skip if --skip-sv2v or assertions injected, since sv2v strips SVA)
+        if not args.skip_sv2v and not assertions:
             sv2v_bin = project_root / "oss-cad-suite" / "bin" / "sv2v"
             if sv2v_bin.exists() and not sv2v_bin.is_symlink():
+                pre_sv2v_content = content
+
                 sv2v_cmd = f"{sv2v_bin} {args.output} > {args.output}.tmp && mv {args.output}.tmp {args.output}"
                 sv2v_result = subprocess.run(sv2v_cmd, shell=True, capture_output=True, text=True)
                 if sv2v_result.returncode != 0:
@@ -3269,13 +3297,72 @@ def main():
                         content
                     )
                     content = re.sub(r'\[0:-1\]\s*;', '[0:0];', content)
+
+                    # Verify sv2v output: revert if verilator --lint-only --assert finds errors
+                    verilator_bin = project_root / "oss-cad-suite" / "bin" / "verilator"
+                    if verilator_bin.exists():
+                        with open(args.output, 'w') as f:
+                            f.write(content)
+                        v_cmd = f"{verilator_bin} --lint-only --assert {args.output} 2>&1"
+                        v_result = subprocess.run(v_cmd, shell=True, capture_output=True, text=True)
+                        stderr_lc = (v_result.stderr or "").lower()
+                        stdout_lc = (v_result.stdout or "").lower()
+                        if "%error" in stderr_lc or "%error" in stdout_lc:
+                            print(f"Warning: sv2v output has lint errors, reverting to pre-sv2v version.",
+                                  file=sys.stderr)
+                            content = pre_sv2v_content
+                        else:
+                            print(f"sv2v output verified: no lint errors")
             else:
                 print(f"Warning: sv2v not found at {sv2v_bin}, skipping sv2v conversion.")
         elif assertions:
             print("Skipping sv2v conversion (assertions injected, sv2v would strip SVA)")
 
+        # Post-processing: add stub wire declarations for signals referenced in
+        # SVA assertions ($sampled(...)) that don't have declarations.
+        # These are signals that Verilator optimized away (constant propagation)
+        # but the assertion AST still references them.
+        top_name = args.top
+        if top_name:
+            import re as _re_assert
+            # Find all $sampled(signal_name) patterns
+            sampled_signals = set()
+            for m in _re_assert.finditer(r'\$sampled\s*\(\s*(' + _re_assert.escape(top_name) + r'___\w+)\s*\)', content):
+                sampled_signals.add(m.group(1))
+            if sampled_signals:
+                # Check which ones lack declarations
+                missing_decls = []
+                for sig in sorted(sampled_signals):
+                    # Check if signal already has a wire/reg/logic declaration
+                    decl_pattern = rf'^\s*(?:wire|reg|logic)\s+.*\b{_re_assert.escape(sig)}\b'
+                    if not _re_assert.search(decl_pattern, content, _re_assert.MULTILINE):
+                        missing_decls.append(sig)
+                if missing_decls:
+                    # Add stub wire declarations before endmodule
+                    stub_decls = "\n".join(f"    wire {sig};" for sig in missing_decls)
+                    content = content.rstrip()
+                    if content.endswith("endmodule"):
+                        content = content[:content.rfind("endmodule")]
+                    content += stub_decls + "\nendmodule\n"
+
         with open(args.output, 'w') as f:
             f.write(content)
+
+        # Final verification: run verilator --lint-only --assert on the output
+        verilator_bin = project_root / "oss-cad-suite" / "bin" / "verilator"
+        if verilator_bin.exists():
+            v_cmd = f"{verilator_bin} --lint-only --assert {args.output} 2>&1"
+            v_result = subprocess.run(v_cmd, shell=True, capture_output=True, text=True)
+            stderr_all = (v_result.stderr or "") + (v_result.stdout or "")
+            errors = [l for l in stderr_all.splitlines() if l.startswith("%Error")]
+            if errors:
+                print(f"Warning: {len(errors)} verilator error(s) in output:", file=sys.stderr)
+                for e in errors[:5]:
+                    print(f"  {e}", file=sys.stderr)
+                if len(errors) > 5:
+                    print(f"  ... and {len(errors)-5} more", file=sys.stderr)
+            else:
+                print(f"Output verified: no lint errors")
 
         print(f"Successfully generated Verilog code in '{args.output}'")
 

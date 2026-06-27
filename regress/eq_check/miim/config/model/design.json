@@ -1,0 +1,4539 @@
+{
+  "$schema": "https://raw.githubusercontent.com/YosysHQ/yosys/main/misc/jny.schema.json",
+  "generator": "Yosys 0.60+8 (git sha1 0e31e389f, clang++ 18.1.8 -fPIC -O3)",
+  "version": "0.0.1",
+  "invocation": "write_jny -no-connections ../model/design.json ",
+  "features": ["attributes", "properties"],
+  "modules": [
+      {
+        "name": "miter",
+        "cell_sorts": [
+          {
+            "type": "$scopeinfo",
+            "ports": [
+
+            ],
+            "cells": [
+                {
+                  "name": "gate",
+                  "attributes": {
+                    "module": "revised",
+                    "module_hdlname": "main",
+                    "module_src": "f_vMiim.v:1.1-346.10",
+                    "module_top": "00000000000000000000000000000001"
+                  },
+                  "parameters": {
+                    "TYPE": "module"
+                  }
+                },
+                {
+                  "name": "gold",
+                  "attributes": {
+                    "module": "main",
+                    "module_hdlname": "main",
+                    "module_src": "miim_golden.v:39.1-446.10",
+                    "module_top": "00000000000000000000000000000001"
+                  },
+                  "parameters": {
+                    "TYPE": "module"
+                  }
+                },
+                {
+                  "name": "gold.ClkGen",
+                  "attributes": {
+                    "cell_module_not_derived": "00000000000000000000000000000001",
+                    "cell_src": "miim_golden.v:427.10-428.37",
+                    "hdlname": "gold ClkGen",
+                    "module": "ClockGen",
+                    "module_hdlname": "ClockGen",
+                    "module_src": "miim_golden.v:486.1-547.10"
+                  },
+                  "parameters": {
+                    "TYPE": "module"
+                  }
+                },
+                {
+                  "name": "gold.OutCtrl",
+                  "attributes": {
+                    "cell_module_not_derived": "00000000000000000000000000000001",
+                    "cell_src": "miim_golden.v:437.15-440.23",
+                    "hdlname": "gold OutCtrl",
+                    "module": "OutputControl",
+                    "module_hdlname": "OutputControl",
+                    "module_src": "miim_golden.v:588.1-692.10"
+                  },
+                  "parameters": {
+                    "TYPE": "module"
+                  }
+                },
+                {
+                  "name": "gold.ShftRg",
+                  "attributes": {
+                    "cell_module_not_derived": "00000000000000000000000000000001",
+                    "cell_src": "miim_golden.v:431.10-434.17",
+                    "hdlname": "gold ShftRg",
+                    "module": "ShiftReg",
+                    "module_hdlname": "ShiftReg",
+                    "module_src": "miim_golden.v:731.1-845.10"
+                  },
+                  "parameters": {
+                    "TYPE": "module"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$sub",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [8, 0]
+                },
+                {
+                  "name": "B",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [8, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$flatten\\gate.$sub$f_vMiim.v:235$651",
+                  "attributes": {
+                    "src": "f_vMiim.v:235.127-235.158"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000001000",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$sub$f_vMiim.v:340$733",
+                  "attributes": {
+                    "src": "f_vMiim.v:340.41-340.91"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000111",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ClkGen.$sub$miim_golden.v:510$110",
+                  "attributes": {
+                    "src": "miim_golden.v:510.29-510.55"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000111",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ClkGen.$sub$miim_golden.v:525$112",
+                  "attributes": {
+                    "src": "miim_golden.v:525.24-525.38"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000001000",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000001000"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$reduce_or",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [4, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [0, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$flatten\\gate.$reduce_or$f_vMiim.v:251$658",
+                  "attributes": {
+                    "src": "f_vMiim.v:251.8-251.26"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000100",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$reduce_or$miim_golden.v:774$93",
+                  "attributes": {
+                    "src": "miim_golden.v:774.14-774.25"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000100",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$eqx",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "B",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [0, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$auto$miter.cc:233:create_miter_equiv$1199",
+                  "attributes": {
+
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$auto$miter.cc:233:create_miter_equiv$1201",
+                  "attributes": {
+
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$auto$miter.cc:233:create_miter_equiv$1203",
+                  "attributes": {
+
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$auto$miter.cc:233:create_miter_equiv$1205",
+                  "attributes": {
+
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$auto$miter.cc:233:create_miter_equiv$1207",
+                  "attributes": {
+
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$auto$miter.cc:233:create_miter_equiv$1209",
+                  "attributes": {
+
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000010000",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000010000",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$auto$miter.cc:233:create_miter_equiv$1211",
+                  "attributes": {
+
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000101",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000101",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$auto$miter.cc:233:create_miter_equiv$1213",
+                  "attributes": {
+
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$gt",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [2, 0]
+                },
+                {
+                  "name": "B",
+                  "direction": "io",
+                  "range": [8, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [0, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$flatten\\gate.$gt$f_vMiim.v:340$730",
+                  "attributes": {
+                    "src": "f_vMiim.v:340.43-340.58"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000010",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000001000",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$reduce_and",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [8, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [0, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$auto$miter.cc:263:create_miter_equiv$1215",
+                  "attributes": {
+
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000001000",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$reduce_and$f_vMiim.v:328$694",
+                  "attributes": {
+                    "src": "f_vMiim.v:328.24-328.42"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$reduce_and$f_vMiim.v:337$719",
+                  "attributes": {
+                    "src": "f_vMiim.v:337.257-337.280"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000011",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$reduce_and$miim_golden.v:383$37",
+                  "attributes": {
+                    "src": "miim_golden.v:383.16-383.32"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$reduce_and$miim_golden.v:631$75",
+                  "attributes": {
+                    "src": "miim_golden.v:631.79-631.96"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000011",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$lt",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [8, 0]
+                },
+                {
+                  "name": "B",
+                  "direction": "io",
+                  "range": [2, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [0, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$flatten\\gold.ClkGen.$lt$miim_golden.v:509$108",
+                  "attributes": {
+                    "src": "miim_golden.v:509.30-509.44"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000001000",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000010",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$logic_not",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [6, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [0, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$flatten\\gate.$eq$f_vMiim.v:228$639",
+                  "attributes": {
+                    "src": "f_vMiim.v:228.58-228.84"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$eq$f_vMiim.v:334$711",
+                  "attributes": {
+                    "src": "f_vMiim.v:334.36-334.68"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000001000",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$eq$miim_golden.v:372$34",
+                  "attributes": {
+                    "src": "miim_golden.v:372.28-372.46"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ClkGen.$eq$miim_golden.v:543$116",
+                  "attributes": {
+                    "src": "miim_golden.v:543.19-543.34"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000001000",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$logic_not$miim_golden.v:631$76",
+                  "attributes": {
+                    "src": "miim_golden.v:631.79-631.96"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$not",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [0, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$auto$miter.cc:281:create_miter_equiv$1217",
+                  "attributes": {
+
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$not$f_vMiim.v:137$625",
+                  "attributes": {
+                    "src": "f_vMiim.v:137.23-137.44"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$not$f_vMiim.v:180$633",
+                  "attributes": {
+                    "src": "f_vMiim.v:180.29-180.50"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$not$f_vMiim.v:229$645",
+                  "attributes": {
+                    "src": "f_vMiim.v:229.50-229.56"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$not$f_vMiim.v:240$656",
+                  "attributes": {
+                    "src": "f_vMiim.v:240.10-240.14"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$not$f_vMiim.v:253$659",
+                  "attributes": {
+                    "src": "f_vMiim.v:253.46-253.61"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$not$f_vMiim.v:277$663",
+                  "attributes": {
+                    "src": "f_vMiim.v:277.12-277.21"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$not$f_vMiim.v:322$676",
+                  "attributes": {
+                    "src": "f_vMiim.v:322.49-322.77"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$not$f_vMiim.v:325$678",
+                  "attributes": {
+                    "src": "f_vMiim.v:325.30-325.55"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$not$f_vMiim.v:326$680",
+                  "attributes": {
+                    "src": "f_vMiim.v:326.49-326.70"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$not$f_vMiim.v:326$682",
+                  "attributes": {
+                    "src": "f_vMiim.v:326.98-326.116"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$not$f_vMiim.v:326$684",
+                  "attributes": {
+                    "src": "f_vMiim.v:326.120-326.166"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$not$f_vMiim.v:329$696",
+                  "attributes": {
+                    "src": "f_vMiim.v:329.267-329.273"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$not$f_vMiim.v:337$721",
+                  "attributes": {
+                    "src": "f_vMiim.v:337.221-337.281"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$not$f_vMiim.v:339$728",
+                  "attributes": {
+                    "src": "f_vMiim.v:339.32-339.56"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$not$miim_golden.v:196$2",
+                  "attributes": {
+                    "src": "miim_golden.v:196.19-196.33"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$not$miim_golden.v:261$10",
+                  "attributes": {
+                    "src": "miim_golden.v:261.29-261.43"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$not$miim_golden.v:312$13",
+                  "attributes": {
+                    "src": "miim_golden.v:312.43-312.61"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$not$miim_golden.v:313$15",
+                  "attributes": {
+                    "src": "miim_golden.v:313.43-313.57"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$not$miim_golden.v:314$17",
+                  "attributes": {
+                    "src": "miim_golden.v:314.43-314.54"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$not$miim_golden.v:314$19",
+                  "attributes": {
+                    "src": "miim_golden.v:314.57-314.71"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$not$miim_golden.v:393$53",
+                  "attributes": {
+                    "src": "miim_golden.v:393.37-393.45"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$not$miim_golden.v:408$62",
+                  "attributes": {
+                    "src": "miim_golden.v:408.24-408.41"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ClkGen.$not$miim_golden.v:538$115",
+                  "attributes": {
+                    "src": "miim_golden.v:538.15-538.19"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$not$miim_golden.v:631$73",
+                  "attributes": {
+                    "src": "miim_golden.v:631.62-631.76"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$not$miim_golden.v:686$89",
+                  "attributes": {
+                    "src": "miim_golden.v:686.28-686.39"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$add",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "B",
+                  "direction": "io",
+                  "range": [6, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [6, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$flatten\\gate.$add$f_vMiim.v:228$641",
+                  "attributes": {
+                    "src": "f_vMiim.v:228.96-228.121"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000110"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$add$f_vMiim.v:280$669",
+                  "attributes": {
+                    "src": "f_vMiim.v:280.30-280.61"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000101",
+                    "Y_WIDTH": "00000000000000000000000000000101"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$add$miim_golden.v:375$36",
+                  "attributes": {
+                    "src": "miim_golden.v:375.35-375.57"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000110"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$add$miim_golden.v:838$106",
+                  "attributes": {
+                    "src": "miim_golden.v:838.23-838.34"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000101",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000101"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$pmux",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [8, 0]
+                },
+                {
+                  "name": "B",
+                  "direction": "io",
+                  "range": [32, 0]
+                },
+                {
+                  "name": "S",
+                  "direction": "io",
+                  "range": [4, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [8, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$flatten\\gate.$procmux$850",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:255.54-255.54|f_vMiim.v:252.5-258.12"
+                  },
+                  "parameters": {
+                    "S_WIDTH": "00000000000000000000000000000100",
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$201",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:779.58-779.58|miim_golden.v:776.15-782.22"
+                  },
+                  "parameters": {
+                    "S_WIDTH": "00000000000000000000000000000100",
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$and",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "B",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [0, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:137$626",
+                  "attributes": {
+                    "src": "f_vMiim.v:137.23-137.67"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:180$634",
+                  "attributes": {
+                    "src": "f_vMiim.v:180.8-180.50"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:228$640",
+                  "attributes": {
+                    "src": "f_vMiim.v:228.49-228.85"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:229$646",
+                  "attributes": {
+                    "src": "f_vMiim.v:229.50-229.81"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:239$655",
+                  "attributes": {
+                    "src": "f_vMiim.v:239.12-239.54"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:277$664",
+                  "attributes": {
+                    "src": "f_vMiim.v:277.26-277.66"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:277$666",
+                  "attributes": {
+                    "src": "f_vMiim.v:277.25-277.104"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:325$679",
+                  "attributes": {
+                    "src": "f_vMiim.v:325.30-325.82"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:326$681",
+                  "attributes": {
+                    "src": "f_vMiim.v:326.49-326.93"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:326$685",
+                  "attributes": {
+                    "src": "f_vMiim.v:326.120-326.189"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:326$686",
+                  "attributes": {
+                    "src": "f_vMiim.v:326.98-326.190"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:329$698",
+                  "attributes": {
+                    "src": "f_vMiim.v:329.267-329.304"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:329$700",
+                  "attributes": {
+                    "src": "f_vMiim.v:329.202-329.306"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:329$702",
+                  "attributes": {
+                    "src": "f_vMiim.v:329.100-329.168"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:329$704",
+                  "attributes": {
+                    "src": "f_vMiim.v:329.30-329.98"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:330$705",
+                  "attributes": {
+                    "src": "f_vMiim.v:330.49-330.83"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:331$707",
+                  "attributes": {
+                    "src": "f_vMiim.v:331.32-331.100"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:332$708",
+                  "attributes": {
+                    "src": "f_vMiim.v:332.49-332.99"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:333$710",
+                  "attributes": {
+                    "src": "f_vMiim.v:333.32-333.100"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:335$713",
+                  "attributes": {
+                    "src": "f_vMiim.v:335.24-335.55"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:336$714",
+                  "attributes": {
+                    "src": "f_vMiim.v:336.65-336.110"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:336$715",
+                  "attributes": {
+                    "src": "f_vMiim.v:336.41-336.111"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:337$717",
+                  "attributes": {
+                    "src": "f_vMiim.v:337.56-337.159"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:337$718",
+                  "attributes": {
+                    "src": "f_vMiim.v:337.38-337.160"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:337$722",
+                  "attributes": {
+                    "src": "f_vMiim.v:337.221-337.315"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:337$724",
+                  "attributes": {
+                    "src": "f_vMiim.v:337.199-337.367"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:337$725",
+                  "attributes": {
+                    "src": "f_vMiim.v:337.165-337.368"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:339$729",
+                  "attributes": {
+                    "src": "f_vMiim.v:339.32-339.89"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$and$f_vMiim.v:343$735",
+                  "attributes": {
+                    "src": "f_vMiim.v:343.42-343.90"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:196$3",
+                  "attributes": {
+                    "src": "miim_golden.v:196.19-196.49"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:261$11",
+                  "attributes": {
+                    "src": "miim_golden.v:261.14-261.43"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:312$14",
+                  "attributes": {
+                    "src": "miim_golden.v:312.23-312.61"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:313$16",
+                  "attributes": {
+                    "src": "miim_golden.v:313.23-313.57"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:314$18",
+                  "attributes": {
+                    "src": "miim_golden.v:314.23-314.54"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:314$20",
+                  "attributes": {
+                    "src": "miim_golden.v:314.23-314.71"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:314$22",
+                  "attributes": {
+                    "src": "miim_golden.v:314.23-314.88"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:372$35",
+                  "attributes": {
+                    "src": "miim_golden.v:372.18-372.48"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:387$42",
+                  "attributes": {
+                    "src": "miim_golden.v:387.72-387.102"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:387$44",
+                  "attributes": {
+                    "src": "miim_golden.v:387.24-387.104"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:388$46",
+                  "attributes": {
+                    "src": "miim_golden.v:388.24-388.58"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:389$47",
+                  "attributes": {
+                    "src": "miim_golden.v:389.24-389.44"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:389$49",
+                  "attributes": {
+                    "src": "miim_golden.v:389.24-389.68"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:390$52",
+                  "attributes": {
+                    "src": "miim_golden.v:390.24-390.68"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:393$54",
+                  "attributes": {
+                    "src": "miim_golden.v:393.24-393.45"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:393$56",
+                  "attributes": {
+                    "src": "miim_golden.v:393.24-393.67"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:394$60",
+                  "attributes": {
+                    "src": "miim_golden.v:394.24-394.67"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$and$miim_golden.v:408$63",
+                  "attributes": {
+                    "src": "miim_golden.v:408.24-408.56"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ClkGen.$and$miim_golden.v:537$114",
+                  "attributes": {
+                    "src": "miim_golden.v:537.10-537.29"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ClkGen.$and$miim_golden.v:544$118",
+                  "attributes": {
+                    "src": "miim_golden.v:544.16-544.31"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$and$miim_golden.v:630$70",
+                  "attributes": {
+                    "src": "miim_golden.v:630.20-630.94"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$and$miim_golden.v:631$74",
+                  "attributes": {
+                    "src": "miim_golden.v:631.46-631.76"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$and$miim_golden.v:631$77",
+                  "attributes": {
+                    "src": "miim_golden.v:631.46-631.96"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$and$miim_golden.v:631$81",
+                  "attributes": {
+                    "src": "miim_golden.v:631.19-631.133"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$and$miim_golden.v:823$97",
+                  "attributes": {
+                    "src": "miim_golden.v:823.22-823.51"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$and$miim_golden.v:823$98",
+                  "attributes": {
+                    "src": "miim_golden.v:823.22-823.59"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$and$miim_golden.v:833$101",
+                  "attributes": {
+                    "src": "miim_golden.v:833.22-833.46"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$and$miim_golden.v:833$103",
+                  "attributes": {
+                    "src": "miim_golden.v:833.22-833.67"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$eq",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "B",
+                  "direction": "io",
+                  "range": [5, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [0, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$flatten\\gate.$eq$f_vMiim.v:269$661",
+                  "attributes": {
+                    "src": "f_vMiim.v:269.8-269.21"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000101",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$eq$f_vMiim.v:277$665",
+                  "attributes": {
+                    "src": "f_vMiim.v:277.71-277.103"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000101",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000101",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$eq$f_vMiim.v:329$697",
+                  "attributes": {
+                    "src": "f_vMiim.v:329.277-329.303"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$eq$f_vMiim.v:329$701",
+                  "attributes": {
+                    "src": "f_vMiim.v:329.141-329.167"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$eq$f_vMiim.v:329$703",
+                  "attributes": {
+                    "src": "f_vMiim.v:329.71-329.97"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$eq$f_vMiim.v:331$706",
+                  "attributes": {
+                    "src": "f_vMiim.v:331.73-331.99"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$eq$f_vMiim.v:333$709",
+                  "attributes": {
+                    "src": "f_vMiim.v:333.73-333.99"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$eq$f_vMiim.v:343$734",
+                  "attributes": {
+                    "src": "f_vMiim.v:343.63-343.89"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$851_CMP0",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:255.54-255.54|f_vMiim.v:252.5-258.12"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000100",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000100",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$852_CMP0",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:254.83-254.83|f_vMiim.v:252.5-258.12"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000100",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000011",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$853_CMP0",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:253.109-253.109|f_vMiim.v:252.5-258.12"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000100",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000010",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$854_CMP0",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:252.29-252.29|f_vMiim.v:252.5-258.12"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000100",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$eq$miim_golden.v:387$41",
+                  "attributes": {
+                    "src": "miim_golden.v:387.82-387.101"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$eq$miim_golden.v:388$45",
+                  "attributes": {
+                    "src": "miim_golden.v:388.38-388.57"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$eq$miim_golden.v:389$48",
+                  "attributes": {
+                    "src": "miim_golden.v:389.48-389.67"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$eq$miim_golden.v:390$51",
+                  "attributes": {
+                    "src": "miim_golden.v:390.48-390.67"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$eq$miim_golden.v:393$55",
+                  "attributes": {
+                    "src": "miim_golden.v:393.48-393.67"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$eq$miim_golden.v:394$59",
+                  "attributes": {
+                    "src": "miim_golden.v:394.48-394.67"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000110",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000110",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$eq$miim_golden.v:810$96",
+                  "attributes": {
+                    "src": "miim_golden.v:810.14-810.27"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000101",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$eq$miim_golden.v:833$102",
+                  "attributes": {
+                    "src": "miim_golden.v:833.50-833.66"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000101",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000101",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$202_CMP0",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:779.58-779.58|miim_golden.v:776.15-782.22"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000100",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000100",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$203_CMP0",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:778.74-778.74|miim_golden.v:776.15-782.22"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000100",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000011",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$204_CMP0",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:777.84-777.84|miim_golden.v:776.15-782.22"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000100",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000010",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$205_CMP0",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:776.37-776.37|miim_golden.v:776.15-782.22"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000100",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$or",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "B",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [0, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:277$667",
+                  "attributes": {
+                    "src": "f_vMiim.v:277.12-277.105"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:322$677",
+                  "attributes": {
+                    "src": "f_vMiim.v:322.29-322.77"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:326$683",
+                  "attributes": {
+                    "src": "f_vMiim.v:326.122-326.165"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:326$687",
+                  "attributes": {
+                    "src": "f_vMiim.v:326.48-326.191"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:326$688",
+                  "attributes": {
+                    "src": "f_vMiim.v:326.26-326.192"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:327$689",
+                  "attributes": {
+                    "src": "f_vMiim.v:327.104-327.144"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:327$690",
+                  "attributes": {
+                    "src": "f_vMiim.v:327.80-327.145"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:327$691",
+                  "attributes": {
+                    "src": "f_vMiim.v:327.62-327.146"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:327$692",
+                  "attributes": {
+                    "src": "f_vMiim.v:327.37-327.147"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:327$693",
+                  "attributes": {
+                    "src": "f_vMiim.v:327.16-327.148"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:329$699",
+                  "attributes": {
+                    "src": "f_vMiim.v:329.223-329.305"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:337$716",
+                  "attributes": {
+                    "src": "f_vMiim.v:337.77-337.158"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:337$720",
+                  "attributes": {
+                    "src": "f_vMiim.v:337.223-337.280"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:337$723",
+                  "attributes": {
+                    "src": "f_vMiim.v:337.220-337.366"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$or$f_vMiim.v:337$726",
+                  "attributes": {
+                    "src": "f_vMiim.v:337.37-337.369"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$or$miim_golden.v:315$23",
+                  "attributes": {
+                    "src": "miim_golden.v:315.23-315.49"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$or$miim_golden.v:315$24",
+                  "attributes": {
+                    "src": "miim_golden.v:315.23-315.64"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$or$miim_golden.v:319$25",
+                  "attributes": {
+                    "src": "miim_golden.v:319.15-319.42"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$or$miim_golden.v:319$26",
+                  "attributes": {
+                    "src": "miim_golden.v:319.15-319.58"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$or$miim_golden.v:319$27",
+                  "attributes": {
+                    "src": "miim_golden.v:319.15-319.68"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$or$miim_golden.v:319$28",
+                  "attributes": {
+                    "src": "miim_golden.v:319.15-319.81"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$or$miim_golden.v:319$29",
+                  "attributes": {
+                    "src": "miim_golden.v:319.15-319.97"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$or$miim_golden.v:387$43",
+                  "attributes": {
+                    "src": "miim_golden.v:387.38-387.103"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$or$miim_golden.v:630$69",
+                  "attributes": {
+                    "src": "miim_golden.v:630.45-630.92"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$or$miim_golden.v:630$82",
+                  "attributes": {
+                    "src": "miim_golden.v:630.20-631.133"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$or$miim_golden.v:631$80",
+                  "attributes": {
+                    "src": "miim_golden.v:631.44-631.132"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$or$miim_golden.v:686$90",
+                  "attributes": {
+                    "src": "miim_golden.v:686.15-686.39"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$or$miim_golden.v:833$104",
+                  "attributes": {
+                    "src": "miim_golden.v:833.10-833.67"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$logic_and",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "B",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [0, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$flatten\\gate.$logic_and$f_vMiim.v:230$649",
+                  "attributes": {
+                    "src": "f_vMiim.v:230.43-230.73"
+                  },
+                  "parameters": {
+                    "A_SIGNED": "00000000000000000000000000000000",
+                    "A_WIDTH": "00000000000000000000000000000001",
+                    "B_SIGNED": "00000000000000000000000000000000",
+                    "B_WIDTH": "00000000000000000000000000000001",
+                    "Y_WIDTH": "00000000000000000000000000000001"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$dff",
+            "ports": [
+                {
+                  "name": "CLK",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "D",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "Q",
+                  "direction": "",
+                  "range": [0, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$flatten\\gate.$procdff$1153",
+                  "attributes": {
+                    "src": "f_vMiim.v:316.2-324.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1157",
+                  "attributes": {
+                    "src": "f_vMiim.v:303.2-315.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1159",
+                  "attributes": {
+                    "src": "f_vMiim.v:292.2-302.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1161",
+                  "attributes": {
+                    "src": "f_vMiim.v:292.2-302.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1162",
+                  "attributes": {
+                    "src": "f_vMiim.v:274.2-280.62"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000101"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1163",
+                  "attributes": {
+                    "src": "f_vMiim.v:262.2-273.42"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1164",
+                  "attributes": {
+                    "src": "f_vMiim.v:262.2-273.42"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000010000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1165",
+                  "attributes": {
+                    "src": "f_vMiim.v:247.2-261.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1166",
+                  "attributes": {
+                    "src": "f_vMiim.v:236.2-240.15"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1167",
+                  "attributes": {
+                    "src": "f_vMiim.v:235.2-235.161"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1168",
+                  "attributes": {
+                    "src": "f_vMiim.v:230.2-230.74"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1169",
+                  "attributes": {
+                    "src": "f_vMiim.v:229.2-229.82"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1170",
+                  "attributes": {
+                    "src": "f_vMiim.v:224.2-228.132"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000110"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1171",
+                  "attributes": {
+                    "src": "f_vMiim.v:208.2-223.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1172",
+                  "attributes": {
+                    "src": "f_vMiim.v:208.2-223.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1173",
+                  "attributes": {
+                    "src": "f_vMiim.v:183.2-207.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000010"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1174",
+                  "attributes": {
+                    "src": "f_vMiim.v:183.2-207.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1175",
+                  "attributes": {
+                    "src": "f_vMiim.v:183.2-207.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1176",
+                  "attributes": {
+                    "src": "f_vMiim.v:183.2-207.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1177",
+                  "attributes": {
+                    "src": "f_vMiim.v:183.2-207.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1178",
+                  "attributes": {
+                    "src": "f_vMiim.v:183.2-207.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1179",
+                  "attributes": {
+                    "src": "f_vMiim.v:183.2-207.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1180",
+                  "attributes": {
+                    "src": "f_vMiim.v:183.2-207.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1181",
+                  "attributes": {
+                    "src": "f_vMiim.v:183.2-207.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1182",
+                  "attributes": {
+                    "src": "f_vMiim.v:183.2-207.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1183",
+                  "attributes": {
+                    "src": "f_vMiim.v:164.2-182.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1184",
+                  "attributes": {
+                    "src": "f_vMiim.v:164.2-182.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1185",
+                  "attributes": {
+                    "src": "f_vMiim.v:164.2-182.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1186",
+                  "attributes": {
+                    "src": "f_vMiim.v:140.2-163.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1187",
+                  "attributes": {
+                    "src": "f_vMiim.v:140.2-163.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procdff$1195",
+                  "attributes": {
+                    "src": "f_vMiim.v:131.2-139.6"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$594",
+                  "attributes": {
+                    "src": "miim_golden.v:412.1-423.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$595",
+                  "attributes": {
+                    "src": "miim_golden.v:398.1-404.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$596",
+                  "attributes": {
+                    "src": "miim_golden.v:360.1-379.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000110"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$597",
+                  "attributes": {
+                    "src": "miim_golden.v:328.1-355.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$598",
+                  "attributes": {
+                    "src": "miim_golden.v:328.1-355.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$599",
+                  "attributes": {
+                    "src": "miim_golden.v:269.1-308.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$600",
+                  "attributes": {
+                    "src": "miim_golden.v:269.1-308.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$601",
+                  "attributes": {
+                    "src": "miim_golden.v:269.1-308.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$602",
+                  "attributes": {
+                    "src": "miim_golden.v:269.1-308.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$603",
+                  "attributes": {
+                    "src": "miim_golden.v:269.1-308.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$604",
+                  "attributes": {
+                    "src": "miim_golden.v:269.1-308.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$605",
+                  "attributes": {
+                    "src": "miim_golden.v:269.1-308.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$606",
+                  "attributes": {
+                    "src": "miim_golden.v:269.1-308.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$607",
+                  "attributes": {
+                    "src": "miim_golden.v:269.1-308.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$608",
+                  "attributes": {
+                    "src": "miim_golden.v:269.1-308.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000010"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$609",
+                  "attributes": {
+                    "src": "miim_golden.v:239.1-265.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$610",
+                  "attributes": {
+                    "src": "miim_golden.v:239.1-265.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$611",
+                  "attributes": {
+                    "src": "miim_golden.v:239.1-265.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$620",
+                  "attributes": {
+                    "src": "miim_golden.v:203.1-234.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procdff$622",
+                  "attributes": {
+                    "src": "miim_golden.v:187.1-199.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ClkGen.$procdff$579",
+                  "attributes": {
+                    "src": "miim_golden.v:531.1-540.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ClkGen.$procdff$580",
+                  "attributes": {
+                    "src": "miim_golden.v:514.1-527.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$procdff$585",
+                  "attributes": {
+                    "src": "miim_golden.v:677.1-689.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$procdff$588",
+                  "attributes": {
+                    "src": "miim_golden.v:657.1-673.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$procdff$591",
+                  "attributes": {
+                    "src": "miim_golden.v:636.1-653.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$procdff$593",
+                  "attributes": {
+                    "src": "miim_golden.v:636.1-653.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procdff$581",
+                  "attributes": {
+                    "src": "miim_golden.v:827.1-841.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000101"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procdff$582",
+                  "attributes": {
+                    "src": "miim_golden.v:798.1-819.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procdff$583",
+                  "attributes": {
+                    "src": "miim_golden.v:798.1-819.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000010000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procdff$584",
+                  "attributes": {
+                    "src": "miim_golden.v:766.1-788.4"
+                  },
+                  "parameters": {
+                    "CLK_POLARITY": "1",
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                }
+            ]
+          },
+          {
+            "type": "$mux",
+            "ports": [
+                {
+                  "name": "A",
+                  "direction": "io",
+                  "range": [2, 0]
+                },
+                {
+                  "name": "B",
+                  "direction": "io",
+                  "range": [2, 0]
+                },
+                {
+                  "name": "S",
+                  "direction": "io",
+                  "range": [0, 0]
+                },
+                {
+                  "name": "Y",
+                  "direction": "",
+                  "range": [2, 0]
+                }
+            ],
+            "cells": [
+                {
+                  "name": "$flatten\\gate.$procmux$1001",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:196.12-196.24|f_vMiim.v:196.8-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000010"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1007",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:196.12-196.24|f_vMiim.v:196.8-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1013",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:196.12-196.24|f_vMiim.v:196.8-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1019",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:196.12-196.24|f_vMiim.v:196.8-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1025",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:196.12-196.24|f_vMiim.v:196.8-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1031",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:184.7-184.12|f_vMiim.v:184.3-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1034",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:184.7-184.12|f_vMiim.v:184.3-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1037",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:184.7-184.12|f_vMiim.v:184.3-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1040",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:184.7-184.12|f_vMiim.v:184.3-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1043",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:184.7-184.12|f_vMiim.v:184.3-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1046",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:184.7-184.12|f_vMiim.v:184.3-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000010"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1049",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:184.7-184.12|f_vMiim.v:184.3-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1052",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:184.7-184.12|f_vMiim.v:184.3-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1055",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:184.7-184.12|f_vMiim.v:184.3-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1058",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:184.7-184.12|f_vMiim.v:184.3-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1061",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:180.8-180.50|f_vMiim.v:180.4-181.19"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1088",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:170.12-170.26|f_vMiim.v:170.8-182.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1094",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:170.12-170.26|f_vMiim.v:170.8-182.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1100",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:170.12-170.26|f_vMiim.v:170.8-182.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1106",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:165.7-165.12|f_vMiim.v:165.3-182.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1109",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:165.7-165.12|f_vMiim.v:165.3-182.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1112",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:165.7-165.12|f_vMiim.v:165.3-182.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1115",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:161.8-161.20|f_vMiim.v:161.4-162.47"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1121",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:141.7-141.12|f_vMiim.v:141.3-163.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1124",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:141.7-141.12|f_vMiim.v:141.3-163.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$1148",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:132.7-132.12|f_vMiim.v:132.3-139.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$743",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:317.7-317.12|f_vMiim.v:317.3-324.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$749",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:304.7-304.12|f_vMiim.v:304.3-315.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$761",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:298.12-298.24|f_vMiim.v:298.8-302.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$773",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:298.12-298.24|f_vMiim.v:298.8-302.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$779",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:293.7-293.12|f_vMiim.v:293.3-302.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$785",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:293.7-293.12|f_vMiim.v:293.3-302.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$788",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:279.12-279.52|f_vMiim.v:279.8-280.62"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000101"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$797",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:277.12-277.105|f_vMiim.v:277.8-280.62"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000101"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$803",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:275.7-275.12|f_vMiim.v:275.3-280.62"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000101"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$806",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:272.12-272.34|f_vMiim.v:272.8-273.42"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$816",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:269.8-269.21|f_vMiim.v:269.4-270.45"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$824",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:267.12-267.34|f_vMiim.v:267.8-273.42"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$830",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:267.12-267.34|f_vMiim.v:267.8-273.42"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$836",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:267.12-267.34|f_vMiim.v:267.8-273.42"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$842",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:263.7-263.12|f_vMiim.v:263.3-273.42"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$845",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:263.7-263.12|f_vMiim.v:263.3-273.42"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000010000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$864",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:251.8-251.26|f_vMiim.v:251.4-260.69"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$872",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:250.12-250.24|f_vMiim.v:250.8-261.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$878",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:248.7-248.12|f_vMiim.v:248.3-261.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$881",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:239.12-239.54|f_vMiim.v:239.8-240.15"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$887",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:237.7-237.12|f_vMiim.v:237.3-240.15"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$890",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:227.12-227.24|f_vMiim.v:227.8-228.132"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000110"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$896",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:225.7-225.12|f_vMiim.v:225.3-228.132"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000110"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$900",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:219.13-219.25|f_vMiim.v:219.9-222.7"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$912",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:219.13-219.25|f_vMiim.v:219.9-222.7"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$925",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:215.9-215.27|f_vMiim.v:215.5-216.42"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$936",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:214.8-214.22|f_vMiim.v:214.4-222.7"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$945",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:214.8-214.22|f_vMiim.v:214.4-222.7"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$953",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:213.12-213.24|f_vMiim.v:213.8-223.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$959",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:213.12-213.24|f_vMiim.v:213.8-223.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$965",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:209.7-209.12|f_vMiim.v:209.3-223.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$968",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:209.7-209.12|f_vMiim.v:209.3-223.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$971",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:196.12-196.24|f_vMiim.v:196.8-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$977",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:196.12-196.24|f_vMiim.v:196.8-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$983",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:196.12-196.24|f_vMiim.v:196.8-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$989",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:196.12-196.24|f_vMiim.v:196.8-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$procmux$995",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "f_vMiim.v:196.12-196.24|f_vMiim.v:196.8-207.6"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$ternary$f_vMiim.v:228$642",
+                  "attributes": {
+                    "src": "f_vMiim.v:228.49-228.121"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000110"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$ternary$f_vMiim.v:228$643",
+                  "attributes": {
+                    "src": "f_vMiim.v:228.25-228.130"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000110"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$ternary$f_vMiim.v:235$652",
+                  "attributes": {
+                    "src": "f_vMiim.v:235.68-235.158"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$ternary$f_vMiim.v:235$653",
+                  "attributes": {
+                    "src": "f_vMiim.v:235.51-235.159"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gate.$ternary$f_vMiim.v:340$731",
+                  "attributes": {
+                    "src": "f_vMiim.v:340.43-340.76"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$277",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:418.10-418.23|miim_golden.v:418.7-421.33"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$283",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:414.6-414.11|miim_golden.v:414.3-422.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$286",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:400.6-400.11|miim_golden.v:400.3-403.37"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$290",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:372.18-372.48|miim_golden.v:372.15-375.58"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000110"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$302",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:368.14-368.28|miim_golden.v:368.11-376.16"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000110"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$310",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:366.10-366.15|miim_golden.v:366.7-377.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000110"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$316",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:362.6-362.11|miim_golden.v:362.3-378.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000110"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$320",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:347.18-347.23|miim_golden.v:347.15-351.20"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$332",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:347.18-347.23|miim_golden.v:347.15-351.20"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$345",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:341.18-341.29|miim_golden.v:341.15-342.39"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$356",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:339.14-339.21|miim_golden.v:339.11-352.16"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$365",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:339.14-339.21|miim_golden.v:339.11-352.16"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$373",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:337.10-337.15|miim_golden.v:337.7-353.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$379",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:337.10-337.15|miim_golden.v:337.7-353.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$385",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:330.6-330.11|miim_golden.v:330.3-354.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$388",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:330.6-330.11|miim_golden.v:330.3-354.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$391",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:289.10-289.15|miim_golden.v:289.7-306.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$397",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:289.10-289.15|miim_golden.v:289.7-306.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$403",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:289.10-289.15|miim_golden.v:289.7-306.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$409",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:289.10-289.15|miim_golden.v:289.7-306.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$415",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:289.10-289.15|miim_golden.v:289.7-306.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$421",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:289.10-289.15|miim_golden.v:289.7-306.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$427",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:289.10-289.15|miim_golden.v:289.7-306.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$433",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:289.10-289.15|miim_golden.v:289.7-306.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$439",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:289.10-289.15|miim_golden.v:289.7-306.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$445",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:289.10-289.15|miim_golden.v:289.7-306.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$451",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:289.10-289.15|miim_golden.v:289.7-306.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$457",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:271.6-271.11|miim_golden.v:271.3-307.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$460",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:271.6-271.11|miim_golden.v:271.3-307.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$463",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:271.6-271.11|miim_golden.v:271.3-307.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$466",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:271.6-271.11|miim_golden.v:271.3-307.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$469",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:271.6-271.11|miim_golden.v:271.3-307.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$472",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:271.6-271.11|miim_golden.v:271.3-307.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000010"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$475",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:271.6-271.11|miim_golden.v:271.3-307.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$478",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:271.6-271.11|miim_golden.v:271.3-307.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$481",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:271.6-271.11|miim_golden.v:271.3-307.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$484",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:271.6-271.11|miim_golden.v:271.3-307.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$487",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:261.14-261.43|miim_golden.v:261.11-262.27"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$514",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:249.10-249.17|miim_golden.v:249.7-263.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$520",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:249.10-249.17|miim_golden.v:249.7-263.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$526",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:249.10-249.17|miim_golden.v:249.7-263.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$532",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:241.6-241.11|miim_golden.v:241.3-264.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$535",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:241.6-241.11|miim_golden.v:241.3-264.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$538",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:241.6-241.11|miim_golden.v:241.3-264.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$541",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:231.10-231.15|miim_golden.v:231.7-232.37"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$547",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:205.6-205.11|miim_golden.v:205.3-233.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.$procmux$574",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:189.6-189.11|miim_golden.v:189.3-198.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ClkGen.$procmux$121",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:537.10-537.29|miim_golden.v:537.7-538.20"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ClkGen.$procmux$127",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:533.6-533.11|miim_golden.v:533.3-539.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ClkGen.$procmux$130",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:520.10-520.18|miim_golden.v:520.7-525.39"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ClkGen.$procmux$136",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:516.6-516.11|miim_golden.v:516.3-526.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ClkGen.$ternary$miim_golden.v:509$109",
+                  "attributes": {
+                    "src": "miim_golden.v:509.29-509.67"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$procmux$232",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:679.6-679.11|miim_golden.v:679.3-688.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$procmux$238",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:659.6-659.11|miim_golden.v:659.3-672.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$procmux$250",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:646.10-646.15|miim_golden.v:646.7-651.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$procmux$262",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:646.10-646.15|miim_golden.v:646.7-651.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$procmux$268",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:638.6-638.11|miim_golden.v:638.3-652.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.OutCtrl.$procmux$274",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:638.6-638.11|miim_golden.v:638.3-652.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$139",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:837.14-837.38|miim_golden.v:837.11-838.35"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000101"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$148",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:833.10-833.67|miim_golden.v:833.7-839.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000101"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$154",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:829.6-829.11|miim_golden.v:829.3-840.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000101"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$157",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:815.14-815.26|miim_golden.v:815.11-816.40"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$167",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:810.14-810.27|miim_golden.v:810.11-811.34"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$175",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:807.10-807.22|miim_golden.v:807.7-817.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$181",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:807.10-807.22|miim_golden.v:807.7-817.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$187",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:807.10-807.22|miim_golden.v:807.7-817.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$193",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:800.6-800.11|miim_golden.v:800.3-818.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000000001"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$196",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:800.6-800.11|miim_golden.v:800.3-818.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000010000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$215",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:774.14-774.25|miim_golden.v:774.11-785.50"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$223",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:772.10-772.15|miim_golden.v:772.7-786.12"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                },
+                {
+                  "name": "$flatten\\gold.ShftRg.$procmux$229",
+                  "attributes": {
+                    "full_case": "00000000000000000000000000000001",
+                    "src": "miim_golden.v:768.6-768.11|miim_golden.v:768.3-787.8"
+                  },
+                  "parameters": {
+                    "WIDTH": "00000000000000000000000000001000"
+                  }
+                }
+            ]
+          }
+        ],
+        "attributes": {
+            "top": "00000000000000000000000000000001"
+        }
+      }
+  ]
+}

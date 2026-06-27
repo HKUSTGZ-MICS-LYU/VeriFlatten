@@ -189,6 +189,22 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "VeriFlatten: b30",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": [
+                "--file",
+                "${workspaceFolder}/bench/b30/b30.v",
+                "--top",
+                "b30",
+                "--output",
+                "${workspaceFolder}/bench/b30/f_b30.v",
+                "--force"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "VeriCodegen: mpeg",
             "type": "debugpy",
             "request": "launch",
@@ -201,6 +217,55 @@
                 "--output",
                 "${workspaceFolder}/bench/mpeg/f_mpeg.v",
                 "--force"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "VeriFlatten: hackatdac19",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": [
+                "--file",
+                "${workspaceFolder}/bench/hackatdac19/combined_output.v",
+                "--top",
+                "top_wrapper_dac19_wrapper",
+                "--output",
+                "${workspaceFolder}/bench/hackatdac19/hackatdac19_output.v",
+                "--force"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "VeriFlatten: hackatdac18",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": [
+                "--file",
+                "${workspaceFolder}/bench/hackatdac18/combined_flat.sv",
+                "--top",
+                "top_wrapper_flat",
+                "--output",
+                "${workspaceFolder}/bench/hackatdac18/f_combined_flat.v",
+                "--force"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "VeriFlatten: hackatdac21",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/main.py",
+            "args": [
+                "--file",
+                "${workspaceFolder}/bench/hackatdac21/combined_output.v",
+                "--top",
+                "top_wrapper_dac21",
+                "--output",
+                "${workspaceFolder}/bench/hackatdac21/hackatdac21_output.v",
+                "--force",
+                "--skip-sv2v"
             ],
             "console": "integratedTerminal"
         },

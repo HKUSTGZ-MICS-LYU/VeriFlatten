@@ -1,0 +1,1598 @@
+
+ /----------------------------------------------------------------------------\
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |  Copyright (C) 2012 - 2025  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |  Distributed under an ISC-like license, type "license" to see terms        |
+ \----------------------------------------------------------------------------/
+ Yosys 0.60+8 (git sha1 0e31e389f, clang++ 18.1.8 -fPIC -O3)
+
+-- Executing script file `../model/design.ys' --
+
+1. Executing Verilog-2005 frontend: miim_golden.v
+Parsing formal SystemVerilog input from `miim_golden.v' to AST representation.
+verilog frontend filename miim_golden.v
+Storing AST representation for module `$abstract\main'.
+Storing AST representation for module `$abstract\ClockGen'.
+Storing AST representation for module `$abstract\OutputControl'.
+Storing AST representation for module `$abstract\ShiftReg'.
+Successfully finished Verilog frontend.
+
+2. Executing PREP pass.
+
+2.1. Executing HIERARCHY pass (managing design hierarchy).
+
+2.2. Executing AST frontend in derive mode using pre-parsed AST for module `\main'.
+Generating RTLIL representation for module `\main'.
+
+2.2.1. Analyzing design hierarchy..
+Top module:  \main
+
+2.2.2. Executing AST frontend in derive mode using pre-parsed AST for module `\OutputControl'.
+Generating RTLIL representation for module `\OutputControl'.
+
+2.2.3. Executing AST frontend in derive mode using pre-parsed AST for module `\ShiftReg'.
+Generating RTLIL representation for module `\ShiftReg'.
+
+2.2.4. Executing AST frontend in derive mode using pre-parsed AST for module `\ClockGen'.
+Generating RTLIL representation for module `\ClockGen'.
+
+2.2.5. Analyzing design hierarchy..
+Top module:  \main
+Used module:     \OutputControl
+Used module:     \ShiftReg
+Used module:     \ClockGen
+
+2.2.6. Analyzing design hierarchy..
+Top module:  \main
+Used module:     \OutputControl
+Used module:     \ShiftReg
+Used module:     \ClockGen
+Removing unused module `$abstract\ShiftReg'.
+Removing unused module `$abstract\OutputControl'.
+Removing unused module `$abstract\ClockGen'.
+Removing unused module `$abstract\main'.
+Removed 4 unused modules.
+
+2.3. Executing PROC pass (convert processes to netlists).
+
+2.3.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+2.3.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Marked 2 switch rules as full_case in process $proc$miim_golden.v:531$113 in module ClockGen.
+Marked 2 switch rules as full_case in process $proc$miim_golden.v:514$111 in module ClockGen.
+Marked 3 switch rules as full_case in process $proc$miim_golden.v:827$99 in module ShiftReg.
+Marked 4 switch rules as full_case in process $proc$miim_golden.v:798$95 in module ShiftReg.
+Marked 4 switch rules as full_case in process $proc$miim_golden.v:766$92 in module ShiftReg.
+Marked 1 switch rules as full_case in process $proc$miim_golden.v:677$88 in module OutputControl.
+Marked 1 switch rules as full_case in process $proc$miim_golden.v:657$87 in module OutputControl.
+Marked 2 switch rules as full_case in process $proc$miim_golden.v:636$83 in module OutputControl.
+Marked 2 switch rules as full_case in process $proc$miim_golden.v:412$64 in module main.
+Marked 1 switch rules as full_case in process $proc$miim_golden.v:398$61 in module main.
+Marked 4 switch rules as full_case in process $proc$miim_golden.v:360$32 in module main.
+Marked 5 switch rules as full_case in process $proc$miim_golden.v:328$30 in module main.
+Marked 2 switch rules as full_case in process $proc$miim_golden.v:269$12 in module main.
+Marked 5 switch rules as full_case in process $proc$miim_golden.v:239$5 in module main.
+Marked 2 switch rules as full_case in process $proc$miim_golden.v:203$4 in module main.
+Marked 1 switch rules as full_case in process $proc$miim_golden.v:187$1 in module main.
+Removed a total of 0 dead cases.
+
+2.3.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 88 assignments to connections.
+
+2.3.4. Executing PROC_INIT pass (extract init attributes).
+Found init rule in `\ClockGen.$proc$miim_golden.v:504$119'.
+  Set init value: \Mdc = 1'0
+  Set init value: \Counter = 8'00000000
+Found init rule in `\ShiftReg.$proc$miim_golden.v:757$107'.
+  Set init value: \LinkOK = 1'0
+  Set init value: \Prsd = 16'0000000000000000
+  Set init value: \ShiftReg = 8'00000000
+  Set init value: \FiadReg = 5'00000
+Found init rule in `\OutputControl.$proc$miim_golden.v:617$91'.
+  Set init value: \Mdo = 1'0
+  Set init value: \MdoEn = 1'0
+  Set init value: \MdcFrame = 1'0
+  Set init value: \SerialEn_q = 1'0
+  Set init value: \MdoEn_d2 = 1'0
+  Set init value: \MdoEn_d = 1'0
+  Set init value: \Mdo_d = 1'0
+  Set init value: \MdcFrame_d2 = 1'0
+  Set init value: \MdcFrame_d1 = 1'0
+Found init rule in `\main.$proc$miim_golden.v:147$65'.
+  Set init value: \Nvalid = 1'0
+  Set init value: \ScanPHYAddrValid = 1'0
+  Set init value: \EndBusy_d = 1'0
+  Set init value: \EndBusy = 1'0
+  Set init value: \WCtrlData_q1 = 1'0
+  Set init value: \WCtrlData_q2 = 1'0
+  Set init value: \WCtrlData_q3 = 1'0
+  Set init value: \WCtrlDataStart = 1'0
+  Set init value: \WCtrlDataStart_q1 = 1'0
+  Set init value: \WCtrlDataStart_q2 = 1'0
+  Set init value: \RStat_q1 = 1'0
+  Set init value: \RStat_q2 = 1'0
+  Set init value: \RStat_q3 = 1'0
+  Set init value: \RStatStart = 1'0
+  Set init value: \RStatStart_q1 = 1'0
+  Set init value: \RStatStart_q2 = 1'0
+  Set init value: \ScanStat_q1 = 1'0
+  Set init value: \ScanStat_q2 = 1'0
+  Set init value: \SyncStatMdcEn = 1'0
+  Set init value: \InProgress = 1'0
+  Set init value: \InProgress_q1 = 1'0
+  Set init value: \InProgress_q2 = 1'0
+  Set init value: \InProgress_q3 = 1'0
+  Set init value: \WriteOp = 1'0
+  Set init value: \BitCounter = 6'000000
+  Set init value: \StatusSampledEnd = 1'0
+  Set init value: \LatchByte1_d = 1'0
+  Set init value: \LatchByte0_d = 1'0
+  Set init value: \LatchByte = 2'00
+
+2.3.5. Executing PROC_ARST pass (detect async resets in processes).
+
+2.3.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~41 debug messages>
+
+2.3.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\ClockGen.$proc$miim_golden.v:504$119'.
+Creating decoders for process `\ClockGen.$proc$miim_golden.v:531$113'.
+     1/2: $2\Mdc[0:0]
+     2/2: $1\Mdc[0:0]
+Creating decoders for process `\ClockGen.$proc$miim_golden.v:514$111'.
+     1/2: $2\Counter[7:0]
+     2/2: $1\Counter[7:0]
+Creating decoders for process `\ShiftReg.$proc$miim_golden.v:757$107'.
+Creating decoders for process `\ShiftReg.$proc$miim_golden.v:827$99'.
+     1/3: $3\FiadReg[4:0]
+     2/3: $2\FiadReg[4:0]
+     3/3: $1\FiadReg[4:0]
+Creating decoders for process `\ShiftReg.$proc$miim_golden.v:798$95'.
+     1/7: $3\Prsd[15:8]
+     2/7: $3\LinkOK[0:0]
+     3/7: $2\LinkOK[0:0]
+     4/7: $2\Prsd[15:0] [7:0]
+     5/7: $2\Prsd[15:0] [15:8]
+     6/7: $1\LinkOK[0:0]
+     7/7: $1\Prsd[15:0]
+Creating decoders for process `\ShiftReg.$proc$miim_golden.v:766$92'.
+     1/4: $4\ShiftReg[7:0]
+     2/4: $3\ShiftReg[7:0]
+     3/4: $2\ShiftReg[7:0]
+     4/4: $1\ShiftReg[7:0]
+Creating decoders for process `\OutputControl.$proc$miim_golden.v:617$91'.
+Creating decoders for process `\OutputControl.$proc$miim_golden.v:677$88'.
+     1/2: $1\Mdo[0:0]
+     2/2: $1\Mdo_d[0:0]
+Creating decoders for process `\OutputControl.$proc$miim_golden.v:657$87'.
+     1/4: $1\MdcFrame[0:0]
+     2/4: $1\MdcFrame_d1[0:0]
+     3/4: $1\MdoEn[0:0]
+     4/4: $1\MdoEn_d[0:0]
+Creating decoders for process `\OutputControl.$proc$miim_golden.v:636$83'.
+     1/6: $2\MdcFrame_d2[0:0]
+     2/6: $2\MdoEn_d2[0:0]
+     3/6: $2\SerialEn_q[0:0]
+     4/6: $1\MdcFrame_d2[0:0]
+     5/6: $1\MdoEn_d2[0:0]
+     6/6: $1\SerialEn_q[0:0]
+Creating decoders for process `\main.$proc$miim_golden.v:147$65'.
+Creating decoders for process `\main.$proc$miim_golden.v:412$64'.
+     1/2: $2\ScanPHYAddrValid[0:0]
+     2/2: $1\ScanPHYAddrValid[0:0]
+Creating decoders for process `\main.$proc$miim_golden.v:398$61'.
+     1/1: $1\StatusSampledEnd[0:0]
+Creating decoders for process `\main.$proc$miim_golden.v:360$32'.
+     1/4: $4\BitCounter[5:0]
+     2/4: $3\BitCounter[5:0]
+     3/4: $2\BitCounter[5:0]
+     4/4: $1\BitCounter[5:0]
+Creating decoders for process `\main.$proc$miim_golden.v:328$30'.
+     1/9: $5\WriteOp[0:0]
+     2/9: $4\InProgress[0:0]
+     3/9: $4\WriteOp[0:0]
+     4/9: $3\InProgress[0:0]
+     5/9: $3\WriteOp[0:0]
+     6/9: $2\WriteOp[0:0]
+     7/9: $2\InProgress[0:0]
+     8/9: $1\WriteOp[0:0]
+     9/9: $1\InProgress[0:0]
+Creating decoders for process `\main.$proc$miim_golden.v:269$12'.
+     1/21: $2\LatchByte[1:0] [1]
+     2/21: $2\InProgress_q2[0:0]
+     3/21: $2\InProgress_q1[0:0]
+     4/21: $2\LatchByte1_d[0:0]
+     5/21: $2\LatchByte0_d[0:0]
+     6/21: $2\LatchByte[1:0] [0]
+     7/21: $2\InProgress_q3[0:0]
+     8/21: $2\RStatStart_q2[0:0]
+     9/21: $2\RStatStart_q1[0:0]
+    10/21: $2\WCtrlDataStart_q2[0:0]
+    11/21: $2\WCtrlDataStart_q1[0:0]
+    12/21: $1\InProgress_q3[0:0]
+    13/21: $1\InProgress_q2[0:0]
+    14/21: $1\InProgress_q1[0:0]
+    15/21: $1\LatchByte1_d[0:0]
+    16/21: $1\LatchByte0_d[0:0]
+    17/21: $1\LatchByte[1:0]
+    18/21: $1\RStatStart_q2[0:0]
+    19/21: $1\RStatStart_q1[0:0]
+    20/21: $1\WCtrlDataStart_q2[0:0]
+    21/21: $1\WCtrlDataStart_q1[0:0]
+Creating decoders for process `\main.$proc$miim_golden.v:239$5'.
+     1/9: $3\Nvalid[0:0]
+     2/9: $3\RStatStart[0:0]
+     3/9: $3\WCtrlDataStart[0:0]
+     4/9: $2\Nvalid[0:0]
+     5/9: $2\RStatStart[0:0]
+     6/9: $2\WCtrlDataStart[0:0]
+     7/9: $1\Nvalid[0:0]
+     8/9: $1\RStatStart[0:0]
+     9/9: $1\WCtrlDataStart[0:0]
+Creating decoders for process `\main.$proc$miim_golden.v:203$4'.
+     1/10: $2\SyncStatMdcEn[0:0]
+     2/10: $1\SyncStatMdcEn[0:0]
+     3/10: $1\ScanStat_q2[0:0]
+     4/10: $1\ScanStat_q1[0:0]
+     5/10: $1\RStat_q3[0:0]
+     6/10: $1\RStat_q2[0:0]
+     7/10: $1\RStat_q1[0:0]
+     8/10: $1\WCtrlData_q3[0:0]
+     9/10: $1\WCtrlData_q2[0:0]
+    10/10: $1\WCtrlData_q1[0:0]
+Creating decoders for process `\main.$proc$miim_golden.v:187$1'.
+     1/2: $1\EndBusy[0:0]
+     2/2: $1\EndBusy_d[0:0]
+
+2.3.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+
+2.3.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\ClockGen.\Mdc' using process `\ClockGen.$proc$miim_golden.v:531$113'.
+  created $dff cell `$procdff$579' with positive edge clock.
+Creating register for signal `\ClockGen.\Counter' using process `\ClockGen.$proc$miim_golden.v:514$111'.
+  created $dff cell `$procdff$580' with positive edge clock.
+Creating register for signal `\ShiftReg.\FiadReg' using process `\ShiftReg.$proc$miim_golden.v:827$99'.
+  created $dff cell `$procdff$581' with positive edge clock.
+Creating register for signal `\ShiftReg.\LinkOK' using process `\ShiftReg.$proc$miim_golden.v:798$95'.
+  created $dff cell `$procdff$582' with positive edge clock.
+Creating register for signal `\ShiftReg.\Prsd' using process `\ShiftReg.$proc$miim_golden.v:798$95'.
+  created $dff cell `$procdff$583' with positive edge clock.
+Creating register for signal `\ShiftReg.\ShiftReg' using process `\ShiftReg.$proc$miim_golden.v:766$92'.
+  created $dff cell `$procdff$584' with positive edge clock.
+Creating register for signal `\OutputControl.\Mdo' using process `\OutputControl.$proc$miim_golden.v:677$88'.
+  created $dff cell `$procdff$585' with positive edge clock.
+Creating register for signal `\OutputControl.\Mdo_d' using process `\OutputControl.$proc$miim_golden.v:677$88'.
+  created $dff cell `$procdff$586' with positive edge clock.
+Creating register for signal `\OutputControl.\MdoEn' using process `\OutputControl.$proc$miim_golden.v:657$87'.
+  created $dff cell `$procdff$587' with positive edge clock.
+Creating register for signal `\OutputControl.\MdcFrame' using process `\OutputControl.$proc$miim_golden.v:657$87'.
+  created $dff cell `$procdff$588' with positive edge clock.
+Creating register for signal `\OutputControl.\MdoEn_d' using process `\OutputControl.$proc$miim_golden.v:657$87'.
+  created $dff cell `$procdff$589' with positive edge clock.
+Creating register for signal `\OutputControl.\MdcFrame_d1' using process `\OutputControl.$proc$miim_golden.v:657$87'.
+  created $dff cell `$procdff$590' with positive edge clock.
+Creating register for signal `\OutputControl.\SerialEn_q' using process `\OutputControl.$proc$miim_golden.v:636$83'.
+  created $dff cell `$procdff$591' with positive edge clock.
+Creating register for signal `\OutputControl.\MdoEn_d2' using process `\OutputControl.$proc$miim_golden.v:636$83'.
+  created $dff cell `$procdff$592' with positive edge clock.
+Creating register for signal `\OutputControl.\MdcFrame_d2' using process `\OutputControl.$proc$miim_golden.v:636$83'.
+  created $dff cell `$procdff$593' with positive edge clock.
+Creating register for signal `\main.\ScanPHYAddrValid' using process `\main.$proc$miim_golden.v:412$64'.
+  created $dff cell `$procdff$594' with positive edge clock.
+Creating register for signal `\main.\StatusSampledEnd' using process `\main.$proc$miim_golden.v:398$61'.
+  created $dff cell `$procdff$595' with positive edge clock.
+Creating register for signal `\main.\BitCounter' using process `\main.$proc$miim_golden.v:360$32'.
+  created $dff cell `$procdff$596' with positive edge clock.
+Creating register for signal `\main.\InProgress' using process `\main.$proc$miim_golden.v:328$30'.
+  created $dff cell `$procdff$597' with positive edge clock.
+Creating register for signal `\main.\WriteOp' using process `\main.$proc$miim_golden.v:328$30'.
+  created $dff cell `$procdff$598' with positive edge clock.
+Creating register for signal `\main.\WCtrlDataStart_q1' using process `\main.$proc$miim_golden.v:269$12'.
+  created $dff cell `$procdff$599' with positive edge clock.
+Creating register for signal `\main.\WCtrlDataStart_q2' using process `\main.$proc$miim_golden.v:269$12'.
+  created $dff cell `$procdff$600' with positive edge clock.
+Creating register for signal `\main.\RStatStart_q1' using process `\main.$proc$miim_golden.v:269$12'.
+  created $dff cell `$procdff$601' with positive edge clock.
+Creating register for signal `\main.\RStatStart_q2' using process `\main.$proc$miim_golden.v:269$12'.
+  created $dff cell `$procdff$602' with positive edge clock.
+Creating register for signal `\main.\InProgress_q1' using process `\main.$proc$miim_golden.v:269$12'.
+  created $dff cell `$procdff$603' with positive edge clock.
+Creating register for signal `\main.\InProgress_q2' using process `\main.$proc$miim_golden.v:269$12'.
+  created $dff cell `$procdff$604' with positive edge clock.
+Creating register for signal `\main.\InProgress_q3' using process `\main.$proc$miim_golden.v:269$12'.
+  created $dff cell `$procdff$605' with positive edge clock.
+Creating register for signal `\main.\LatchByte1_d' using process `\main.$proc$miim_golden.v:269$12'.
+  created $dff cell `$procdff$606' with positive edge clock.
+Creating register for signal `\main.\LatchByte0_d' using process `\main.$proc$miim_golden.v:269$12'.
+  created $dff cell `$procdff$607' with positive edge clock.
+Creating register for signal `\main.\LatchByte' using process `\main.$proc$miim_golden.v:269$12'.
+  created $dff cell `$procdff$608' with positive edge clock.
+Creating register for signal `\main.\Nvalid' using process `\main.$proc$miim_golden.v:239$5'.
+  created $dff cell `$procdff$609' with positive edge clock.
+Creating register for signal `\main.\WCtrlDataStart' using process `\main.$proc$miim_golden.v:239$5'.
+  created $dff cell `$procdff$610' with positive edge clock.
+Creating register for signal `\main.\RStatStart' using process `\main.$proc$miim_golden.v:239$5'.
+  created $dff cell `$procdff$611' with positive edge clock.
+Creating register for signal `\main.\WCtrlData_q1' using process `\main.$proc$miim_golden.v:203$4'.
+  created $dff cell `$procdff$612' with positive edge clock.
+Creating register for signal `\main.\WCtrlData_q2' using process `\main.$proc$miim_golden.v:203$4'.
+  created $dff cell `$procdff$613' with positive edge clock.
+Creating register for signal `\main.\WCtrlData_q3' using process `\main.$proc$miim_golden.v:203$4'.
+  created $dff cell `$procdff$614' with positive edge clock.
+Creating register for signal `\main.\RStat_q1' using process `\main.$proc$miim_golden.v:203$4'.
+  created $dff cell `$procdff$615' with positive edge clock.
+Creating register for signal `\main.\RStat_q2' using process `\main.$proc$miim_golden.v:203$4'.
+  created $dff cell `$procdff$616' with positive edge clock.
+Creating register for signal `\main.\RStat_q3' using process `\main.$proc$miim_golden.v:203$4'.
+  created $dff cell `$procdff$617' with positive edge clock.
+Creating register for signal `\main.\ScanStat_q1' using process `\main.$proc$miim_golden.v:203$4'.
+  created $dff cell `$procdff$618' with positive edge clock.
+Creating register for signal `\main.\ScanStat_q2' using process `\main.$proc$miim_golden.v:203$4'.
+  created $dff cell `$procdff$619' with positive edge clock.
+Creating register for signal `\main.\SyncStatMdcEn' using process `\main.$proc$miim_golden.v:203$4'.
+  created $dff cell `$procdff$620' with positive edge clock.
+Creating register for signal `\main.\EndBusy_d' using process `\main.$proc$miim_golden.v:187$1'.
+  created $dff cell `$procdff$621' with positive edge clock.
+Creating register for signal `\main.\EndBusy' using process `\main.$proc$miim_golden.v:187$1'.
+  created $dff cell `$procdff$622' with positive edge clock.
+
+2.3.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+2.3.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Removing empty process `ClockGen.$proc$miim_golden.v:504$119'.
+Found and cleaned up 2 empty switches in `\ClockGen.$proc$miim_golden.v:531$113'.
+Removing empty process `ClockGen.$proc$miim_golden.v:531$113'.
+Found and cleaned up 2 empty switches in `\ClockGen.$proc$miim_golden.v:514$111'.
+Removing empty process `ClockGen.$proc$miim_golden.v:514$111'.
+Removing empty process `ShiftReg.$proc$miim_golden.v:757$107'.
+Found and cleaned up 3 empty switches in `\ShiftReg.$proc$miim_golden.v:827$99'.
+Removing empty process `ShiftReg.$proc$miim_golden.v:827$99'.
+Found and cleaned up 4 empty switches in `\ShiftReg.$proc$miim_golden.v:798$95'.
+Removing empty process `ShiftReg.$proc$miim_golden.v:798$95'.
+Found and cleaned up 4 empty switches in `\ShiftReg.$proc$miim_golden.v:766$92'.
+Removing empty process `ShiftReg.$proc$miim_golden.v:766$92'.
+Removing empty process `OutputControl.$proc$miim_golden.v:617$91'.
+Found and cleaned up 1 empty switch in `\OutputControl.$proc$miim_golden.v:677$88'.
+Removing empty process `OutputControl.$proc$miim_golden.v:677$88'.
+Found and cleaned up 1 empty switch in `\OutputControl.$proc$miim_golden.v:657$87'.
+Removing empty process `OutputControl.$proc$miim_golden.v:657$87'.
+Found and cleaned up 2 empty switches in `\OutputControl.$proc$miim_golden.v:636$83'.
+Removing empty process `OutputControl.$proc$miim_golden.v:636$83'.
+Removing empty process `main.$proc$miim_golden.v:147$65'.
+Found and cleaned up 2 empty switches in `\main.$proc$miim_golden.v:412$64'.
+Removing empty process `main.$proc$miim_golden.v:412$64'.
+Found and cleaned up 1 empty switch in `\main.$proc$miim_golden.v:398$61'.
+Removing empty process `main.$proc$miim_golden.v:398$61'.
+Found and cleaned up 4 empty switches in `\main.$proc$miim_golden.v:360$32'.
+Removing empty process `main.$proc$miim_golden.v:360$32'.
+Found and cleaned up 5 empty switches in `\main.$proc$miim_golden.v:328$30'.
+Removing empty process `main.$proc$miim_golden.v:328$30'.
+Found and cleaned up 2 empty switches in `\main.$proc$miim_golden.v:269$12'.
+Removing empty process `main.$proc$miim_golden.v:269$12'.
+Found and cleaned up 5 empty switches in `\main.$proc$miim_golden.v:239$5'.
+Removing empty process `main.$proc$miim_golden.v:239$5'.
+Found and cleaned up 2 empty switches in `\main.$proc$miim_golden.v:203$4'.
+Removing empty process `main.$proc$miim_golden.v:203$4'.
+Found and cleaned up 1 empty switch in `\main.$proc$miim_golden.v:187$1'.
+Removing empty process `main.$proc$miim_golden.v:187$1'.
+Cleaned up 41 empty switches.
+
+2.3.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ClockGen.
+<suppressed ~1 debug messages>
+Optimizing module ShiftReg.
+Optimizing module OutputControl.
+<suppressed ~2 debug messages>
+Optimizing module main.
+<suppressed ~5 debug messages>
+
+2.4. Executing FUTURE pass.
+
+2.5. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ClockGen.
+Optimizing module ShiftReg.
+Optimizing module OutputControl.
+Optimizing module main.
+
+2.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ClockGen..
+Finding unused cells or wires in module \ShiftReg..
+Finding unused cells or wires in module \OutputControl..
+Finding unused cells or wires in module \main..
+Removed 16 unused cells and 361 unused wires.
+<suppressed ~27 debug messages>
+
+2.7. Executing CHECK pass (checking for obvious problems).
+Checking module ClockGen...
+Checking module OutputControl...
+Checking module ShiftReg...
+Checking module main...
+Found and reported 0 problems.
+
+2.8. Executing OPT pass (performing simple optimizations).
+
+2.8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ClockGen.
+Optimizing module OutputControl.
+Optimizing module ShiftReg.
+Optimizing module main.
+
+2.8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ClockGen'.
+<suppressed ~3 debug messages>
+Finding identical cells in module `\OutputControl'.
+<suppressed ~6 debug messages>
+Finding identical cells in module `\ShiftReg'.
+<suppressed ~3 debug messages>
+Finding identical cells in module `\main'.
+<suppressed ~18 debug messages>
+Removed a total of 10 cells.
+
+2.8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \ClockGen..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 1/2 on $mux $procmux$124.
+    dead port 1/2 on $mux $procmux$133.
+Running muxtree optimizer on module \OutputControl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 1/2 on $mux $procmux$253.
+    dead port 1/2 on $mux $procmux$259.
+    dead port 1/2 on $mux $procmux$265.
+Running muxtree optimizer on module \ShiftReg..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 1/2 on $mux $procmux$142.
+    dead port 1/2 on $mux $procmux$145.
+    dead port 1/2 on $mux $procmux$151.
+    dead port 1/2 on $mux $procmux$160.
+    dead port 1/2 on $mux $procmux$163.
+    dead port 2/2 on $mux $procmux$169.
+    dead port 1/2 on $mux $procmux$172.
+    dead port 1/2 on $mux $procmux$178.
+    dead port 1/2 on $mux $procmux$184.
+    dead port 1/2 on $mux $procmux$190.
+    dead port 2/2 on $mux $procmux$206.
+    dead port 2/2 on $mux $procmux$208.
+    dead port 1/2 on $mux $procmux$211.
+    dead port 2/2 on $mux $procmux$217.
+    dead port 1/2 on $mux $procmux$220.
+    dead port 1/2 on $mux $procmux$226.
+Running muxtree optimizer on module \main..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 1/2 on $mux $procmux$280.
+    dead port 2/2 on $mux $procmux$293.
+    dead port 2/2 on $mux $procmux$295.
+    dead port 1/2 on $mux $procmux$298.
+    dead port 2/2 on $mux $procmux$304.
+    dead port 1/2 on $mux $procmux$307.
+    dead port 1/2 on $mux $procmux$313.
+    dead port 1/2 on $mux $procmux$323.
+    dead port 2/2 on $mux $procmux$325.
+    dead port 1/2 on $mux $procmux$328.
+    dead port 1/2 on $mux $procmux$335.
+    dead port 2/2 on $mux $procmux$337.
+    dead port 1/2 on $mux $procmux$340.
+    dead port 2/2 on $mux $procmux$347.
+    dead port 2/2 on $mux $procmux$349.
+    dead port 1/2 on $mux $procmux$352.
+    dead port 2/2 on $mux $procmux$358.
+    dead port 1/2 on $mux $procmux$361.
+    dead port 2/2 on $mux $procmux$367.
+    dead port 1/2 on $mux $procmux$370.
+    dead port 1/2 on $mux $procmux$376.
+    dead port 1/2 on $mux $procmux$382.
+    dead port 1/2 on $mux $procmux$394.
+    dead port 1/2 on $mux $procmux$400.
+    dead port 1/2 on $mux $procmux$406.
+    dead port 1/2 on $mux $procmux$412.
+    dead port 1/2 on $mux $procmux$418.
+    dead port 1/2 on $mux $procmux$424.
+    dead port 1/2 on $mux $procmux$430.
+    dead port 1/2 on $mux $procmux$436.
+    dead port 1/2 on $mux $procmux$442.
+    dead port 1/2 on $mux $procmux$448.
+    dead port 1/2 on $mux $procmux$454.
+    dead port 1/2 on $mux $procmux$490.
+    dead port 1/2 on $mux $procmux$493.
+    dead port 1/2 on $mux $procmux$499.
+    dead port 1/2 on $mux $procmux$502.
+    dead port 1/2 on $mux $procmux$508.
+    dead port 1/2 on $mux $procmux$511.
+    dead port 1/2 on $mux $procmux$517.
+    dead port 1/2 on $mux $procmux$523.
+    dead port 1/2 on $mux $procmux$529.
+    dead port 1/2 on $mux $procmux$544.
+Removed 64 multiplexer ports.
+<suppressed ~184 debug messages>
+
+2.8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \ClockGen.
+  Optimizing cells in module \OutputControl.
+  Optimizing cells in module \ShiftReg.
+  Optimizing cells in module \main.
+Performed a total of 0 changes.
+
+2.8.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ClockGen'.
+Finding identical cells in module `\OutputControl'.
+Finding identical cells in module `\ShiftReg'.
+Finding identical cells in module `\main'.
+<suppressed ~12 debug messages>
+Removed a total of 4 cells.
+
+2.8.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ClockGen..
+Finding unused cells or wires in module \OutputControl..
+Finding unused cells or wires in module \ShiftReg..
+Finding unused cells or wires in module \main..
+Removed 0 unused cells and 76 unused wires.
+<suppressed ~4 debug messages>
+
+2.8.7. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ClockGen.
+Optimizing module OutputControl.
+Optimizing module ShiftReg.
+Optimizing module main.
+<suppressed ~4 debug messages>
+
+2.8.8. Rerunning OPT passes. (Maybe there is more to do..)
+
+2.8.9. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \ClockGen..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \OutputControl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \ShiftReg..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \main..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~114 debug messages>
+
+2.8.10. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \ClockGen.
+  Optimizing cells in module \OutputControl.
+  Optimizing cells in module \ShiftReg.
+  Optimizing cells in module \main.
+Performed a total of 0 changes.
+
+2.8.11. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ClockGen'.
+Finding identical cells in module `\OutputControl'.
+Finding identical cells in module `\ShiftReg'.
+Finding identical cells in module `\main'.
+Removed a total of 0 cells.
+
+2.8.12. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ClockGen..
+Finding unused cells or wires in module \OutputControl..
+Finding unused cells or wires in module \ShiftReg..
+Finding unused cells or wires in module \main..
+Removed 6 unused cells and 12 unused wires.
+<suppressed ~11 debug messages>
+
+2.8.13. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ClockGen.
+Optimizing module OutputControl.
+Optimizing module ShiftReg.
+Optimizing module main.
+
+2.8.14. Rerunning OPT passes. (Maybe there is more to do..)
+
+2.8.15. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \ClockGen..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \OutputControl..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \ShiftReg..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \main..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~110 debug messages>
+
+2.8.16. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \ClockGen.
+  Optimizing cells in module \OutputControl.
+  Optimizing cells in module \ShiftReg.
+  Optimizing cells in module \main.
+Performed a total of 0 changes.
+
+2.8.17. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ClockGen'.
+Finding identical cells in module `\OutputControl'.
+Finding identical cells in module `\ShiftReg'.
+Finding identical cells in module `\main'.
+Removed a total of 0 cells.
+
+2.8.18. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ClockGen..
+Finding unused cells or wires in module \OutputControl..
+Finding unused cells or wires in module \ShiftReg..
+Finding unused cells or wires in module \main..
+
+2.8.19. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ClockGen.
+Optimizing module OutputControl.
+Optimizing module ShiftReg.
+Optimizing module main.
+
+2.8.20. Finished fast OPT passes. (There is nothing left to do.)
+
+2.9. Executing WREDUCE pass (reducing word size of cells).
+Removed top 30 bits (of 32) from port B of cell ClockGen.$lt$miim_golden.v:509$108 ($lt).
+Removed top 25 bits (of 32) from port A of cell ClockGen.$sub$miim_golden.v:510$110 ($sub).
+Removed top 31 bits (of 32) from port B of cell ClockGen.$sub$miim_golden.v:510$110 ($sub).
+Removed top 24 bits (of 32) from port Y of cell ClockGen.$sub$miim_golden.v:510$110 ($sub).
+Removed top 7 bits (of 8) from port B of cell ClockGen.$sub$miim_golden.v:525$112 ($sub).
+Removed top 4 bits (of 5) from port B of cell ShiftReg.$eq$miim_golden.v:810$96 ($eq).
+Removed top 31 bits (of 32) from port B of cell ShiftReg.$add$miim_golden.v:838$106 ($add).
+Removed top 27 bits (of 32) from port Y of cell ShiftReg.$add$miim_golden.v:838$106 ($add).
+Removed top 1 bits (of 4) from port B of cell ShiftReg.$procmux$203_CMP0 ($eq).
+Removed top 2 bits (of 4) from port B of cell ShiftReg.$procmux$204_CMP0 ($eq).
+Removed top 3 bits (of 4) from port B of cell ShiftReg.$procmux$205_CMP0 ($eq).
+Removed top 27 bits (of 32) from wire ShiftReg.$add$miim_golden.v:838$106_Y.
+
+2.10. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ClockGen..
+Finding unused cells or wires in module \OutputControl..
+Finding unused cells or wires in module \ShiftReg..
+Finding unused cells or wires in module \main..
+Removed 0 unused cells and 2 unused wires.
+<suppressed ~2 debug messages>
+
+2.11. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+2.12. Executing OPT pass (performing simple optimizations).
+
+2.12.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module ClockGen.
+Optimizing module OutputControl.
+Optimizing module ShiftReg.
+Optimizing module main.
+
+2.12.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\ClockGen'.
+Finding identical cells in module `\OutputControl'.
+Finding identical cells in module `\ShiftReg'.
+Finding identical cells in module `\main'.
+Removed a total of 0 cells.
+
+2.12.3. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \ClockGen..
+Finding unused cells or wires in module \OutputControl..
+Finding unused cells or wires in module \ShiftReg..
+Finding unused cells or wires in module \main..
+
+2.12.4. Finished fast OPT passes.
+
+2.13. Printing statistics.
+
+=== ClockGen ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       19 wires
+       68 wire bits
+       11 public wires
+       39 public wire bits
+        7 ports
+       14 port bits
+       14 cells
+        2   $and
+        2   $dff
+        1   $logic_not
+        1   $lt
+        5   $mux
+        1   $not
+        2   $sub
+
+=== OutputControl ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       43 wires
+       48 wire bits
+       15 public wires
+       20 public wire bits
+       11 ports
+       16 port bits
+       35 cells
+        8   $and
+        6   $dff
+        2   $logic_not
+        9   $mux
+        4   $not
+        5   $or
+        1   $reduce_and
+
+=== ShiftReg ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       46 wires
+      184 wire bits
+       19 public wires
+       76 public wire bits
+       16 ports
+       62 port bits
+       33 cells
+        1   $add
+        4   $and
+        4   $dff
+        6   $eq
+       13   $mux
+        2   $not
+        1   $or
+        1   $pmux
+        1   $reduce_or
+
+=== main ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      130 wires
+      215 wire bits
+       52 public wires
+      110 public wire bits
+       20 ports
+       69 port bits
+      113 cells
+        1   $add
+       18   $and
+       21   $dff
+        6   $eq
+        1   $logic_not
+       48   $mux
+        9   $not
+        8   $or
+        1   $reduce_and
+        3 submodules
+        1   ClockGen
+        1   OutputControl
+        1   ShiftReg
+
+=== design hierarchy ===
+
+        +----------Count including submodules.
+        | 
+      195 main
+       14 ClockGen
+       35 OutputControl
+       33 ShiftReg
+
+        +----------Count including submodules.
+        | 
+      238 wires
+      515 wire bits
+       97 public wires
+      245 public wire bits
+       54 ports
+      161 port bits
+        - memories
+        - memory bits
+        - processes
+      195 cells
+        2   $add
+       32   $and
+       33   $dff
+       12   $eq
+        4   $logic_not
+        1   $lt
+       75   $mux
+       16   $not
+       14   $or
+        1   $pmux
+        2   $reduce_and
+        1   $reduce_or
+        2   $sub
+        3 submodules
+        1   ClockGen
+        1   OutputControl
+        1   ShiftReg
+
+2.14. Executing CHECK pass (checking for obvious problems).
+Checking module ClockGen...
+Checking module OutputControl...
+Checking module ShiftReg...
+Checking module main...
+Found and reported 0 problems.
+
+3. Executing Verilog-2005 frontend: f_vMiim.v
+Parsing formal SystemVerilog input from `f_vMiim.v' to AST representation.
+verilog frontend filename f_vMiim.v
+Storing AST representation for module `$abstract\main'.
+Successfully finished Verilog frontend.
+
+4. Executing PREP pass.
+
+4.1. Executing HIERARCHY pass (managing design hierarchy).
+
+4.2. Executing AST frontend in derive mode using pre-parsed AST for module `\main'.
+Generating RTLIL representation for module `\main'.
+
+4.2.1. Analyzing design hierarchy..
+Top module:  \main
+
+4.2.2. Analyzing design hierarchy..
+Top module:  \main
+Removing unused module `$abstract\main'.
+Removed 1 unused modules.
+
+4.3. Executing PROC pass (convert processes to netlists).
+
+4.3.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+4.3.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Marked 1 switch rules as full_case in process $proc$f_vMiim.v:316$675 in module main.
+Marked 1 switch rules as full_case in process $proc$f_vMiim.v:303$674 in module main.
+Marked 2 switch rules as full_case in process $proc$f_vMiim.v:292$670 in module main.
+Marked 3 switch rules as full_case in process $proc$f_vMiim.v:274$662 in module main.
+Marked 4 switch rules as full_case in process $proc$f_vMiim.v:262$660 in module main.
+Marked 4 switch rules as full_case in process $proc$f_vMiim.v:247$657 in module main.
+Marked 2 switch rules as full_case in process $proc$f_vMiim.v:236$654 in module main.
+Marked 2 switch rules as full_case in process $proc$f_vMiim.v:224$638 in module main.
+Marked 5 switch rules as full_case in process $proc$f_vMiim.v:208$636 in module main.
+Marked 2 switch rules as full_case in process $proc$f_vMiim.v:183$635 in module main.
+Marked 5 switch rules as full_case in process $proc$f_vMiim.v:164$628 in module main.
+Marked 2 switch rules as full_case in process $proc$f_vMiim.v:140$627 in module main.
+Marked 1 switch rules as full_case in process $proc$f_vMiim.v:131$624 in module main.
+Removed a total of 0 dead cases.
+
+4.3.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 88 assignments to connections.
+
+4.3.4. Executing PROC_INIT pass (extract init attributes).
+Found init rule in `\main.$proc$f_vMiim.v:281$741'.
+  Set init value: \Mdo = 1'0
+  Set init value: \main___OutCtrl___MdcFrame_d1 = 1'0
+  Set init value: \main___OutCtrl___MdcFrame_d2 = 1'0
+  Set init value: \main___OutCtrl___Mdo_d = 1'0
+  Set init value: \main___OutCtrl___MdoEn_d = 1'0
+  Set init value: \main___OutCtrl___MdoEn_d2 = 1'0
+  Set init value: \main___OutCtrl___SerialEn_q = 1'0
+  Set init value: \main___MdcFrame = 1'0
+  Set init value: \main___MdoEn = 1'0
+Found init rule in `\main.$proc$f_vMiim.v:241$740'.
+  Set init value: \LinkOK = 1'0
+  Set init value: \Prsd = 16'0000000000000000
+  Set init value: \main___ShftRg___FiadReg = 5'00000
+  Set init value: \main___ShftRg___ShiftReg = 8'00000000
+Found init rule in `\main.$proc$f_vMiim.v:231$739'.
+  Set init value: \Mdc = 1'0
+  Set init value: \main___ClkGen___Counter = 8'00000000
+Found init rule in `\main.$proc$f_vMiim.v:100$738'.
+  Set init value: \Nvalid = 1'0
+  Set init value: \ScanPHYAddrValid = 1'0
+  Set init value: \main___LatchByte = 2'00
+  Set init value: \main___LatchByte0_d = 1'0
+  Set init value: \main___LatchByte1_d = 1'0
+  Set init value: \main___StatusSampledEnd = 1'0
+  Set init value: \main___BitCounter = 6'000000
+  Set init value: \main___WriteOp = 1'0
+  Set init value: \main___InProgress_q3 = 1'0
+  Set init value: \main___InProgress_q2 = 1'0
+  Set init value: \main___InProgress_q1 = 1'0
+  Set init value: \main___InProgress = 1'0
+  Set init value: \main___SyncStatMdcEn = 1'0
+  Set init value: \main___ScanStat_q2 = 1'0
+  Set init value: \main___ScanStat_q1 = 1'0
+  Set init value: \main___RStatStart_q2 = 1'0
+  Set init value: \main___RStatStart_q1 = 1'0
+  Set init value: \main___RStatStart = 1'0
+  Set init value: \main___RStat_q3 = 1'0
+  Set init value: \main___RStat_q2 = 1'0
+  Set init value: \main___RStat_q1 = 1'0
+  Set init value: \main___WCtrlDataStart_q2 = 1'0
+  Set init value: \main___WCtrlDataStart_q1 = 1'0
+  Set init value: \main___WCtrlDataStart = 1'0
+  Set init value: \main___WCtrlData_q3 = 1'0
+  Set init value: \main___WCtrlData_q2 = 1'0
+  Set init value: \main___WCtrlData_q1 = 1'0
+  Set init value: \main___EndBusy = 1'0
+  Set init value: \main___EndBusy_d = 1'0
+
+4.3.5. Executing PROC_ARST pass (detect async resets in processes).
+
+4.3.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~34 debug messages>
+
+4.3.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\main.$proc$f_vMiim.v:281$741'.
+Creating decoders for process `\main.$proc$f_vMiim.v:241$740'.
+Creating decoders for process `\main.$proc$f_vMiim.v:231$739'.
+Creating decoders for process `\main.$proc$f_vMiim.v:100$738'.
+Creating decoders for process `\main.$proc$f_vMiim.v:316$675'.
+     1/2: $1\Mdo[0:0]
+     2/2: $1\main___OutCtrl___Mdo_d[0:0]
+Creating decoders for process `\main.$proc$f_vMiim.v:303$674'.
+     1/4: $1\main___MdcFrame[0:0]
+     2/4: $1\main___OutCtrl___MdcFrame_d1[0:0]
+     3/4: $1\main___MdoEn[0:0]
+     4/4: $1\main___OutCtrl___MdoEn_d[0:0]
+Creating decoders for process `\main.$proc$f_vMiim.v:292$670'.
+     1/6: $2\main___OutCtrl___MdcFrame_d2[0:0]
+     2/6: $2\main___OutCtrl___MdoEn_d2[0:0]
+     3/6: $2\main___OutCtrl___SerialEn_q[0:0]
+     4/6: $1\main___OutCtrl___MdcFrame_d2[0:0]
+     5/6: $1\main___OutCtrl___MdoEn_d2[0:0]
+     6/6: $1\main___OutCtrl___SerialEn_q[0:0]
+Creating decoders for process `\main.$proc$f_vMiim.v:274$662'.
+     1/3: $3\main___ShftRg___FiadReg[4:0]
+     2/3: $2\main___ShftRg___FiadReg[4:0]
+     3/3: $1\main___ShftRg___FiadReg[4:0]
+Creating decoders for process `\main.$proc$f_vMiim.v:262$660'.
+     1/7: $3\Prsd[15:8]
+     2/7: $3\LinkOK[0:0]
+     3/7: $2\LinkOK[0:0]
+     4/7: $2\Prsd[15:0] [7:0]
+     5/7: $2\Prsd[15:0] [15:8]
+     6/7: $1\LinkOK[0:0]
+     7/7: $1\Prsd[15:0]
+Creating decoders for process `\main.$proc$f_vMiim.v:247$657'.
+     1/4: $4\main___ShftRg___ShiftReg[7:0]
+     2/4: $3\main___ShftRg___ShiftReg[7:0]
+     3/4: $2\main___ShftRg___ShiftReg[7:0]
+     4/4: $1\main___ShftRg___ShiftReg[7:0]
+Creating decoders for process `\main.$proc$f_vMiim.v:236$654'.
+     1/2: $2\Mdc[0:0]
+     2/2: $1\Mdc[0:0]
+Creating decoders for process `\main.$proc$f_vMiim.v:235$650'.
+Creating decoders for process `\main.$proc$f_vMiim.v:230$647'.
+Creating decoders for process `\main.$proc$f_vMiim.v:229$644'.
+Creating decoders for process `\main.$proc$f_vMiim.v:224$638'.
+     1/2: $2\main___BitCounter[5:0]
+     2/2: $1\main___BitCounter[5:0]
+Creating decoders for process `\main.$proc$f_vMiim.v:208$636'.
+     1/9: $5\main___WriteOp[0:0]
+     2/9: $4\main___InProgress[0:0]
+     3/9: $4\main___WriteOp[0:0]
+     4/9: $3\main___InProgress[0:0]
+     5/9: $3\main___WriteOp[0:0]
+     6/9: $2\main___InProgress[0:0]
+     7/9: $2\main___WriteOp[0:0]
+     8/9: $1\main___WriteOp[0:0]
+     9/9: $1\main___InProgress[0:0]
+Creating decoders for process `\main.$proc$f_vMiim.v:183$635'.
+     1/20: $2\main___InProgress_q3[0:0]
+     2/20: $2\main___InProgress_q2[0:0]
+     3/20: $2\main___InProgress_q1[0:0]
+     4/20: $2\main___LatchByte1_d[0:0]
+     5/20: $2\main___LatchByte0_d[0:0]
+     6/20: $2\main___LatchByte[1:0]
+     7/20: $2\main___RStatStart_q2[0:0]
+     8/20: $2\main___RStatStart_q1[0:0]
+     9/20: $2\main___WCtrlDataStart_q2[0:0]
+    10/20: $2\main___WCtrlDataStart_q1[0:0]
+    11/20: $1\main___InProgress_q3[0:0]
+    12/20: $1\main___InProgress_q2[0:0]
+    13/20: $1\main___InProgress_q1[0:0]
+    14/20: $1\main___LatchByte1_d[0:0]
+    15/20: $1\main___LatchByte0_d[0:0]
+    16/20: $1\main___LatchByte[1:0]
+    17/20: $1\main___RStatStart_q2[0:0]
+    18/20: $1\main___RStatStart_q1[0:0]
+    19/20: $1\main___WCtrlDataStart_q2[0:0]
+    20/20: $1\main___WCtrlDataStart_q1[0:0]
+Creating decoders for process `\main.$proc$f_vMiim.v:164$628'.
+     1/9: $3\Nvalid[0:0]
+     2/9: $3\main___RStatStart[0:0]
+     3/9: $3\main___WCtrlDataStart[0:0]
+     4/9: $2\Nvalid[0:0]
+     5/9: $2\main___RStatStart[0:0]
+     6/9: $2\main___WCtrlDataStart[0:0]
+     7/9: $1\Nvalid[0:0]
+     8/9: $1\main___RStatStart[0:0]
+     9/9: $1\main___WCtrlDataStart[0:0]
+Creating decoders for process `\main.$proc$f_vMiim.v:140$627'.
+     1/10: $2\main___SyncStatMdcEn[0:0]
+     2/10: $1\main___SyncStatMdcEn[0:0]
+     3/10: $1\main___ScanStat_q2[0:0]
+     4/10: $1\main___ScanStat_q1[0:0]
+     5/10: $1\main___RStat_q3[0:0]
+     6/10: $1\main___RStat_q2[0:0]
+     7/10: $1\main___RStat_q1[0:0]
+     8/10: $1\main___WCtrlData_q3[0:0]
+     9/10: $1\main___WCtrlData_q2[0:0]
+    10/10: $1\main___WCtrlData_q1[0:0]
+Creating decoders for process `\main.$proc$f_vMiim.v:131$624'.
+     1/2: $1\main___EndBusy[0:0]
+     2/2: $1\main___EndBusy_d[0:0]
+
+4.3.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+
+4.3.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\main.\Mdo' using process `\main.$proc$f_vMiim.v:316$675'.
+  created $dff cell `$procdff$1153' with positive edge clock.
+Creating register for signal `\main.\main___OutCtrl___Mdo_d' using process `\main.$proc$f_vMiim.v:316$675'.
+  created $dff cell `$procdff$1154' with positive edge clock.
+Creating register for signal `\main.\main___OutCtrl___MdcFrame_d1' using process `\main.$proc$f_vMiim.v:303$674'.
+  created $dff cell `$procdff$1155' with positive edge clock.
+Creating register for signal `\main.\main___OutCtrl___MdoEn_d' using process `\main.$proc$f_vMiim.v:303$674'.
+  created $dff cell `$procdff$1156' with positive edge clock.
+Creating register for signal `\main.\main___MdcFrame' using process `\main.$proc$f_vMiim.v:303$674'.
+  created $dff cell `$procdff$1157' with positive edge clock.
+Creating register for signal `\main.\main___MdoEn' using process `\main.$proc$f_vMiim.v:303$674'.
+  created $dff cell `$procdff$1158' with positive edge clock.
+Creating register for signal `\main.\main___OutCtrl___MdcFrame_d2' using process `\main.$proc$f_vMiim.v:292$670'.
+  created $dff cell `$procdff$1159' with positive edge clock.
+Creating register for signal `\main.\main___OutCtrl___MdoEn_d2' using process `\main.$proc$f_vMiim.v:292$670'.
+  created $dff cell `$procdff$1160' with positive edge clock.
+Creating register for signal `\main.\main___OutCtrl___SerialEn_q' using process `\main.$proc$f_vMiim.v:292$670'.
+  created $dff cell `$procdff$1161' with positive edge clock.
+Creating register for signal `\main.\main___ShftRg___FiadReg' using process `\main.$proc$f_vMiim.v:274$662'.
+  created $dff cell `$procdff$1162' with positive edge clock.
+Creating register for signal `\main.\LinkOK' using process `\main.$proc$f_vMiim.v:262$660'.
+  created $dff cell `$procdff$1163' with positive edge clock.
+Creating register for signal `\main.\Prsd' using process `\main.$proc$f_vMiim.v:262$660'.
+  created $dff cell `$procdff$1164' with positive edge clock.
+Creating register for signal `\main.\main___ShftRg___ShiftReg' using process `\main.$proc$f_vMiim.v:247$657'.
+  created $dff cell `$procdff$1165' with positive edge clock.
+Creating register for signal `\main.\Mdc' using process `\main.$proc$f_vMiim.v:236$654'.
+  created $dff cell `$procdff$1166' with positive edge clock.
+Creating register for signal `\main.\main___ClkGen___Counter' using process `\main.$proc$f_vMiim.v:235$650'.
+  created $dff cell `$procdff$1167' with positive edge clock.
+Creating register for signal `\main.\ScanPHYAddrValid' using process `\main.$proc$f_vMiim.v:230$647'.
+  created $dff cell `$procdff$1168' with positive edge clock.
+Creating register for signal `\main.\main___StatusSampledEnd' using process `\main.$proc$f_vMiim.v:229$644'.
+  created $dff cell `$procdff$1169' with positive edge clock.
+Creating register for signal `\main.\main___BitCounter' using process `\main.$proc$f_vMiim.v:224$638'.
+  created $dff cell `$procdff$1170' with positive edge clock.
+Creating register for signal `\main.\main___WriteOp' using process `\main.$proc$f_vMiim.v:208$636'.
+  created $dff cell `$procdff$1171' with positive edge clock.
+Creating register for signal `\main.\main___InProgress' using process `\main.$proc$f_vMiim.v:208$636'.
+  created $dff cell `$procdff$1172' with positive edge clock.
+Creating register for signal `\main.\main___LatchByte' using process `\main.$proc$f_vMiim.v:183$635'.
+  created $dff cell `$procdff$1173' with positive edge clock.
+Creating register for signal `\main.\main___LatchByte0_d' using process `\main.$proc$f_vMiim.v:183$635'.
+  created $dff cell `$procdff$1174' with positive edge clock.
+Creating register for signal `\main.\main___LatchByte1_d' using process `\main.$proc$f_vMiim.v:183$635'.
+  created $dff cell `$procdff$1175' with positive edge clock.
+Creating register for signal `\main.\main___InProgress_q3' using process `\main.$proc$f_vMiim.v:183$635'.
+  created $dff cell `$procdff$1176' with positive edge clock.
+Creating register for signal `\main.\main___InProgress_q2' using process `\main.$proc$f_vMiim.v:183$635'.
+  created $dff cell `$procdff$1177' with positive edge clock.
+Creating register for signal `\main.\main___InProgress_q1' using process `\main.$proc$f_vMiim.v:183$635'.
+  created $dff cell `$procdff$1178' with positive edge clock.
+Creating register for signal `\main.\main___RStatStart_q2' using process `\main.$proc$f_vMiim.v:183$635'.
+  created $dff cell `$procdff$1179' with positive edge clock.
+Creating register for signal `\main.\main___RStatStart_q1' using process `\main.$proc$f_vMiim.v:183$635'.
+  created $dff cell `$procdff$1180' with positive edge clock.
+Creating register for signal `\main.\main___WCtrlDataStart_q2' using process `\main.$proc$f_vMiim.v:183$635'.
+  created $dff cell `$procdff$1181' with positive edge clock.
+Creating register for signal `\main.\main___WCtrlDataStart_q1' using process `\main.$proc$f_vMiim.v:183$635'.
+  created $dff cell `$procdff$1182' with positive edge clock.
+Creating register for signal `\main.\Nvalid' using process `\main.$proc$f_vMiim.v:164$628'.
+  created $dff cell `$procdff$1183' with positive edge clock.
+Creating register for signal `\main.\main___RStatStart' using process `\main.$proc$f_vMiim.v:164$628'.
+  created $dff cell `$procdff$1184' with positive edge clock.
+Creating register for signal `\main.\main___WCtrlDataStart' using process `\main.$proc$f_vMiim.v:164$628'.
+  created $dff cell `$procdff$1185' with positive edge clock.
+Creating register for signal `\main.\main___SyncStatMdcEn' using process `\main.$proc$f_vMiim.v:140$627'.
+  created $dff cell `$procdff$1186' with positive edge clock.
+Creating register for signal `\main.\main___ScanStat_q2' using process `\main.$proc$f_vMiim.v:140$627'.
+  created $dff cell `$procdff$1187' with positive edge clock.
+Creating register for signal `\main.\main___ScanStat_q1' using process `\main.$proc$f_vMiim.v:140$627'.
+  created $dff cell `$procdff$1188' with positive edge clock.
+Creating register for signal `\main.\main___RStat_q3' using process `\main.$proc$f_vMiim.v:140$627'.
+  created $dff cell `$procdff$1189' with positive edge clock.
+Creating register for signal `\main.\main___RStat_q2' using process `\main.$proc$f_vMiim.v:140$627'.
+  created $dff cell `$procdff$1190' with positive edge clock.
+Creating register for signal `\main.\main___RStat_q1' using process `\main.$proc$f_vMiim.v:140$627'.
+  created $dff cell `$procdff$1191' with positive edge clock.
+Creating register for signal `\main.\main___WCtrlData_q3' using process `\main.$proc$f_vMiim.v:140$627'.
+  created $dff cell `$procdff$1192' with positive edge clock.
+Creating register for signal `\main.\main___WCtrlData_q2' using process `\main.$proc$f_vMiim.v:140$627'.
+  created $dff cell `$procdff$1193' with positive edge clock.
+Creating register for signal `\main.\main___WCtrlData_q1' using process `\main.$proc$f_vMiim.v:140$627'.
+  created $dff cell `$procdff$1194' with positive edge clock.
+Creating register for signal `\main.\main___EndBusy' using process `\main.$proc$f_vMiim.v:131$624'.
+  created $dff cell `$procdff$1195' with positive edge clock.
+Creating register for signal `\main.\main___EndBusy_d' using process `\main.$proc$f_vMiim.v:131$624'.
+  created $dff cell `$procdff$1196' with positive edge clock.
+
+4.3.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+4.3.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Removing empty process `main.$proc$f_vMiim.v:281$741'.
+Removing empty process `main.$proc$f_vMiim.v:241$740'.
+Removing empty process `main.$proc$f_vMiim.v:231$739'.
+Removing empty process `main.$proc$f_vMiim.v:100$738'.
+Found and cleaned up 1 empty switch in `\main.$proc$f_vMiim.v:316$675'.
+Removing empty process `main.$proc$f_vMiim.v:316$675'.
+Found and cleaned up 1 empty switch in `\main.$proc$f_vMiim.v:303$674'.
+Removing empty process `main.$proc$f_vMiim.v:303$674'.
+Found and cleaned up 2 empty switches in `\main.$proc$f_vMiim.v:292$670'.
+Removing empty process `main.$proc$f_vMiim.v:292$670'.
+Found and cleaned up 3 empty switches in `\main.$proc$f_vMiim.v:274$662'.
+Removing empty process `main.$proc$f_vMiim.v:274$662'.
+Found and cleaned up 4 empty switches in `\main.$proc$f_vMiim.v:262$660'.
+Removing empty process `main.$proc$f_vMiim.v:262$660'.
+Found and cleaned up 4 empty switches in `\main.$proc$f_vMiim.v:247$657'.
+Removing empty process `main.$proc$f_vMiim.v:247$657'.
+Found and cleaned up 2 empty switches in `\main.$proc$f_vMiim.v:236$654'.
+Removing empty process `main.$proc$f_vMiim.v:236$654'.
+Removing empty process `main.$proc$f_vMiim.v:235$650'.
+Removing empty process `main.$proc$f_vMiim.v:230$647'.
+Removing empty process `main.$proc$f_vMiim.v:229$644'.
+Found and cleaned up 2 empty switches in `\main.$proc$f_vMiim.v:224$638'.
+Removing empty process `main.$proc$f_vMiim.v:224$638'.
+Found and cleaned up 5 empty switches in `\main.$proc$f_vMiim.v:208$636'.
+Removing empty process `main.$proc$f_vMiim.v:208$636'.
+Found and cleaned up 2 empty switches in `\main.$proc$f_vMiim.v:183$635'.
+Removing empty process `main.$proc$f_vMiim.v:183$635'.
+Found and cleaned up 5 empty switches in `\main.$proc$f_vMiim.v:164$628'.
+Removing empty process `main.$proc$f_vMiim.v:164$628'.
+Found and cleaned up 2 empty switches in `\main.$proc$f_vMiim.v:140$627'.
+Removing empty process `main.$proc$f_vMiim.v:140$627'.
+Found and cleaned up 1 empty switch in `\main.$proc$f_vMiim.v:131$624'.
+Removing empty process `main.$proc$f_vMiim.v:131$624'.
+Cleaned up 34 empty switches.
+
+4.3.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module main.
+<suppressed ~5 debug messages>
+
+4.4. Executing FUTURE pass.
+
+4.5. Executing OPT_EXPR pass (perform const folding).
+Optimizing module main.
+
+4.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \main..
+Removed 24 unused cells and 348 unused wires.
+<suppressed ~34 debug messages>
+
+4.7. Executing CHECK pass (checking for obvious problems).
+Checking module main...
+Found and reported 0 problems.
+
+4.8. Executing OPT pass (performing simple optimizations).
+
+4.8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module main.
+
+4.8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\main'.
+<suppressed ~21 debug messages>
+Removed a total of 7 cells.
+
+4.8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \main..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 1/2 on $mux $procmux$1004.
+    dead port 1/2 on $mux $procmux$1010.
+    dead port 1/2 on $mux $procmux$1016.
+    dead port 1/2 on $mux $procmux$1022.
+    dead port 1/2 on $mux $procmux$1028.
+    dead port 1/2 on $mux $procmux$1064.
+    dead port 1/2 on $mux $procmux$1067.
+    dead port 1/2 on $mux $procmux$1073.
+    dead port 1/2 on $mux $procmux$1076.
+    dead port 1/2 on $mux $procmux$1082.
+    dead port 1/2 on $mux $procmux$1085.
+    dead port 1/2 on $mux $procmux$1091.
+    dead port 1/2 on $mux $procmux$1097.
+    dead port 1/2 on $mux $procmux$1103.
+    dead port 1/2 on $mux $procmux$1118.
+    dead port 1/2 on $mux $procmux$764.
+    dead port 1/2 on $mux $procmux$776.
+    dead port 1/2 on $mux $procmux$791.
+    dead port 1/2 on $mux $procmux$794.
+    dead port 1/2 on $mux $procmux$800.
+    dead port 1/2 on $mux $procmux$809.
+    dead port 1/2 on $mux $procmux$812.
+    dead port 2/2 on $mux $procmux$818.
+    dead port 1/2 on $mux $procmux$821.
+    dead port 1/2 on $mux $procmux$827.
+    dead port 1/2 on $mux $procmux$833.
+    dead port 1/2 on $mux $procmux$839.
+    dead port 2/2 on $mux $procmux$855.
+    dead port 2/2 on $mux $procmux$857.
+    dead port 1/2 on $mux $procmux$860.
+    dead port 2/2 on $mux $procmux$866.
+    dead port 1/2 on $mux $procmux$869.
+    dead port 1/2 on $mux $procmux$875.
+    dead port 1/2 on $mux $procmux$884.
+    dead port 1/2 on $mux $procmux$893.
+    dead port 1/2 on $mux $procmux$903.
+    dead port 2/2 on $mux $procmux$905.
+    dead port 1/2 on $mux $procmux$908.
+    dead port 1/2 on $mux $procmux$915.
+    dead port 2/2 on $mux $procmux$917.
+    dead port 1/2 on $mux $procmux$920.
+    dead port 2/2 on $mux $procmux$927.
+    dead port 2/2 on $mux $procmux$929.
+    dead port 1/2 on $mux $procmux$932.
+    dead port 2/2 on $mux $procmux$938.
+    dead port 1/2 on $mux $procmux$941.
+    dead port 2/2 on $mux $procmux$947.
+    dead port 1/2 on $mux $procmux$950.
+    dead port 1/2 on $mux $procmux$956.
+    dead port 1/2 on $mux $procmux$962.
+    dead port 1/2 on $mux $procmux$974.
+    dead port 1/2 on $mux $procmux$980.
+    dead port 1/2 on $mux $procmux$986.
+    dead port 1/2 on $mux $procmux$992.
+    dead port 1/2 on $mux $procmux$998.
+Removed 55 multiplexer ports.
+<suppressed ~164 debug messages>
+
+4.8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \main.
+Performed a total of 0 changes.
+
+4.8.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\main'.
+<suppressed ~12 debug messages>
+Removed a total of 4 cells.
+
+4.8.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \main..
+Removed 0 unused cells and 64 unused wires.
+<suppressed ~1 debug messages>
+
+4.8.7. Executing OPT_EXPR pass (perform const folding).
+Optimizing module main.
+<suppressed ~4 debug messages>
+
+4.8.8. Rerunning OPT passes. (Maybe there is more to do..)
+
+4.8.9. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \main..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~103 debug messages>
+
+4.8.10. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \main.
+Performed a total of 0 changes.
+
+4.8.11. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\main'.
+Removed a total of 0 cells.
+
+4.8.12. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \main..
+Removed 6 unused cells and 12 unused wires.
+<suppressed ~11 debug messages>
+
+4.8.13. Executing OPT_EXPR pass (perform const folding).
+Optimizing module main.
+
+4.8.14. Rerunning OPT passes. (Maybe there is more to do..)
+
+4.8.15. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \main..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~99 debug messages>
+
+4.8.16. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \main.
+Performed a total of 0 changes.
+
+4.8.17. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\main'.
+Removed a total of 0 cells.
+
+4.8.18. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \main..
+
+4.8.19. Executing OPT_EXPR pass (perform const folding).
+Optimizing module main.
+
+4.8.20. Finished fast OPT passes. (There is nothing left to do.)
+
+4.9. Executing WREDUCE pass (reducing word size of cells).
+Removed top 5 bits (of 6) from port A of cell main.$add$f_vMiim.v:228$641 ($add).
+Removed top 3 bits (of 4) from port B of cell main.$procmux$854_CMP0 ($eq).
+Removed top 2 bits (of 4) from port B of cell main.$procmux$853_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell main.$procmux$852_CMP0 ($eq).
+Removed top 1 bits (of 8) from port A of cell main.$sub$f_vMiim.v:340$733 ($sub).
+Removed top 7 bits (of 8) from port B of cell main.$sub$f_vMiim.v:340$733 ($sub).
+Removed top 6 bits (of 8) from port A of cell main.$gt$f_vMiim.v:340$730 ($gt).
+Removed top 4 bits (of 5) from port A of cell main.$add$f_vMiim.v:280$669 ($add).
+Removed top 4 bits (of 5) from port A of cell main.$eq$f_vMiim.v:269$661 ($eq).
+Removed top 7 bits (of 8) from port B of cell main.$sub$f_vMiim.v:235$651 ($sub).
+Removed top 1 bits (of 8) from wire main.$shr$f_vMiim.v:340$732_Y.
+Removed top 7 bits (of 8) from wire main.$ternary$f_vMiim.v:340$731_Y.
+
+4.10. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \main..
+Removed 0 unused cells and 2 unused wires.
+<suppressed ~1 debug messages>
+
+4.11. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+4.12. Executing OPT pass (performing simple optimizations).
+
+4.12.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module main.
+
+4.12.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\main'.
+Removed a total of 0 cells.
+
+4.12.3. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \main..
+
+4.12.4. Finished fast OPT passes.
+
+4.13. Printing statistics.
+
+=== main ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      193 wires
+      419 wire bits
+       64 public wires
+      147 public wire bits
+       20 ports
+       69 port bits
+      181 cells
+        2   $add
+       29   $and
+       31   $dff
+       12   $eq
+        1   $gt
+        1   $logic_and
+        2   $logic_not
+       68   $mux
+       14   $not
+       15   $or
+        1   $pmux
+        2   $reduce_and
+        1   $reduce_or
+        2   $sub
+
+4.14. Executing CHECK pass (checking for obvious problems).
+Checking module main...
+Found and reported 0 problems.
+
+5. Executing MITER pass (creating miter circuit).
+Creating miter cell "miter" with gold cell "main" and gate cell "revised".
+
+5.1. Executing FLATTEN pass (flatten design).
+<suppressed ~5 debug messages>
+
+5.2. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+Removed 8 unused cells and 10 unused wires.
+
+6. Executing PREP pass.
+
+6.1. Executing HIERARCHY pass (managing design hierarchy).
+
+6.1.1. Analyzing design hierarchy..
+Top module:  \miter
+
+6.1.2. Analyzing design hierarchy..
+Top module:  \miter
+Removing unused module `\ClockGen'.
+Removing unused module `\OutputControl'.
+Removing unused module `\ShiftReg'.
+Removing unused module `\main'.
+Removing unused module `\revised'.
+Removed 5 unused modules.
+
+6.2. Executing PROC pass (convert processes to netlists).
+
+6.2.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+6.2.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Removed a total of 0 dead cases.
+
+6.2.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 0 assignments to connections.
+
+6.2.4. Executing PROC_INIT pass (extract init attributes).
+
+6.2.5. Executing PROC_ARST pass (detect async resets in processes).
+
+6.2.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+
+6.2.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+
+6.2.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+
+6.2.9. Executing PROC_DFF pass (convert process syncs to FFs).
+
+6.2.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+6.2.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+6.2.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+
+6.3. Executing FUTURE pass.
+
+6.4. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+
+6.5. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \miter..
+
+6.6. Executing CHECK pass (checking for obvious problems).
+Checking module miter...
+Found and reported 0 problems.
+
+6.7. Executing OPT pass (performing simple optimizations).
+
+6.7.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+
+6.7.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\miter'.
+<suppressed ~24 debug messages>
+Removed a total of 8 cells.
+
+6.7.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \miter..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~204 debug messages>
+
+6.7.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \miter.
+Performed a total of 0 changes.
+
+6.7.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\miter'.
+<suppressed ~6 debug messages>
+Removed a total of 2 cells.
+
+6.7.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \miter..
+Removed 0 unused cells and 9 unused wires.
+<suppressed ~1 debug messages>
+
+6.7.7. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+
+6.7.8. Rerunning OPT passes. (Maybe there is more to do..)
+
+6.7.9. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \miter..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~202 debug messages>
+
+6.7.10. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \miter.
+Performed a total of 0 changes.
+
+6.7.11. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\miter'.
+Removed a total of 0 cells.
+
+6.7.12. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \miter..
+
+6.7.13. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+
+6.7.14. Finished fast OPT passes. (There is nothing left to do.)
+
+6.8. Executing WREDUCE pass (reducing word size of cells).
+Removed top 1 bits (of 8) from wire miter.$flatten\gate.$auto$wreduce.cc:514:run$1197.
+Removed top 7 bits (of 8) from wire miter.$flatten\gate.$auto$wreduce.cc:514:run$1198.
+
+6.9. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \miter..
+Removed 0 unused cells and 2 unused wires.
+<suppressed ~1 debug messages>
+
+6.10. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+6.11. Executing OPT pass (performing simple optimizations).
+
+6.11.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+
+6.11.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\miter'.
+Removed a total of 0 cells.
+
+6.11.3. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \miter..
+
+6.11.4. Finished fast OPT passes.
+
+6.12. Printing statistics.
+
+=== miter ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      450 wires
+     1021 wire bits
+      186 public wires
+      485 public wire bits
+       29 ports
+       97 port bits
+      373 cells
+        4   $add
+       57   $and
+       61   $dff
+       24   $eq
+        8   $eqx
+        1   $gt
+        1   $logic_and
+        5   $logic_not
+        1   $lt
+      139   $mux
+       26   $not
+       28   $or
+        2   $pmux
+        5   $reduce_and
+        2   $reduce_or
+        5   $scopeinfo
+        4   $sub
+
+6.13. Executing CHECK pass (checking for obvious problems).
+Checking module miter...
+Found and reported 0 problems.
+
+7. Executing HIERARCHY pass (managing design hierarchy).
+Attribute `top' found on module `miter'. Setting top module to miter.
+
+7.1. Analyzing design hierarchy..
+Top module:  \miter
+
+7.2. Analyzing design hierarchy..
+Top module:  \miter
+Removed 0 unused modules.
+
+8. Executing jny backend.
+
+9. Executing RTLIL backend.
+Output filename: ../model/design.il
+
+End of script. Logfile hash: 5a62f96e99, CPU: user 0.13s system 0.00s, MEM: 18.02 MB peak
+Yosys 0.60+8 (git sha1 0e31e389f, clang++ 18.1.8 -fPIC -O3)
+Time spent: 22% 17x opt_clean (0 sec), 18% 21x opt_expr (0 sec), ...

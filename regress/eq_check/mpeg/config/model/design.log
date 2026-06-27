@@ -1,0 +1,2786 @@
+
+ /----------------------------------------------------------------------------\
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |  Copyright (C) 2012 - 2025  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |  Distributed under an ISC-like license, type "license" to see terms        |
+ \----------------------------------------------------------------------------/
+ Yosys 0.60+8 (git sha1 0e31e389f, clang++ 18.1.8 -fPIC -O3)
+
+-- Executing script file `../model/design.ys' --
+
+1. Executing Verilog-2005 frontend: mpeg_golden.v
+Parsing formal SystemVerilog input from `mpeg_golden.v' to AST representation.
+verilog frontend filename mpeg_golden.v
+Storing AST representation for module `$abstract\main'.
+Storing AST representation for module `$abstract\input_buffer'.
+Storing AST representation for module `$abstract\counter'.
+Storing AST representation for module `$abstract\fsm_for_pack_start'.
+Storing AST representation for module `$abstract\parse_pack_header'.
+Storing AST representation for module `$abstract\fsm_for_syshead_start'.
+Storing AST representation for module `$abstract\parse_system_header'.
+Storing AST representation for module `$abstract\read_packet'.
+Storing AST representation for module `$abstract\time_stamps'.
+Storing AST representation for module `$abstract\start_code_prefix'.
+Successfully finished Verilog frontend.
+
+2. Executing PREP pass.
+
+2.1. Executing HIERARCHY pass (managing design hierarchy).
+
+2.2. Executing AST frontend in derive mode using pre-parsed AST for module `\main'.
+Generating RTLIL representation for module `\main'.
+
+2.2.1. Analyzing design hierarchy..
+Top module:  \main
+
+2.2.2. Executing AST frontend in derive mode using pre-parsed AST for module `\read_packet'.
+Generating RTLIL representation for module `\read_packet'.
+
+2.2.3. Executing AST frontend in derive mode using pre-parsed AST for module `\parse_system_header'.
+Generating RTLIL representation for module `\parse_system_header'.
+Warning: Replacing memory \Mem with list of registers. See mpeg_golden.v:584, mpeg_golden.v:494
+
+2.2.4. Executing AST frontend in derive mode using pre-parsed AST for module `\fsm_for_syshead_start'.
+Generating RTLIL representation for module `\fsm_for_syshead_start'.
+
+2.2.5. Executing AST frontend in derive mode using pre-parsed AST for module `\parse_pack_header'.
+Generating RTLIL representation for module `\parse_pack_header'.
+
+2.2.6. Executing AST frontend in derive mode using pre-parsed AST for module `\fsm_for_pack_start'.
+Generating RTLIL representation for module `\fsm_for_pack_start'.
+
+2.2.7. Executing AST frontend in derive mode using pre-parsed AST for module `\counter'.
+Generating RTLIL representation for module `\counter'.
+
+2.2.8. Executing AST frontend in derive mode using pre-parsed AST for module `\input_buffer'.
+Generating RTLIL representation for module `\input_buffer'.
+
+2.2.9. Analyzing design hierarchy..
+Top module:  \main
+Used module:     \read_packet
+Used module:     \parse_system_header
+Used module:     \fsm_for_syshead_start
+Used module:     \parse_pack_header
+Used module:     \fsm_for_pack_start
+Used module:     \counter
+Used module:     \input_buffer
+
+2.2.10. Executing AST frontend in derive mode using pre-parsed AST for module `\time_stamps'.
+Generating RTLIL representation for module `\time_stamps'.
+
+2.2.11. Executing AST frontend in derive mode using pre-parsed AST for module `\start_code_prefix'.
+Generating RTLIL representation for module `\start_code_prefix'.
+
+2.2.12. Analyzing design hierarchy..
+Top module:  \main
+Used module:     \read_packet
+Used module:         \time_stamps
+Used module:         \start_code_prefix
+Used module:     \parse_system_header
+Used module:     \fsm_for_syshead_start
+Used module:     \parse_pack_header
+Used module:     \fsm_for_pack_start
+Used module:     \counter
+Used module:     \input_buffer
+
+2.2.13. Analyzing design hierarchy..
+Top module:  \main
+Used module:     \read_packet
+Used module:         \time_stamps
+Used module:         \start_code_prefix
+Used module:     \parse_system_header
+Used module:     \fsm_for_syshead_start
+Used module:     \parse_pack_header
+Used module:     \fsm_for_pack_start
+Used module:     \counter
+Used module:     \input_buffer
+Removing unused module `$abstract\start_code_prefix'.
+Removing unused module `$abstract\time_stamps'.
+Removing unused module `$abstract\read_packet'.
+Removing unused module `$abstract\parse_system_header'.
+Removing unused module `$abstract\fsm_for_syshead_start'.
+Removing unused module `$abstract\parse_pack_header'.
+Removing unused module `$abstract\fsm_for_pack_start'.
+Removing unused module `$abstract\counter'.
+Removing unused module `$abstract\input_buffer'.
+Removing unused module `$abstract\main'.
+Removed 10 unused modules.
+Mapping positional arguments of cell read_packet.module2 (time_stamps).
+Mapping positional arguments of cell read_packet.module1 (start_code_prefix).
+Mapping positional arguments of cell main.mod7 (read_packet).
+Mapping positional arguments of cell main.mod6 (parse_system_header).
+Mapping positional arguments of cell main.mod5 (fsm_for_syshead_start).
+Mapping positional arguments of cell main.mod4 (parse_pack_header).
+Mapping positional arguments of cell main.mod3 (fsm_for_pack_start).
+Mapping positional arguments of cell main.mod2 (counter).
+Mapping positional arguments of cell main.mod1 (input_buffer).
+
+2.3. Executing PROC pass (convert processes to netlists).
+
+2.3.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+2.3.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Removed 1 dead cases from process $proc$mpeg_golden.v:1020$82 in module start_code_prefix.
+Marked 8 switch rules as full_case in process $proc$mpeg_golden.v:1020$82 in module start_code_prefix.
+Marked 7 switch rules as full_case in process $proc$mpeg_golden.v:877$70 in module time_stamps.
+Marked 1 switch rules as full_case in process $proc$mpeg_golden.v:165$64 in module counter.
+Marked 6 switch rules as full_case in process $proc$mpeg_golden.v:212$61 in module fsm_for_pack_start.
+Removed 1 dead cases from process $proc$mpeg_golden.v:307$51 in module parse_pack_header.
+Marked 2 switch rules as full_case in process $proc$mpeg_golden.v:307$51 in module parse_pack_header.
+Marked 6 switch rules as full_case in process $proc$mpeg_golden.v:387$48 in module fsm_for_syshead_start.
+Removed 4 dead cases from process $proc$mpeg_golden.v:519$29 in module parse_system_header.
+Marked 7 switch rules as full_case in process $proc$mpeg_golden.v:519$29 in module parse_system_header.
+Marked 14 switch rules as full_case in process $proc$mpeg_golden.v:695$9 in module read_packet.
+Marked 5 switch rules as full_case in process $proc$mpeg_golden.v:66$1 in module main.
+Removed a total of 6 dead cases.
+
+2.3.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 113 assignments to connections.
+
+2.3.4. Executing PROC_INIT pass (extract init attributes).
+Found init rule in `\start_code_prefix.$proc$mpeg_golden.v:1014$92'.
+  Set init value: \done = 1'0
+  Set init value: \state = 2'00
+Found init rule in `\time_stamps.$proc$mpeg_golden.v:866$81'.
+  Set init value: \done = 1'0
+  Set init value: \state = 4'0000
+  Set init value: \timeBytes = 4'0000
+  Set init value: \PTS = 33'000000000000000000000000000000000
+  Set init value: \DTS = 33'000000000000000000000000000000000
+Found init rule in `\input_buffer.$proc$mpeg_golden.v:131$69'.
+  Set init value: \output_buffer = 8'11111111
+  Set init value: \temp = 7'1111111
+Found init rule in `\counter.$proc$mpeg_golden.v:159$67'.
+  Set init value: \count_over = 1'0
+  Set init value: \count_value = 3'000
+Found init rule in `\fsm_for_pack_start.$proc$mpeg_golden.v:205$63'.
+  Set init value: \state = 3'000
+  Set init value: \stop = 1'0
+Found init rule in `\parse_pack_header.$proc$mpeg_golden.v:291$60'.
+  Set init value: \stop = 1'0
+  Set init value: \count = 3'000
+  Set init value: \scr_reg = 40'0000000000000000000000000000000000000000
+  Set init value: \mux_rate_reg = 24'000000000000000000000000
+Found init rule in `\fsm_for_syshead_start.$proc$mpeg_golden.v:375$50'.
+  Set init value: \state = 3'000
+  Set init value: \stop = 1'0
+Found init rule in `\parse_system_header.$proc$mpeg_golden.v:482$47'.
+  Set init value: \stop = 1'0
+  Set init value: \syshead_len_reg = 16'0000000000000000
+  Set init value: \rate_bnd_reg = 24'000000000000000000000000
+  Set init value: \flag_reg = 16'0000000000000000
+  Set init value: \resvd_byte_reg = 8'00000000
+  Set init value: \count = 3'000
+  Set init value: \flag = 1'0
+  Set init value: \count1 = 2'00
+  Set init value: \stream_id_temp = 8'00000000
+  Set init value: \stream_temp = 16'0000000000000000
+  Set init value: \stream_temp1 = 24'xxxxxxxxxxxxxxxx00000000
+  Set init value: \Mem[0] = 24'000000000000000000000000
+  Set init value: \Mem[1] = 24'000000000000000000000000
+  Set init value: \Mem[2] = 24'000000000000000000000000
+  Set init value: \Mem[3] = 24'000000000000000000000000
+  Set init value: \Mem[4] = 24'000000000000000000000000
+  Set init value: \Mem[5] = 24'000000000000000000000000
+  Set init value: \Mem[6] = 24'000000000000000000000000
+  Set init value: \Mem[7] = 24'000000000000000000000000
+Found init rule in `\read_packet.$proc$mpeg_golden.v:674$28'.
+  Set init value: \done = 1'0
+  Set init value: \buffer_out = 8'00000000
+  Set init value: \stream_done = 1'0
+  Set init value: \state = 4'1111
+  Set init value: \stream_id = 8'00000000
+  Set init value: \packet_length = 16'0000000000000000
+  Set init value: \STD_buffer_scale = 1'0
+  Set init value: \STD_buffer_size = 13'0000000000000
+  Set init value: \time_stamp_start = 1'0
+  Set init value: \NumBytes = 16'0000000000000000
+  Set init value: \timeStampFlag = 1'0
+  Set init value: \packet_done = 1'1
+Found init rule in `\main.$proc$mpeg_golden.v:45$7'.
+  Set init value: \packHeadStart = 1'1
+  Set init value: \packParseStart = 1'0
+  Set init value: \sysHeadStart = 1'0
+  Set init value: \sysHeadParseStart = 1'0
+  Set init value: \packetStart = 1'0
+
+2.3.5. Executing PROC_ARST pass (detect async resets in processes).
+
+2.3.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~56 debug messages>
+
+2.3.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\start_code_prefix.$proc$mpeg_golden.v:1014$92'.
+Creating decoders for process `\start_code_prefix.$proc$mpeg_golden.v:1020$82'.
+     1/11: $3\done[0:0]
+     2/11: $8\state[1:0]
+     3/11: $7\state[1:0]
+     4/11: $6\state[1:0]
+     5/11: $2\done[0:0]
+     6/11: $5\state[1:0]
+     7/11: $4\state[1:0]
+     8/11: $3\state[1:0]
+     9/11: $2\state[1:0]
+    10/11: $1\state[1:0]
+    11/11: $1\done[0:0]
+Creating decoders for process `\time_stamps.$proc$mpeg_golden.v:866$81'.
+Creating decoders for process `\time_stamps.$proc$mpeg_golden.v:877$70'.
+     1/27: $1\DTS[32:0] [32:30]
+     2/27: $1\PTS[32:0] [32:30]
+     3/27: $1\PTS[32:0] [21:15]
+     4/27: $1\PTS[32:0] [14:7]
+     5/27: $1\PTS[32:0] [6:0]
+     6/27: $1\PTS[32:0] [29:22]
+     7/27: $1\DTS[32:0] [21:15]
+     8/27: $4\done[0:0]
+     9/27: $1\DTS[32:0] [6:0]
+    10/27: $1\DTS[32:0] [14:7]
+    11/27: $3\done[0:0]
+    12/27: $5\state[3:0]
+    13/27: $3\timeBytes[3:0]
+    14/27: $4\PTS[32:30]
+    15/27: $4\state[3:0]
+    16/27: $3\PTS[32:30]
+    17/27: $3\state[3:0]
+    18/27: $2\timeBytes[3:0]
+    19/27: $2\state[3:0]
+    20/27: $2\done[0:0]
+    21/27: $2\PTS[32:30]
+    22/27: $1\state[3:0]
+    23/27: $7\state[3:0]
+    24/27: $1\timeBytes[3:0]
+    25/27: $1\done[0:0]
+    26/27: $1\DTS[32:0] [29:22]
+    27/27: $6\state[3:0]
+Creating decoders for process `\input_buffer.$proc$mpeg_golden.v:131$69'.
+Creating decoders for process `\input_buffer.$proc$mpeg_golden.v:137$68'.
+Creating decoders for process `\counter.$proc$mpeg_golden.v:159$67'.
+Creating decoders for process `\counter.$proc$mpeg_golden.v:165$64'.
+     1/2: $1\count_value[2:0]
+     2/2: $1\count_over[0:0]
+Creating decoders for process `\fsm_for_pack_start.$proc$mpeg_golden.v:205$63'.
+Creating decoders for process `\fsm_for_pack_start.$proc$mpeg_golden.v:212$61'.
+     1/9: $6\state[2:0]
+     2/9: $3\stop[0:0]
+     3/9: $5\state[2:0]
+     4/9: $4\state[2:0]
+     5/9: $3\state[2:0]
+     6/9: $2\state[2:0]
+     7/9: $2\stop[0:0]
+     8/9: $1\stop[0:0]
+     9/9: $1\state[2:0]
+Creating decoders for process `\parse_pack_header.$proc$mpeg_golden.v:291$60'.
+Creating decoders for process `\parse_pack_header.$proc$mpeg_golden.v:307$51'.
+     1/14: $2\mux_rate_reg[23:0] [15:8]
+     2/14: $2\mux_rate_reg[23:0] [7:0]
+     3/14: $2\scr_reg[39:0] [31:24]
+     4/14: $2\mux_rate_reg[23:0] [23:16]
+     5/14: $2\scr_reg[39:0] [7:0]
+     6/14: $2\scr_reg[39:0] [39:32]
+     7/14: $2\count[2:0]
+     8/14: $2\scr_reg[39:0] [23:16]
+     9/14: $2\scr_reg[39:0] [15:8]
+    10/14: $2\stop[0:0]
+    11/14: $1\mux_rate_reg[23:0]
+    12/14: $1\scr_reg[39:0]
+    13/14: $1\count[2:0]
+    14/14: $1\stop[0:0]
+Creating decoders for process `\fsm_for_syshead_start.$proc$mpeg_golden.v:375$50'.
+Creating decoders for process `\fsm_for_syshead_start.$proc$mpeg_golden.v:387$48'.
+     1/9: $3\stop[0:0]
+     2/9: $6\state[2:0]
+     3/9: $5\state[2:0]
+     4/9: $4\state[2:0]
+     5/9: $3\state[2:0]
+     6/9: $2\state[2:0]
+     7/9: $2\stop[0:0]
+     8/9: $1\stop[0:0]
+     9/9: $1\state[2:0]
+Creating decoders for process `\parse_system_header.$proc$mpeg_golden.v:482$47'.
+Creating decoders for process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+     1/66: $5\stop[0:0]
+     2/66: $3\stream_temp[15:0] [15:8]
+     3/66: $4\Mem[0][23:0]
+     4/66: $4\Mem[7][23:0]
+     5/66: $4\Mem[6][23:0]
+     6/66: $4\Mem[5][23:0]
+     7/66: $4\Mem[4][23:0]
+     8/66: $4\Mem[3][23:0]
+     9/66: $4\Mem[2][23:0]
+    10/66: $4\Mem[1][23:0]
+    11/66: $3\stream_temp[15:0] [7:0]
+    12/66: $4\stop[0:0]
+    13/66: $3\stream_id_temp[7:0]
+    14/66: $3\Mem[7][23:0]
+    15/66: $3\Mem[6][23:0]
+    16/66: $3\Mem[5][23:0]
+    17/66: $3\Mem[4][23:0]
+    18/66: $3\Mem[3][23:0]
+    19/66: $3\Mem[2][23:0]
+    20/66: $3\Mem[1][23:0]
+    21/66: $3\Mem[0][23:0]
+    22/66: $3\stream_temp1[7:0]
+    23/66: $3\count1[1:0]
+    24/66: $3\stop[0:0]
+    25/66: $2\Mem[7][23:0]
+    26/66: $2\Mem[6][23:0]
+    27/66: $2\Mem[5][23:0]
+    28/66: $2\Mem[4][23:0]
+    29/66: $2\Mem[3][23:0]
+    30/66: $2\Mem[2][23:0]
+    31/66: $2\Mem[1][23:0]
+    32/66: $2\Mem[0][23:0]
+    33/66: $2\stream_temp1[7:0]
+    34/66: $2\stream_temp[15:0]
+    35/66: $2\stream_id_temp[7:0]
+    36/66: $2\count1[1:0]
+    37/66: $2\stop[0:0]
+    38/66: $1\Mem[7][23:0]
+    39/66: $1\Mem[6][23:0]
+    40/66: $1\Mem[5][23:0]
+    41/66: $1\Mem[4][23:0]
+    42/66: $1\Mem[3][23:0]
+    43/66: $1\Mem[2][23:0]
+    44/66: $1\Mem[1][23:0]
+    45/66: $1\Mem[0][23:0]
+    46/66: $1\stream_temp1[7:0]
+    47/66: $1\stream_temp[15:0]
+    48/66: $1\stream_id_temp[7:0]
+    49/66: $1\count1[1:0]
+    50/66: $1\stop[0:0]
+    51/66: $2\flag_reg[15:0] [15:8]
+    52/66: $2\rate_bnd_reg[23:0] [23:16]
+    53/66: $2\rate_bnd_reg[23:0] [15:8]
+    54/66: $2\syshead_len_reg[15:0] [7:0]
+    55/66: $2\count[2:0]
+    56/66: $2\flag[0:0]
+    57/66: $2\resvd_byte_reg[7:0]
+    58/66: $2\rate_bnd_reg[23:0] [7:0]
+    59/66: $2\syshead_len_reg[15:0] [15:8]
+    60/66: $2\flag_reg[15:0] [7:0]
+    61/66: $1\flag[0:0]
+    62/66: $1\count[2:0]
+    63/66: $1\resvd_byte_reg[7:0]
+    64/66: $1\flag_reg[15:0]
+    65/66: $1\rate_bnd_reg[23:0]
+    66/66: $1\syshead_len_reg[15:0]
+Creating decoders for process `\read_packet.$proc$mpeg_golden.v:674$28'.
+Creating decoders for process `\read_packet.$proc$mpeg_golden.v:695$9'.
+     1/65: $1\STD_buffer_size[12:0] [12:5]
+     2/65: $9\packet_done[0:0]
+     3/65: $5\done[0:0]
+     4/65: $1\STD_buffer_size[12:0] [4:0]
+     5/65: $4\buffer_out[7:0]
+     6/65: $8\packet_done[0:0]
+     7/65: $13\state[3:0]
+     8/65: $1\packet_length[15:0] [15:8]
+     9/65: $12\state[3:0]
+    10/65: $11\state[3:0]
+    11/65: $10\state[3:0]
+    12/65: $6\packet_done[0:0]
+    13/65: $5\timeStampFlag[0:0]
+    14/65: $4\NumBytes[15:0]
+    15/65: $6\time_stamp_start[0:0]
+    16/65: $3\buffer_out[7:0]
+    17/65: $5\packet_done[0:0]
+    18/65: $4\timeStampFlag[0:0]
+    19/65: $3\NumBytes[15:0]
+    20/65: $5\time_stamp_start[0:0]
+    21/65: $9\state[3:0]
+    22/65: $2\buffer_out[7:0]
+    23/65: $1\packet_length[15:0] [7:0]
+    24/65: $3\STD_buffer_scale[0:0]
+    25/65: $8\state[3:0]
+    26/65: $3\timeStampFlag[0:0]
+    27/65: $4\time_stamp_start[0:0]
+    28/65: $2\timeStampFlag[0:0]
+    29/65: $3\time_stamp_start[0:0]
+    30/65: $2\STD_buffer_size[4:0]
+    31/65: $2\STD_buffer_scale[0:0]
+    32/65: $7\state[3:0]
+    33/65: $2\NumBytes[15:0]
+    34/65: $14\state[3:0]
+    35/65: $5\NumBytes[15:0]
+    36/65: $2\time_stamp_start[0:0]
+    37/65: $3\STD_buffer_size[4:0]
+    38/65: $6\state[3:0]
+    39/65: $4\stream_done[0:0]
+    40/65: $4\done[0:0]
+    41/65: $4\packet_done[0:0]
+    42/65: $4\stream_id[7:0]
+    43/65: $4\state[3:0]
+    44/65: $3\done[0:0]
+    45/65: $3\packet_done[0:0]
+    46/65: $3\stream_id[7:0]
+    47/65: $3\stream_done[0:0]
+    48/65: $2\packet_done[0:0]
+    49/65: $2\stream_id[7:0]
+    50/65: $3\state[3:0]
+    51/65: $2\stream_done[0:0]
+    52/65: $2\done[0:0]
+    53/65: $2\state[3:0]
+    54/65: $1\state[3:0]
+    55/65: $1\packet_done[0:0]
+    56/65: $1\timeStampFlag[0:0]
+    57/65: $1\NumBytes[15:0]
+    58/65: $1\time_stamp_start[0:0]
+    59/65: $7\packet_done[0:0]
+    60/65: $1\STD_buffer_scale[0:0]
+    61/65: $5\state[3:0]
+    62/65: $1\stream_id[7:0]
+    63/65: $1\stream_done[0:0]
+    64/65: $1\buffer_out[7:0]
+    65/65: $1\done[0:0]
+Creating decoders for process `\main.$proc$mpeg_golden.v:45$7'.
+Creating decoders for process `\main.$proc$mpeg_golden.v:66$1'.
+     1/10: $2\packHeadStart[0:0]
+     2/10: $2\packetStart[0:0]
+     3/10: $2\sysHeadParseStart[0:0]
+     4/10: $1\packetStart[0:0]
+     5/10: $2\sysHeadStart[0:0]
+     6/10: $1\sysHeadParseStart[0:0]
+     7/10: $2\packParseStart[0:0]
+     8/10: $1\sysHeadStart[0:0]
+     9/10: $1\packHeadStart[0:0]
+    10/10: $1\packParseStart[0:0]
+
+2.3.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+No latch inferred for signal `\time_stamps.\nextstate' from process `\time_stamps.$proc$mpeg_golden.v:866$81'.
+No latch inferred for signal `\parse_system_header.\stream_temp1 [23:8]' from process `\parse_system_header.$proc$mpeg_golden.v:482$47'.
+No latch inferred for signal `\main.\main_state' from process `\main.$proc$mpeg_golden.v:45$7'.
+
+2.3.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\start_code_prefix.\done' using process `\start_code_prefix.$proc$mpeg_golden.v:1020$82'.
+  created $dff cell `$procdff$2122' with positive edge clock.
+Creating register for signal `\start_code_prefix.\state' using process `\start_code_prefix.$proc$mpeg_golden.v:1020$82'.
+  created $dff cell `$procdff$2123' with positive edge clock.
+Creating register for signal `\time_stamps.\done' using process `\time_stamps.$proc$mpeg_golden.v:877$70'.
+  created $dff cell `$procdff$2124' with positive edge clock.
+Creating register for signal `\time_stamps.\state' using process `\time_stamps.$proc$mpeg_golden.v:877$70'.
+  created $dff cell `$procdff$2125' with positive edge clock.
+Creating register for signal `\time_stamps.\timeBytes' using process `\time_stamps.$proc$mpeg_golden.v:877$70'.
+  created $dff cell `$procdff$2126' with positive edge clock.
+Creating register for signal `\time_stamps.\PTS' using process `\time_stamps.$proc$mpeg_golden.v:877$70'.
+  created $dff cell `$procdff$2127' with positive edge clock.
+Creating register for signal `\time_stamps.\DTS' using process `\time_stamps.$proc$mpeg_golden.v:877$70'.
+  created $dff cell `$procdff$2128' with positive edge clock.
+Creating register for signal `\input_buffer.\output_buffer' using process `\input_buffer.$proc$mpeg_golden.v:137$68'.
+  created $dff cell `$procdff$2129' with positive edge clock.
+Creating register for signal `\input_buffer.\temp' using process `\input_buffer.$proc$mpeg_golden.v:137$68'.
+  created $dff cell `$procdff$2130' with positive edge clock.
+Creating register for signal `\counter.\count_over' using process `\counter.$proc$mpeg_golden.v:165$64'.
+  created $dff cell `$procdff$2131' with positive edge clock.
+Creating register for signal `\counter.\count_value' using process `\counter.$proc$mpeg_golden.v:165$64'.
+  created $dff cell `$procdff$2132' with positive edge clock.
+Creating register for signal `\fsm_for_pack_start.\state' using process `\fsm_for_pack_start.$proc$mpeg_golden.v:212$61'.
+  created $dff cell `$procdff$2133' with positive edge clock.
+Creating register for signal `\fsm_for_pack_start.\stop' using process `\fsm_for_pack_start.$proc$mpeg_golden.v:212$61'.
+  created $dff cell `$procdff$2134' with positive edge clock.
+Creating register for signal `\parse_pack_header.\stop' using process `\parse_pack_header.$proc$mpeg_golden.v:307$51'.
+  created $dff cell `$procdff$2135' with positive edge clock.
+Creating register for signal `\parse_pack_header.\count' using process `\parse_pack_header.$proc$mpeg_golden.v:307$51'.
+  created $dff cell `$procdff$2136' with positive edge clock.
+Creating register for signal `\parse_pack_header.\scr_reg' using process `\parse_pack_header.$proc$mpeg_golden.v:307$51'.
+  created $dff cell `$procdff$2137' with positive edge clock.
+Creating register for signal `\parse_pack_header.\mux_rate_reg' using process `\parse_pack_header.$proc$mpeg_golden.v:307$51'.
+  created $dff cell `$procdff$2138' with positive edge clock.
+Creating register for signal `\fsm_for_syshead_start.\state' using process `\fsm_for_syshead_start.$proc$mpeg_golden.v:387$48'.
+  created $dff cell `$procdff$2139' with positive edge clock.
+Creating register for signal `\fsm_for_syshead_start.\stop' using process `\fsm_for_syshead_start.$proc$mpeg_golden.v:387$48'.
+  created $dff cell `$procdff$2140' with positive edge clock.
+Creating register for signal `\parse_system_header.\stop' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2141' with positive edge clock.
+Creating register for signal `\parse_system_header.\syshead_len_reg' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2142' with positive edge clock.
+Creating register for signal `\parse_system_header.\rate_bnd_reg' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2143' with positive edge clock.
+Creating register for signal `\parse_system_header.\flag_reg' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2144' with positive edge clock.
+Creating register for signal `\parse_system_header.\resvd_byte_reg' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2145' with positive edge clock.
+Creating register for signal `\parse_system_header.\count' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2146' with positive edge clock.
+Creating register for signal `\parse_system_header.\flag' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2147' with positive edge clock.
+Creating register for signal `\parse_system_header.\count1' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2148' with positive edge clock.
+Creating register for signal `\parse_system_header.\stream_id_temp' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2149' with positive edge clock.
+Creating register for signal `\parse_system_header.\stream_temp' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2150' with positive edge clock.
+Creating register for signal `\parse_system_header.\stream_temp1 [7:0]' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2151' with positive edge clock.
+Creating register for signal `\parse_system_header.\Mem[0]' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2152' with positive edge clock.
+Creating register for signal `\parse_system_header.\Mem[1]' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2153' with positive edge clock.
+Creating register for signal `\parse_system_header.\Mem[2]' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2154' with positive edge clock.
+Creating register for signal `\parse_system_header.\Mem[3]' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2155' with positive edge clock.
+Creating register for signal `\parse_system_header.\Mem[4]' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2156' with positive edge clock.
+Creating register for signal `\parse_system_header.\Mem[5]' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2157' with positive edge clock.
+Creating register for signal `\parse_system_header.\Mem[6]' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2158' with positive edge clock.
+Creating register for signal `\parse_system_header.\Mem[7]' using process `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+  created $dff cell `$procdff$2159' with positive edge clock.
+Creating register for signal `\read_packet.\done' using process `\read_packet.$proc$mpeg_golden.v:695$9'.
+  created $dff cell `$procdff$2160' with positive edge clock.
+Creating register for signal `\read_packet.\buffer_out' using process `\read_packet.$proc$mpeg_golden.v:695$9'.
+  created $dff cell `$procdff$2161' with positive edge clock.
+Creating register for signal `\read_packet.\stream_done' using process `\read_packet.$proc$mpeg_golden.v:695$9'.
+  created $dff cell `$procdff$2162' with positive edge clock.
+Creating register for signal `\read_packet.\state' using process `\read_packet.$proc$mpeg_golden.v:695$9'.
+  created $dff cell `$procdff$2163' with positive edge clock.
+Creating register for signal `\read_packet.\stream_id' using process `\read_packet.$proc$mpeg_golden.v:695$9'.
+  created $dff cell `$procdff$2164' with positive edge clock.
+Creating register for signal `\read_packet.\packet_length' using process `\read_packet.$proc$mpeg_golden.v:695$9'.
+  created $dff cell `$procdff$2165' with positive edge clock.
+Creating register for signal `\read_packet.\STD_buffer_scale' using process `\read_packet.$proc$mpeg_golden.v:695$9'.
+  created $dff cell `$procdff$2166' with positive edge clock.
+Creating register for signal `\read_packet.\STD_buffer_size' using process `\read_packet.$proc$mpeg_golden.v:695$9'.
+  created $dff cell `$procdff$2167' with positive edge clock.
+Creating register for signal `\read_packet.\time_stamp_start' using process `\read_packet.$proc$mpeg_golden.v:695$9'.
+  created $dff cell `$procdff$2168' with positive edge clock.
+Creating register for signal `\read_packet.\NumBytes' using process `\read_packet.$proc$mpeg_golden.v:695$9'.
+  created $dff cell `$procdff$2169' with positive edge clock.
+Creating register for signal `\read_packet.\timeStampFlag' using process `\read_packet.$proc$mpeg_golden.v:695$9'.
+  created $dff cell `$procdff$2170' with positive edge clock.
+Creating register for signal `\read_packet.\packet_done' using process `\read_packet.$proc$mpeg_golden.v:695$9'.
+  created $dff cell `$procdff$2171' with positive edge clock.
+Creating register for signal `\main.\packHeadStart' using process `\main.$proc$mpeg_golden.v:66$1'.
+  created $dff cell `$procdff$2172' with positive edge clock.
+Creating register for signal `\main.\packParseStart' using process `\main.$proc$mpeg_golden.v:66$1'.
+  created $dff cell `$procdff$2173' with positive edge clock.
+Creating register for signal `\main.\sysHeadStart' using process `\main.$proc$mpeg_golden.v:66$1'.
+  created $dff cell `$procdff$2174' with positive edge clock.
+Creating register for signal `\main.\sysHeadParseStart' using process `\main.$proc$mpeg_golden.v:66$1'.
+  created $dff cell `$procdff$2175' with positive edge clock.
+Creating register for signal `\main.\packetStart' using process `\main.$proc$mpeg_golden.v:66$1'.
+  created $dff cell `$procdff$2176' with positive edge clock.
+
+2.3.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+2.3.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Removing empty process `start_code_prefix.$proc$mpeg_golden.v:1014$92'.
+Found and cleaned up 8 empty switches in `\start_code_prefix.$proc$mpeg_golden.v:1020$82'.
+Removing empty process `start_code_prefix.$proc$mpeg_golden.v:1020$82'.
+Removing empty process `time_stamps.$proc$mpeg_golden.v:866$81'.
+Found and cleaned up 7 empty switches in `\time_stamps.$proc$mpeg_golden.v:877$70'.
+Removing empty process `time_stamps.$proc$mpeg_golden.v:877$70'.
+Removing empty process `input_buffer.$proc$mpeg_golden.v:131$69'.
+Removing empty process `input_buffer.$proc$mpeg_golden.v:137$68'.
+Removing empty process `counter.$proc$mpeg_golden.v:159$67'.
+Found and cleaned up 1 empty switch in `\counter.$proc$mpeg_golden.v:165$64'.
+Removing empty process `counter.$proc$mpeg_golden.v:165$64'.
+Removing empty process `fsm_for_pack_start.$proc$mpeg_golden.v:205$63'.
+Found and cleaned up 6 empty switches in `\fsm_for_pack_start.$proc$mpeg_golden.v:212$61'.
+Removing empty process `fsm_for_pack_start.$proc$mpeg_golden.v:212$61'.
+Removing empty process `parse_pack_header.$proc$mpeg_golden.v:291$60'.
+Found and cleaned up 2 empty switches in `\parse_pack_header.$proc$mpeg_golden.v:307$51'.
+Removing empty process `parse_pack_header.$proc$mpeg_golden.v:307$51'.
+Removing empty process `fsm_for_syshead_start.$proc$mpeg_golden.v:375$50'.
+Found and cleaned up 6 empty switches in `\fsm_for_syshead_start.$proc$mpeg_golden.v:387$48'.
+Removing empty process `fsm_for_syshead_start.$proc$mpeg_golden.v:387$48'.
+Removing empty process `parse_system_header.$proc$mpeg_golden.v:482$47'.
+Found and cleaned up 7 empty switches in `\parse_system_header.$proc$mpeg_golden.v:519$29'.
+Removing empty process `parse_system_header.$proc$mpeg_golden.v:519$29'.
+Removing empty process `read_packet.$proc$mpeg_golden.v:674$28'.
+Found and cleaned up 14 empty switches in `\read_packet.$proc$mpeg_golden.v:695$9'.
+Removing empty process `read_packet.$proc$mpeg_golden.v:695$9'.
+Removing empty process `main.$proc$mpeg_golden.v:45$7'.
+Found and cleaned up 5 empty switches in `\main.$proc$mpeg_golden.v:66$1'.
+Removing empty process `main.$proc$mpeg_golden.v:66$1'.
+Cleaned up 56 empty switches.
+
+2.3.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module start_code_prefix.
+<suppressed ~11 debug messages>
+Optimizing module time_stamps.
+<suppressed ~23 debug messages>
+Optimizing module input_buffer.
+Optimizing module counter.
+Optimizing module fsm_for_pack_start.
+<suppressed ~7 debug messages>
+Optimizing module parse_pack_header.
+<suppressed ~11 debug messages>
+Optimizing module fsm_for_syshead_start.
+<suppressed ~6 debug messages>
+Optimizing module parse_system_header.
+<suppressed ~19 debug messages>
+Optimizing module read_packet.
+<suppressed ~28 debug messages>
+Optimizing module main.
+<suppressed ~5 debug messages>
+
+2.4. Executing FUTURE pass.
+
+2.5. Executing OPT_EXPR pass (perform const folding).
+Optimizing module start_code_prefix.
+Optimizing module time_stamps.
+Optimizing module input_buffer.
+Optimizing module counter.
+Optimizing module fsm_for_pack_start.
+Optimizing module parse_pack_header.
+Optimizing module fsm_for_syshead_start.
+Optimizing module parse_system_header.
+Optimizing module read_packet.
+Optimizing module main.
+
+2.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \start_code_prefix..
+Finding unused cells or wires in module \time_stamps..
+Finding unused cells or wires in module \input_buffer..
+Finding unused cells or wires in module \counter..
+Finding unused cells or wires in module \fsm_for_pack_start..
+Finding unused cells or wires in module \parse_pack_header..
+Finding unused cells or wires in module \fsm_for_syshead_start..
+Finding unused cells or wires in module \parse_system_header..
+Finding unused cells or wires in module \read_packet..
+Finding unused cells or wires in module \main..
+Removed 227 unused cells and 819 unused wires.
+<suppressed ~254 debug messages>
+
+2.7. Executing CHECK pass (checking for obvious problems).
+Checking module counter...
+Checking module fsm_for_pack_start...
+Checking module fsm_for_syshead_start...
+Checking module input_buffer...
+Checking module main...
+Checking module parse_pack_header...
+Checking module parse_system_header...
+Checking module read_packet...
+Checking module start_code_prefix...
+Checking module time_stamps...
+Found and reported 0 problems.
+
+2.8. Executing OPT pass (performing simple optimizations).
+
+2.8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module counter.
+Optimizing module fsm_for_pack_start.
+Optimizing module fsm_for_syshead_start.
+Optimizing module input_buffer.
+Optimizing module main.
+Optimizing module parse_pack_header.
+Optimizing module parse_system_header.
+Optimizing module read_packet.
+Optimizing module start_code_prefix.
+Optimizing module time_stamps.
+
+2.8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\counter'.
+Finding identical cells in module `\fsm_for_pack_start'.
+<suppressed ~27 debug messages>
+Finding identical cells in module `\fsm_for_syshead_start'.
+<suppressed ~27 debug messages>
+Finding identical cells in module `\input_buffer'.
+Finding identical cells in module `\main'.
+Finding identical cells in module `\parse_pack_header'.
+<suppressed ~234 debug messages>
+Finding identical cells in module `\parse_system_header'.
+<suppressed ~246 debug messages>
+Finding identical cells in module `\read_packet'.
+<suppressed ~183 debug messages>
+Finding identical cells in module `\start_code_prefix'.
+<suppressed ~45 debug messages>
+Finding identical cells in module `\time_stamps'.
+<suppressed ~63 debug messages>
+Removed a total of 275 cells.
+
+2.8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \counter..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \fsm_for_pack_start..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 2/2 on $mux $procmux$592.
+    dead port 2/2 on $mux $procmux$594.
+    dead port 2/2 on $mux $procmux$603.
+    dead port 2/2 on $mux $procmux$605.
+    dead port 2/2 on $mux $procmux$614.
+    dead port 2/2 on $mux $procmux$616.
+    dead port 2/2 on $mux $procmux$626.
+    dead port 2/2 on $mux $procmux$628.
+    dead port 2/2 on $mux $procmux$582.
+    dead port 2/2 on $mux $procmux$584.
+    dead port 2/2 on $mux $procmux$637.
+    dead port 2/2 on $mux $procmux$643.
+Running muxtree optimizer on module \fsm_for_syshead_start..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 2/2 on $mux $procmux$801.
+    dead port 2/2 on $mux $procmux$803.
+    dead port 2/2 on $mux $procmux$812.
+    dead port 2/2 on $mux $procmux$814.
+    dead port 2/2 on $mux $procmux$824.
+    dead port 2/2 on $mux $procmux$826.
+    dead port 2/2 on $mux $procmux$837.
+    dead port 2/2 on $mux $procmux$839.
+    dead port 2/2 on $mux $procmux$790.
+    dead port 2/2 on $mux $procmux$792.
+    dead port 2/2 on $mux $procmux$849.
+    dead port 2/2 on $mux $procmux$856.
+Running muxtree optimizer on module \input_buffer..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \main..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \parse_pack_header..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 2/2 on $mux $procmux$673.
+    dead port 2/2 on $mux $procmux$733.
+    dead port 2/2 on $mux $procmux$709.
+    dead port 2/2 on $mux $procmux$745.
+    dead port 2/2 on $mux $procmux$661.
+    dead port 2/2 on $mux $procmux$685.
+    dead port 2/2 on $mux $procmux$757.
+    dead port 2/2 on $mux $procmux$721.
+    dead port 2/2 on $mux $procmux$697.
+    dead port 2/2 on $mux $procmux$769.
+Running muxtree optimizer on module \parse_system_header..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+      Replacing known input bits on port B of cell $procmux$1022: \one_byte -> { \one_byte [7:1] 1'1 }
+  Analyzing evaluation results.
+    dead port 2/2 on $mux $procmux$1280.
+    dead port 2/2 on $mux $procmux$1011.
+    dead port 2/2 on $mux $procmux$1013.
+    dead port 2/2 on $mux $procmux$1015.
+    dead port 2/2 on $mux $procmux$1024.
+    dead port 2/2 on $mux $procmux$1292.
+    dead port 2/2 on $mux $procmux$1026.
+    dead port 2/2 on $mux $procmux$1116.
+    dead port 2/2 on $mux $procmux$1118.
+    dead port 2/2 on $mux $procmux$1304.
+    dead port 2/2 on $mux $procmux$1125.
+    dead port 2/2 on $mux $procmux$1127.
+    dead port 2/2 on $mux $procmux$1193.
+    dead port 2/2 on $mux $procmux$1199.
+    dead port 2/2 on $mux $procmux$1316.
+    dead port 2/2 on $mux $procmux$1205.
+    dead port 2/2 on $mux $procmux$1328.
+    dead port 2/2 on $mux $procmux$1256.
+    dead port 2/2 on $mux $procmux$1340.
+    dead port 2/2 on $mux $procmux$1268.
+    dead port 2/2 on $mux $procmux$1352.
+    dead port 2/2 on $mux $procmux$1364.
+Running muxtree optimizer on module \read_packet..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 2/2 on $mux $procmux$1554.
+    dead port 2/2 on $mux $procmux$1562.
+    dead port 2/2 on $mux $procmux$1570.
+    dead port 2/2 on $mux $procmux$1578.
+    dead port 2/2 on $mux $procmux$1610.
+    dead port 2/2 on $mux $procmux$1612.
+    dead port 2/2 on $mux $procmux$1623.
+    dead port 2/2 on $mux $procmux$1625.
+    dead port 2/2 on $mux $procmux$1636.
+    dead port 2/2 on $mux $procmux$1638.
+    dead port 2/2 on $mux $procmux$1648.
+    dead port 2/2 on $mux $procmux$1658.
+    dead port 2/2 on $mux $procmux$1688.
+    dead port 2/2 on $mux $procmux$1698.
+    dead port 2/2 on $mux $procmux$1704.
+    dead port 2/2 on $mux $procmux$1711.
+    dead port 2/2 on $mux $procmux$1400.
+    dead port 2/2 on $mux $procmux$1722.
+    dead port 2/2 on $mux $procmux$1746.
+    dead port 2/2 on $mux $procmux$1413.
+    dead port 1/2 on $mux $procmux$1761.
+    dead port 2/2 on $mux $procmux$1763.
+    dead port 2/2 on $mux $procmux$1765.
+    dead port 1/2 on $mux $procmux$1780.
+    dead port 2/2 on $mux $procmux$1782.
+    dead port 2/2 on $mux $procmux$1784.
+    dead port 1/2 on $mux $procmux$1818.
+    dead port 2/2 on $mux $procmux$1820.
+    dead port 2/2 on $mux $procmux$1822.
+    dead port 2/2 on $mux $procmux$1836.
+    dead port 2/2 on $mux $procmux$1838.
+    dead port 2/2 on $mux $procmux$1427.
+    dead port 2/2 on $mux $procmux$1852.
+    dead port 2/2 on $mux $procmux$1854.
+    dead port 2/2 on $mux $procmux$1884.
+    dead port 2/2 on $mux $procmux$1886.
+    dead port 2/2 on $mux $procmux$1900.
+    dead port 2/2 on $mux $procmux$1902.
+    dead port 2/2 on $mux $procmux$1928.
+    dead port 2/2 on $mux $procmux$1941.
+    dead port 1/2 on $mux $procmux$1446.
+    dead port 2/2 on $mux $procmux$1954.
+    dead port 2/2 on $mux $procmux$1448.
+    dead port 2/2 on $mux $procmux$1967.
+    dead port 2/2 on $mux $procmux$1450.
+    dead port 2/2 on $mux $procmux$1981.
+    dead port 1/2 on $mux $procmux$1460.
+    dead port 2/2 on $mux $procmux$1462.
+    dead port 2/2 on $mux $procmux$1464.
+    dead port 2/2 on $mux $procmux$1473.
+    dead port 2/2 on $mux $procmux$1475.
+    dead port 2/2 on $mux $procmux$1495.
+    dead port 2/2 on $mux $procmux$1497.
+    dead port 2/2 on $mux $procmux$1506.
+    dead port 2/2 on $mux $procmux$1508.
+    dead port 2/2 on $mux $procmux$1517.
+    dead port 1/2 on $mux $procmux$2057.
+    dead port 2/2 on $mux $procmux$2059.
+    dead port 2/2 on $mux $procmux$2061.
+    dead port 2/2 on $mux $procmux$1519.
+    dead port 2/2 on $mux $procmux$1528.
+    dead port 2/2 on $mux $procmux$1530.
+    dead port 2/2 on $mux $procmux$1546.
+Running muxtree optimizer on module \start_code_prefix..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 2/2 on $mux $procmux$113.
+    dead port 2/2 on $mux $procmux$119.
+    dead port 2/2 on $mux $procmux$125.
+    dead port 2/2 on $mux $procmux$132.
+    dead port 2/2 on $mux $procmux$139.
+    dead port 2/2 on $mux $procmux$147.
+    dead port 2/2 on $mux $procmux$101.
+    dead port 2/2 on $mux $procmux$107.
+    dead port 2/2 on $mux $procmux$96.
+Running muxtree optimizer on module \time_stamps..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+    dead port 2/2 on $mux $procmux$323.
+    dead port 2/2 on $mux $procmux$325.
+    dead port 1/2 on $mux $procmux$367.
+    dead port 2/2 on $mux $procmux$367.
+    dead port 1/2 on $mux $procmux$369.
+    dead port 2/2 on $mux $procmux$369.
+    dead port 1/2 on $mux $procmux$371.
+    dead port 2/2 on $mux $procmux$371.
+    dead port 1/2 on $mux $procmux$413.
+    dead port 2/2 on $mux $procmux$413.
+    dead port 1/2 on $mux $procmux$415.
+    dead port 2/2 on $mux $procmux$415.
+    dead port 1/2 on $mux $procmux$417.
+    dead port 2/2 on $mux $procmux$417.
+    dead port 2/2 on $mux $procmux$437.
+    dead port 1/2 on $mux $procmux$455.
+    dead port 2/2 on $mux $procmux$457.
+    dead port 2/2 on $mux $procmux$477.
+    dead port 2/2 on $mux $procmux$531.
+    dead port 2/2 on $mux $procmux$249.
+    dead port 2/2 on $mux $procmux$277.
+    dead port 2/2 on $mux $procmux$279.
+    dead port 1/2 on $mux $procmux$298.
+    dead port 2/2 on $mux $procmux$298.
+    dead port 1/2 on $mux $procmux$300.
+    dead port 2/2 on $mux $procmux$300.
+    dead port 1/2 on $mux $procmux$302.
+    dead port 2/2 on $mux $procmux$302.
+    dead port 2/2 on $mux $procmux$569.
+Removed 157 multiplexer ports.
+<suppressed ~318 debug messages>
+
+2.8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \counter.
+  Optimizing cells in module \fsm_for_pack_start.
+  Optimizing cells in module \fsm_for_syshead_start.
+  Optimizing cells in module \input_buffer.
+  Optimizing cells in module \main.
+  Optimizing cells in module \parse_pack_header.
+    New ctrl vector for $pmux cell $procmux$676: { $procmux$657_CMP $auto$opt_reduce.cc:137:opt_pmux$2178 }
+    New ctrl vector for $pmux cell $procmux$712: { $procmux$656_CMP $auto$opt_reduce.cc:137:opt_pmux$2180 }
+    New ctrl vector for $pmux cell $procmux$736: { $procmux$658_CMP $auto$opt_reduce.cc:137:opt_pmux$2182 }
+    New ctrl vector for $pmux cell $procmux$748: { $procmux$659_CMP $auto$opt_reduce.cc:137:opt_pmux$2184 }
+    New ctrl vector for $pmux cell $procmux$664: { $procmux$655_CMP $auto$opt_reduce.cc:137:opt_pmux$2186 }
+    New ctrl vector for $pmux cell $procmux$688: { $auto$opt_reduce.cc:137:opt_pmux$2188 $procmux$653_CMP }
+    New ctrl vector for $pmux cell $procmux$760: { $auto$opt_reduce.cc:137:opt_pmux$2190 $procmux$653_CMP }
+    New ctrl vector for $pmux cell $procmux$724: { $auto$opt_reduce.cc:137:opt_pmux$2192 $procmux$653_CMP }
+    New ctrl vector for $pmux cell $procmux$652: { $procmux$654_CMP $auto$opt_reduce.cc:137:opt_pmux$2194 }
+    New ctrl vector for $pmux cell $procmux$700: { $procmux$660_CMP $auto$opt_reduce.cc:137:opt_pmux$2196 }
+  Optimizing cells in module \parse_pack_header.
+  Optimizing cells in module \parse_system_header.
+    New ctrl vector for $pmux cell $procmux$1307: { $auto$opt_reduce.cc:137:opt_pmux$2198 $procmux$1248_CMP }
+    New ctrl vector for $pmux cell $procmux$1295: { $auto$opt_reduce.cc:137:opt_pmux$2200 $procmux$1248_CMP }
+    New ctrl vector for $pmux cell $procmux$1283: { $procmux$1255_CMP $auto$opt_reduce.cc:137:opt_pmux$2202 }
+    New ctrl vector for $pmux cell $procmux$1112: { $auto$opt_reduce.cc:137:opt_pmux$2204 $procmux$1012_CMP }
+    New ctrl vector for $pmux cell $procmux$1319: { $auto$opt_reduce.cc:137:opt_pmux$2206 $procmux$1248_CMP }
+    New ctrl vector for $pmux cell $procmux$1247: { $procmux$1249_CMP $auto$opt_reduce.cc:137:opt_pmux$2208 }
+    New ctrl vector for $pmux cell $procmux$1331: { $procmux$1253_CMP $auto$opt_reduce.cc:137:opt_pmux$2210 }
+    New ctrl vector for $pmux cell $procmux$1259: { $procmux$1251_CMP $auto$opt_reduce.cc:137:opt_pmux$2212 }
+    New ctrl vector for $pmux cell $procmux$1343: { $procmux$1254_CMP $auto$opt_reduce.cc:137:opt_pmux$2214 }
+    New ctrl vector for $pmux cell $procmux$1355: { $procmux$1250_CMP $auto$opt_reduce.cc:137:opt_pmux$2216 }
+    New ctrl vector for $pmux cell $procmux$1271: { $procmux$1252_CMP $auto$opt_reduce.cc:137:opt_pmux$2218 }
+    New ctrl vector for $pmux cell $procmux$1005: $auto$opt_reduce.cc:137:opt_pmux$2220
+  Optimizing cells in module \parse_system_header.
+  Optimizing cells in module \read_packet.
+  Optimizing cells in module \start_code_prefix.
+    New ctrl vector for $pmux cell $procmux$154: { $auto$opt_reduce.cc:137:opt_pmux$2222 $procmux$108_CMP $procmux$102_CMP }
+  Optimizing cells in module \start_code_prefix.
+  Optimizing cells in module \time_stamps.
+    New ctrl vector for $pmux cell $procmux$500: { $procmux$280_CMP $procmux$514_CMP $procmux$513_CMP $procmux$250_CMP $procmux$511_CMP $procmux$510_CMP $procmux$508_CMP $procmux$507_CMP $procmux$506_CMP $procmux$505_CMP $procmux$504_CMP $procmux$503_CMP $procmux$502_CMP $auto$opt_reduce.cc:137:opt_pmux$2224 }
+    New ctrl vector for $pmux cell $procmux$539: { $procmux$280_CMP $procmux$250_CMP $auto$opt_reduce.cc:137:opt_pmux$2226 }
+  Optimizing cells in module \time_stamps.
+Performed a total of 25 changes.
+
+2.8.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\counter'.
+Finding identical cells in module `\fsm_for_pack_start'.
+<suppressed ~3 debug messages>
+Finding identical cells in module `\fsm_for_syshead_start'.
+Finding identical cells in module `\input_buffer'.
+Finding identical cells in module `\main'.
+Finding identical cells in module `\parse_pack_header'.
+<suppressed ~6 debug messages>
+Finding identical cells in module `\parse_system_header'.
+<suppressed ~6 debug messages>
+Finding identical cells in module `\read_packet'.
+Finding identical cells in module `\start_code_prefix'.
+Finding identical cells in module `\time_stamps'.
+Removed a total of 5 cells.
+
+2.8.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \counter..
+Finding unused cells or wires in module \fsm_for_pack_start..
+Finding unused cells or wires in module \fsm_for_syshead_start..
+Finding unused cells or wires in module \input_buffer..
+Finding unused cells or wires in module \main..
+Finding unused cells or wires in module \parse_pack_header..
+Finding unused cells or wires in module \parse_system_header..
+Finding unused cells or wires in module \read_packet..
+Finding unused cells or wires in module \start_code_prefix..
+Finding unused cells or wires in module \time_stamps..
+Removed 2 unused cells and 430 unused wires.
+<suppressed ~9 debug messages>
+
+2.8.7. Executing OPT_EXPR pass (perform const folding).
+Optimizing module counter.
+Optimizing module fsm_for_pack_start.
+Optimizing module fsm_for_syshead_start.
+Optimizing module input_buffer.
+Optimizing module main.
+Optimizing module parse_pack_header.
+Optimizing module parse_system_header.
+Optimizing module read_packet.
+Optimizing module start_code_prefix.
+Optimizing module time_stamps.
+
+2.8.8. Rerunning OPT passes. (Maybe there is more to do..)
+
+2.8.9. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \counter..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \fsm_for_pack_start..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \fsm_for_syshead_start..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \input_buffer..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \main..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \parse_pack_header..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \parse_system_header..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \read_packet..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \start_code_prefix..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \time_stamps..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~179 debug messages>
+
+2.8.10. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \counter.
+  Optimizing cells in module \fsm_for_pack_start.
+    New ctrl vector for $pmux cell $procmux$632: { $procmux$615_CMP $procmux$604_CMP $auto$opt_reduce.cc:137:opt_pmux$2228 }
+  Optimizing cells in module \fsm_for_pack_start.
+  Optimizing cells in module \fsm_for_syshead_start.
+  Optimizing cells in module \input_buffer.
+  Optimizing cells in module \main.
+  Optimizing cells in module \parse_pack_header.
+  Optimizing cells in module \parse_system_header.
+  Optimizing cells in module \read_packet.
+  Optimizing cells in module \start_code_prefix.
+  Optimizing cells in module \time_stamps.
+Performed a total of 1 changes.
+
+2.8.11. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\counter'.
+Finding identical cells in module `\fsm_for_pack_start'.
+Finding identical cells in module `\fsm_for_syshead_start'.
+Finding identical cells in module `\input_buffer'.
+Finding identical cells in module `\main'.
+Finding identical cells in module `\parse_pack_header'.
+Finding identical cells in module `\parse_system_header'.
+Finding identical cells in module `\read_packet'.
+Finding identical cells in module `\start_code_prefix'.
+Finding identical cells in module `\time_stamps'.
+Removed a total of 0 cells.
+
+2.8.12. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \counter..
+Finding unused cells or wires in module \fsm_for_pack_start..
+Finding unused cells or wires in module \fsm_for_syshead_start..
+Finding unused cells or wires in module \input_buffer..
+Finding unused cells or wires in module \main..
+Finding unused cells or wires in module \parse_pack_header..
+Finding unused cells or wires in module \parse_system_header..
+Finding unused cells or wires in module \read_packet..
+Finding unused cells or wires in module \start_code_prefix..
+Finding unused cells or wires in module \time_stamps..
+
+2.8.13. Executing OPT_EXPR pass (perform const folding).
+Optimizing module counter.
+Optimizing module fsm_for_pack_start.
+Optimizing module fsm_for_syshead_start.
+Optimizing module input_buffer.
+Optimizing module main.
+Optimizing module parse_pack_header.
+Optimizing module parse_system_header.
+Optimizing module read_packet.
+Optimizing module start_code_prefix.
+Optimizing module time_stamps.
+
+2.8.14. Rerunning OPT passes. (Maybe there is more to do..)
+
+2.8.15. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \counter..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \fsm_for_pack_start..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \fsm_for_syshead_start..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \input_buffer..
+  Creating internal representation of mux trees.
+  No muxes found in this module.
+Running muxtree optimizer on module \main..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \parse_pack_header..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \parse_system_header..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \read_packet..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \start_code_prefix..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Running muxtree optimizer on module \time_stamps..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~178 debug messages>
+
+2.8.16. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \counter.
+  Optimizing cells in module \fsm_for_pack_start.
+  Optimizing cells in module \fsm_for_syshead_start.
+  Optimizing cells in module \input_buffer.
+  Optimizing cells in module \main.
+  Optimizing cells in module \parse_pack_header.
+  Optimizing cells in module \parse_system_header.
+  Optimizing cells in module \read_packet.
+  Optimizing cells in module \start_code_prefix.
+  Optimizing cells in module \time_stamps.
+Performed a total of 0 changes.
+
+2.8.17. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\counter'.
+Finding identical cells in module `\fsm_for_pack_start'.
+Finding identical cells in module `\fsm_for_syshead_start'.
+Finding identical cells in module `\input_buffer'.
+Finding identical cells in module `\main'.
+Finding identical cells in module `\parse_pack_header'.
+Finding identical cells in module `\parse_system_header'.
+Finding identical cells in module `\read_packet'.
+Finding identical cells in module `\start_code_prefix'.
+Finding identical cells in module `\time_stamps'.
+Removed a total of 0 cells.
+
+2.8.18. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \counter..
+Finding unused cells or wires in module \fsm_for_pack_start..
+Finding unused cells or wires in module \fsm_for_syshead_start..
+Finding unused cells or wires in module \input_buffer..
+Finding unused cells or wires in module \main..
+Finding unused cells or wires in module \parse_pack_header..
+Finding unused cells or wires in module \parse_system_header..
+Finding unused cells or wires in module \read_packet..
+Finding unused cells or wires in module \start_code_prefix..
+Finding unused cells or wires in module \time_stamps..
+
+2.8.19. Executing OPT_EXPR pass (perform const folding).
+Optimizing module counter.
+Optimizing module fsm_for_pack_start.
+Optimizing module fsm_for_syshead_start.
+Optimizing module input_buffer.
+Optimizing module main.
+Optimizing module parse_pack_header.
+Optimizing module parse_system_header.
+Optimizing module read_packet.
+Optimizing module start_code_prefix.
+Optimizing module time_stamps.
+
+2.8.20. Finished fast OPT passes. (There is nothing left to do.)
+
+2.9. Executing WREDUCE pass (reducing word size of cells).
+Removed top 31 bits (of 32) from port B of cell counter.$add$mpeg_golden.v:175$66 ($add).
+Removed top 29 bits (of 32) from port Y of cell counter.$add$mpeg_golden.v:175$66 ($add).
+Removed top 29 bits (of 32) from wire counter.$add$mpeg_golden.v:175$66_Y.
+Removed top 1 bits (of 3) from port B of cell fsm_for_pack_start.$procmux$583_CMP0 ($eq).
+Removed top 1 bits (of 8) from port B of cell fsm_for_pack_start.$procmux$591_CMP0 ($eq).
+Removed top 1 bits (of 3) from mux cell fsm_for_pack_start.$procmux$600 ($pmux).
+Removed top 7 bits (of 8) from port B of cell fsm_for_pack_start.$procmux$602_CMP0 ($eq).
+Removed top 1 bits (of 3) from port B of cell fsm_for_pack_start.$procmux$604_CMP0 ($eq).
+Removed top 1 bits (of 3) from mux cell fsm_for_pack_start.$procmux$612 ($mux).
+Removed top 2 bits (of 3) from port B of cell fsm_for_pack_start.$procmux$615_CMP0 ($eq).
+Removed top 2 bits (of 3) from mux cell fsm_for_pack_start.$procmux$624 ($mux).
+Removed top 2 bits (of 3) from wire fsm_for_pack_start.$3\state[2:0].
+Removed top 1 bits (of 3) from wire fsm_for_pack_start.$4\state[2:0].
+Removed top 1 bits (of 3) from wire fsm_for_pack_start.$5\state[2:0].
+Removed top 1 bits (of 3) from port B of cell fsm_for_syshead_start.$procmux$791_CMP0 ($eq).
+Removed top 1 bits (of 3) from mux cell fsm_for_syshead_start.$procmux$810 ($mux).
+Removed top 1 bits (of 3) from port B of cell fsm_for_syshead_start.$procmux$813_CMP0 ($eq).
+Removed top 1 bits (of 3) from mux cell fsm_for_syshead_start.$procmux$822 ($mux).
+Removed top 2 bits (of 3) from port B of cell fsm_for_syshead_start.$procmux$825_CMP0 ($eq).
+Removed top 2 bits (of 3) from mux cell fsm_for_syshead_start.$procmux$835 ($mux).
+Removed top 2 bits (of 3) from wire fsm_for_syshead_start.$3\state[2:0].
+Removed top 1 bits (of 3) from wire fsm_for_syshead_start.$4\state[2:0].
+Removed top 1 bits (of 3) from wire fsm_for_syshead_start.$5\state[2:0].
+Removed top 31 bits (of 32) from port B of cell parse_pack_header.$add$mpeg_golden.v:314$53 ($add).
+Removed top 29 bits (of 32) from port Y of cell parse_pack_header.$add$mpeg_golden.v:314$53 ($add).
+Removed top 1 bits (of 3) from port B of cell parse_pack_header.$procmux$657_CMP0 ($eq).
+Removed top 1 bits (of 3) from port B of cell parse_pack_header.$procmux$658_CMP0 ($eq).
+Removed top 2 bits (of 3) from port B of cell parse_pack_header.$procmux$659_CMP0 ($eq).
+Removed top 29 bits (of 32) from wire parse_pack_header.$add$mpeg_golden.v:314$53_Y.
+Removed top 31 bits (of 32) from port B of cell parse_system_header.$add$mpeg_golden.v:527$33 ($add).
+Removed top 29 bits (of 32) from port Y of cell parse_system_header.$add$mpeg_golden.v:527$33 ($add).
+Removed top 31 bits (of 32) from port B of cell parse_system_header.$add$mpeg_golden.v:569$44 ($add).
+Removed top 30 bits (of 32) from port Y of cell parse_system_header.$add$mpeg_golden.v:569$44 ($add).
+Removed top 5 bits (of 8) from port B of cell parse_system_header.$procmux$1006_CMP0 ($eq).
+Removed top 1 bits (of 8) from port B of cell parse_system_header.$procmux$1008_CMP0 ($eq).
+Removed top 6 bits (of 8) from port B of cell parse_system_header.$procmux$1010_CMP0 ($eq).
+Removed top 1 bits (of 2) from port B of cell parse_system_header.$procmux$1114_CMP0 ($eq).
+Removed top 1 bits (of 3) from port B of cell parse_system_header.$procmux$1252_CMP0 ($eq).
+Removed top 1 bits (of 3) from port B of cell parse_system_header.$procmux$1253_CMP0 ($eq).
+Removed top 2 bits (of 3) from port B of cell parse_system_header.$procmux$1254_CMP0 ($eq).
+Removed top 29 bits (of 32) from wire parse_system_header.$add$mpeg_golden.v:527$33_Y.
+Removed top 30 bits (of 32) from wire parse_system_header.$add$mpeg_golden.v:569$44_Y.
+Removed top 1 bits (of 2) from port B of cell read_packet.$eq$mpeg_golden.v:752$16 ($eq).
+Removed top 31 bits (of 32) from port B of cell read_packet.$sub$mpeg_golden.v:766$17 ($sub).
+Removed top 16 bits (of 32) from port Y of cell read_packet.$sub$mpeg_golden.v:766$17 ($sub).
+Removed top 15 bits (of 32) from port Y of cell read_packet.$sub$mpeg_golden.v:781$20 ($sub).
+Removed top 31 bits (of 32) from port B of cell read_packet.$gt$mpeg_golden.v:788$23 ($gt).
+Removed top 15 bits (of 16) from port B of cell read_packet.$eq$mpeg_golden.v:792$24 ($eq).
+Removed top 31 bits (of 32) from port B of cell read_packet.$gt$mpeg_golden.v:802$25 ($gt).
+Removed top 1 bits (of 4) from port B of cell read_packet.$procmux$1414_CMP0 ($eq).
+Removed top 2 bits (of 4) from port B of cell read_packet.$procmux$1437_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell read_packet.$procmux$1451_CMP0 ($eq).
+Removed top 2 bits (of 4) from port B of cell read_packet.$procmux$1587_CMP0 ($eq).
+Removed top 2 bits (of 4) from mux cell read_packet.$procmux$1608 ($mux).
+Removed top 1 bits (of 4) from port B of cell read_packet.$procmux$1613_CMP0 ($eq).
+Removed top 2 bits (of 4) from mux cell read_packet.$procmux$1744 ($mux).
+Removed top 1 bits (of 4) from port B of cell read_packet.$procmux$1988_CMP0 ($eq).
+Removed top 2 bits (of 4) from wire read_packet.$6\state[3:0].
+Removed top 2 bits (of 4) from wire read_packet.$8\state[3:0].
+Removed top 16 bits (of 32) from wire read_packet.$sub$mpeg_golden.v:766$17_Y.
+Removed top 7 bits (of 8) from port B of cell start_code_prefix.$eq$mpeg_golden.v:1041$88 ($eq).
+Removed top 31 bits (of 32) from port B of cell start_code_prefix.$gt$mpeg_golden.v:1050$90 ($gt).
+Removed top 1 bits (of 2) from port B of cell start_code_prefix.$procmux$133_CMP0 ($eq).
+Removed top 4 bits (of 8) from port B of cell time_stamps.$eq$mpeg_golden.v:895$76 ($eq).
+Removed top 1 bits (of 4) from port B of cell time_stamps.$procmux$507_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell time_stamps.$procmux$508_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell time_stamps.$procmux$509_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell time_stamps.$procmux$510_CMP0 ($eq).
+Removed top 2 bits (of 4) from port B of cell time_stamps.$procmux$511_CMP0 ($eq).
+Removed top 2 bits (of 4) from port B of cell time_stamps.$procmux$513_CMP0 ($eq).
+Removed top 3 bits (of 4) from port B of cell time_stamps.$procmux$514_CMP0 ($eq).
+
+2.10. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \counter..
+Finding unused cells or wires in module \fsm_for_pack_start..
+Finding unused cells or wires in module \fsm_for_syshead_start..
+Finding unused cells or wires in module \input_buffer..
+Finding unused cells or wires in module \main..
+Finding unused cells or wires in module \parse_pack_header..
+Finding unused cells or wires in module \parse_system_header..
+Finding unused cells or wires in module \read_packet..
+Finding unused cells or wires in module \start_code_prefix..
+Finding unused cells or wires in module \time_stamps..
+Removed 0 unused cells and 13 unused wires.
+<suppressed ~6 debug messages>
+
+2.11. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+2.12. Executing OPT pass (performing simple optimizations).
+
+2.12.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module counter.
+Optimizing module fsm_for_pack_start.
+Optimizing module fsm_for_syshead_start.
+Optimizing module input_buffer.
+Optimizing module main.
+Optimizing module parse_pack_header.
+Optimizing module parse_system_header.
+Optimizing module read_packet.
+Optimizing module start_code_prefix.
+Optimizing module time_stamps.
+
+2.12.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\counter'.
+Finding identical cells in module `\fsm_for_pack_start'.
+Finding identical cells in module `\fsm_for_syshead_start'.
+Finding identical cells in module `\input_buffer'.
+Finding identical cells in module `\main'.
+Finding identical cells in module `\parse_pack_header'.
+Finding identical cells in module `\parse_system_header'.
+Finding identical cells in module `\read_packet'.
+Finding identical cells in module `\start_code_prefix'.
+Finding identical cells in module `\time_stamps'.
+Removed a total of 0 cells.
+
+2.12.3. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \counter..
+Finding unused cells or wires in module \fsm_for_pack_start..
+Finding unused cells or wires in module \fsm_for_syshead_start..
+Finding unused cells or wires in module \input_buffer..
+Finding unused cells or wires in module \main..
+Finding unused cells or wires in module \parse_pack_header..
+Finding unused cells or wires in module \parse_system_header..
+Finding unused cells or wires in module \read_packet..
+Finding unused cells or wires in module \start_code_prefix..
+Finding unused cells or wires in module \time_stamps..
+
+2.12.4. Finished fast OPT passes.
+
+2.13. Printing statistics.
+
+=== counter ===
+
+        +----------Local Count, excluding submodules.
+        | 
+        7 wires
+       13 wire bits
+        3 public wires
+        5 public wire bits
+        2 ports
+        2 port bits
+        6 cells
+        1   $add
+        2   $dff
+        1   $eq
+        2   $mux
+
+=== fsm_for_pack_start ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       21 wires
+       36 wire bits
+        5 public wires
+       14 public wire bits
+        4 ports
+       11 port bits
+       18 cells
+        2   $dff
+        5   $eq
+        2   $logic_not
+        6   $mux
+        2   $pmux
+        1   $reduce_or
+
+=== fsm_for_syshead_start ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       22 wires
+       39 wire bits
+        5 public wires
+       14 public wire bits
+        4 ports
+       11 port bits
+       19 cells
+        2   $dff
+        6   $eq
+        2   $logic_not
+        6   $mux
+        3   $pmux
+
+=== input_buffer ===
+
+        +----------Local Count, excluding submodules.
+        | 
+        3 wires
+       10 wire bits
+        3 public wires
+       10 public wire bits
+        3 ports
+       10 port bits
+        1 cells
+        1   $dff
+
+=== main ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       33 wires
+      171 wire bits
+       23 public wires
+      161 public wire bits
+        3 ports
+        3 port bits
+       15 cells
+        5   $dff
+       10   $mux
+        7 submodules
+        1   counter
+        1   fsm_for_pack_start
+        1   fsm_for_syshead_start
+        1   input_buffer
+        1   parse_pack_header
+        1   parse_system_header
+        1   read_packet
+
+=== parse_pack_header ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       32 wires
+      233 wire bits
+        7 public wires
+       78 public wire bits
+        6 ports
+       75 port bits
+       35 cells
+        1   $add
+        4   $dff
+        7   $eq
+        1   $logic_not
+        4   $mux
+       10   $pmux
+        8   $reduce_or
+
+=== parse_system_header ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       67 wires
+      318 wire bits
+       13 public wires
+      113 public wire bits
+        8 ports
+       75 port bits
+       67 cells
+        2   $add
+        9   $dff
+       14   $eq
+        2   $logic_and
+        2   $logic_not
+       16   $mux
+        1   $not
+       11   $pmux
+       10   $reduce_or
+
+=== read_packet ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       83 wires
+      394 wire bits
+       15 public wires
+       72 public wire bits
+        6 ports
+       20 port bits
+       78 cells
+        9   $dff
+       13   $eq
+        2   $gt
+        2   $logic_not
+       42   $mux
+        1   $ne
+        6   $pmux
+        3   $sub
+        2 submodules
+        1   start_code_prefix
+        1   time_stamps
+
+=== start_code_prefix ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       26 wires
+       42 wire bits
+        5 public wires
+       13 public wire bits
+        4 ports
+       11 port bits
+       23 cells
+        2   $dff
+        4   $eq
+        1   $gt
+        1   $logic_and
+        2   $logic_not
+        9   $mux
+        2   $pmux
+        1   $reduce_bool
+        1   $reduce_or
+
+=== time_stamps ===
+
+        +----------Local Count, excluding submodules.
+        | 
+       38 wires
+       72 wire bits
+        8 public wires
+       24 public wire bits
+        6 ports
+       16 port bits
+       33 cells
+        3   $dff
+       15   $eq
+        1   $logic_and
+        1   $logic_not
+        7   $mux
+        1   $not
+        3   $pmux
+        2   $reduce_or
+
+=== design hierarchy ===
+
+        +----------Count including submodules.
+        | 
+      295 main
+        6 counter
+       18 fsm_for_pack_start
+       19 fsm_for_syshead_start
+        1 input_buffer
+       35 parse_pack_header
+       67 parse_system_header
+       78 read_packet
+       23   start_code_prefix
+       33   time_stamps
+
+        +----------Count including submodules.
+        | 
+      332 wires
+     1328 wire bits
+       87 public wires
+      504 public wire bits
+       46 ports
+      234 port bits
+        - memories
+        - memory bits
+        - processes
+      295 cells
+        4   $add
+       39   $dff
+       65   $eq
+        3   $gt
+        4   $logic_and
+       12   $logic_not
+      102   $mux
+        1   $ne
+        2   $not
+       37   $pmux
+        1   $reduce_bool
+       22   $reduce_or
+        3   $sub
+        7 submodules
+        1   counter
+        1   fsm_for_pack_start
+        1   fsm_for_syshead_start
+        1   input_buffer
+        1   parse_pack_header
+        1   parse_system_header
+        1   read_packet
+
+2.14. Executing CHECK pass (checking for obvious problems).
+Checking module counter...
+Checking module fsm_for_pack_start...
+Checking module fsm_for_syshead_start...
+Checking module input_buffer...
+Checking module main...
+Checking module parse_pack_header...
+Checking module parse_system_header...
+Checking module read_packet...
+Checking module start_code_prefix...
+Checking module time_stamps...
+Found and reported 0 problems.
+
+3. Executing Verilog-2005 frontend: f_mpeg.v
+Parsing formal SystemVerilog input from `f_mpeg.v' to AST representation.
+verilog frontend filename f_mpeg.v
+Storing AST representation for module `$abstract\main'.
+Successfully finished Verilog frontend.
+
+4. Executing PREP pass.
+
+4.1. Executing HIERARCHY pass (managing design hierarchy).
+
+4.2. Executing AST frontend in derive mode using pre-parsed AST for module `\main'.
+Generating RTLIL representation for module `\main'.
+Warning: Replacing memory \main___mod6___Mem with list of registers. See f_mpeg.v:290, f_mpeg.v:231
+
+4.2.1. Analyzing design hierarchy..
+Top module:  \main
+
+4.2.2. Analyzing design hierarchy..
+Top module:  \main
+Removing unused module `$abstract\main'.
+Removed 1 unused modules.
+
+4.3. Executing PROC pass (convert processes to netlists).
+
+4.3.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+4.3.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Marked 7 switch rules as full_case in process $proc$f_mpeg.v:473$2296 in module main.
+Removed 1 dead cases from process $proc$f_mpeg.v:438$2287 in module main.
+Marked 8 switch rules as full_case in process $proc$f_mpeg.v:438$2287 in module main.
+Marked 14 switch rules as full_case in process $proc$f_mpeg.v:342$2271 in module main.
+Removed 4 dead cases from process $proc$f_mpeg.v:236$2257 in module main.
+Marked 7 switch rules as full_case in process $proc$f_mpeg.v:236$2257 in module main.
+Marked 6 switch rules as full_case in process $proc$f_mpeg.v:193$2256 in module main.
+Removed 1 dead cases from process $proc$f_mpeg.v:150$2248 in module main.
+Marked 2 switch rules as full_case in process $proc$f_mpeg.v:150$2248 in module main.
+Marked 6 switch rules as full_case in process $proc$f_mpeg.v:113$2247 in module main.
+Marked 1 switch rules as full_case in process $proc$f_mpeg.v:100$2244 in module main.
+Marked 5 switch rules as full_case in process $proc$f_mpeg.v:66$2242 in module main.
+Removed a total of 6 dead cases.
+
+4.3.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 105 assignments to connections.
+
+4.3.4. Executing PROC_INIT pass (extract init attributes).
+Found init rule in `\main.$proc$f_mpeg.v:465$2314'.
+  Set init value: \main___mod7___module2___DTS = 33'000000000000000000000000000000000
+  Set init value: \main___mod7___module2___PTS = 33'000000000000000000000000000000000
+  Set init value: \main___mod7___module2___state = 4'0000
+  Set init value: \main___mod7___timeStampBytes = 4'0000
+  Set init value: \main___mod7___time_stamp_stop = 1'0
+Found init rule in `\main.$proc$f_mpeg.v:434$2313'.
+  Set init value: \main___mod7___module1___state = 2'00
+  Set init value: \main___mod7___prefix_stop = 1'0
+Found init rule in `\main.$proc$f_mpeg.v:328$2312'.
+  Set init value: \stream_end = 1'0
+  Set init value: \main___mod7___packet_done = 1'1
+  Set init value: \main___mod7___timeStampFlag = 1'0
+  Set init value: \main___mod7___NumBytes = 16'0000000000000000
+  Set init value: \main___mod7___time_stamp_start = 1'0
+  Set init value: \main___mod7___STD_buffer_size = 13'0000000000000
+  Set init value: \main___mod7___STD_buffer_scale = 1'0
+  Set init value: \main___mod7___packet_length = 16'0000000000000000
+  Set init value: \main___mod7___stream_id = 8'00000000
+  Set init value: \main___mod7___state = 4'1111
+  Set init value: \main___packetStop = 1'0
+  Set init value: \main___data_buffer = 8'00000000
+Found init rule in `\main.$proc$f_mpeg.v:222$2311'.
+  Set init value: \main___mod6___Mem[0] = 24'000000000000000000000000
+  Set init value: \main___mod6___stream_temp1 = 24'xxxxxxxxxxxxxxxx00000000
+  Set init value: \main___mod6___stream_temp = 16'0000000000000000
+  Set init value: \main___mod6___stream_id_temp = 8'00000000
+  Set init value: \main___mod6___count1 = 2'00
+  Set init value: \main___mod6___flag = 1'0
+  Set init value: \main___mod6___count = 3'000
+  Set init value: \main___resvdByte = 8'00000000
+  Set init value: \main___flagInfo = 16'0000000000000000
+  Set init value: \main___rateBnd = 24'000000000000000000000000
+  Set init value: \main___sysHeadLen = 16'0000000000000000
+  Set init value: \main___sysHeadParseStop = 1'0
+Found init rule in `\main.$proc$f_mpeg.v:189$2310'.
+  Set init value: \main___mod5___state = 3'000
+  Set init value: \main___sysHeadStop = 1'0
+Found init rule in `\main.$proc$f_mpeg.v:144$2309'.
+  Set init value: \main___mod4___count = 3'000
+  Set init value: \main___muxRate = 24'000000000000000000000000
+  Set init value: \main___scr = 40'0000000000000000000000000000000000000000
+  Set init value: \main___packParseStop = 1'0
+Found init rule in `\main.$proc$f_mpeg.v:109$2308'.
+  Set init value: \main___mod3___state = 3'000
+  Set init value: \main___packHeadStop = 1'0
+Found init rule in `\main.$proc$f_mpeg.v:96$2307'.
+  Set init value: \main___mod2___count_value = 3'000
+  Set init value: \main___read_enable = 1'0
+Found init rule in `\main.$proc$f_mpeg.v:88$2306'.
+  Set init value: \main___mod1___temp = 7'1111111
+  Set init value: \main___buffer = 8'11111111
+Found init rule in `\main.$proc$f_mpeg.v:58$2305'.
+  Set init value: \main___packetStart = 1'0
+  Set init value: \main___sysHeadParseStart = 1'0
+  Set init value: \main___sysHeadStart = 1'0
+  Set init value: \main___packParseStart = 1'0
+  Set init value: \main___packHeadStart = 1'1
+
+4.3.5. Executing PROC_ARST pass (detect async resets in processes).
+
+4.3.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+<suppressed ~56 debug messages>
+
+4.3.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+Creating decoders for process `\main.$proc$f_mpeg.v:465$2314'.
+Creating decoders for process `\main.$proc$f_mpeg.v:434$2313'.
+Creating decoders for process `\main.$proc$f_mpeg.v:328$2312'.
+Creating decoders for process `\main.$proc$f_mpeg.v:222$2311'.
+Creating decoders for process `\main.$proc$f_mpeg.v:189$2310'.
+Creating decoders for process `\main.$proc$f_mpeg.v:144$2309'.
+Creating decoders for process `\main.$proc$f_mpeg.v:109$2308'.
+Creating decoders for process `\main.$proc$f_mpeg.v:96$2307'.
+Creating decoders for process `\main.$proc$f_mpeg.v:88$2306'.
+Creating decoders for process `\main.$proc$f_mpeg.v:58$2305'.
+Creating decoders for process `\main.$proc$f_mpeg.v:473$2296'.
+     1/27: $1\main___mod7___module2___PTS[32:0] [32:30]
+     2/27: $1\main___mod7___module2___PTS[32:0] [29:22]
+     3/27: $1\main___mod7___module2___PTS[32:0] [14:7]
+     4/27: $1\main___mod7___module2___PTS[32:0] [6:0]
+     5/27: $1\main___mod7___module2___DTS[32:0] [32:30]
+     6/27: $1\main___mod7___module2___DTS[32:0] [6:0]
+     7/27: $1\main___mod7___module2___PTS[32:0] [21:15]
+     8/27: $4\main___mod7___time_stamp_stop[0:0]
+     9/27: $1\main___mod7___module2___DTS[32:0] [14:7]
+    10/27: $1\main___mod7___module2___DTS[32:0] [21:15]
+    11/27: $3\main___mod7___time_stamp_stop[0:0]
+    12/27: $5\main___mod7___module2___state[3:0]
+    13/27: $3\main___mod7___timeStampBytes[3:0]
+    14/27: $4\main___mod7___module2___PTS[32:30]
+    15/27: $4\main___mod7___module2___state[3:0]
+    16/27: $3\main___mod7___module2___PTS[32:30]
+    17/27: $3\main___mod7___module2___state[3:0]
+    18/27: $2\main___mod7___time_stamp_stop[0:0]
+    19/27: $2\main___mod7___timeStampBytes[3:0]
+    20/27: $2\main___mod7___module2___state[3:0]
+    21/27: $2\main___mod7___module2___PTS[32:30]
+    22/27: $1\main___mod7___module2___state[3:0]
+    23/27: $1\main___mod7___time_stamp_stop[0:0]
+    24/27: $1\main___mod7___timeStampBytes[3:0]
+    25/27: $7\main___mod7___module2___state[3:0]
+    26/27: $6\main___mod7___module2___state[3:0]
+    27/27: $1\main___mod7___module2___DTS[32:0] [29:22]
+Creating decoders for process `\main.$proc$f_mpeg.v:438$2287'.
+     1/11: $3\main___mod7___prefix_stop[0:0]
+     2/11: $8\main___mod7___module1___state[1:0]
+     3/11: $7\main___mod7___module1___state[1:0]
+     4/11: $6\main___mod7___module1___state[1:0]
+     5/11: $2\main___mod7___prefix_stop[0:0]
+     6/11: $5\main___mod7___module1___state[1:0]
+     7/11: $4\main___mod7___module1___state[1:0]
+     8/11: $3\main___mod7___module1___state[1:0]
+     9/11: $2\main___mod7___module1___state[1:0]
+    10/11: $1\main___mod7___module1___state[1:0]
+    11/11: $1\main___mod7___prefix_stop[0:0]
+Creating decoders for process `\main.$proc$f_mpeg.v:342$2271'.
+     1/65: $1\main___mod7___packet_length[15:0] [15:8]
+     2/65: $9\main___mod7___packet_done[0:0]
+     3/65: $5\main___packetStop[0:0]
+     4/65: $1\main___mod7___packet_length[15:0] [7:0]
+     5/65: $4\main___data_buffer[7:0]
+     6/65: $13\main___mod7___state[3:0]
+     7/65: $8\main___mod7___packet_done[0:0]
+     8/65: $1\main___mod7___STD_buffer_size[12:0] [12:5]
+     9/65: $12\main___mod7___state[3:0]
+    10/65: $11\main___mod7___state[3:0]
+    11/65: $10\main___mod7___state[3:0]
+    12/65: $3\main___data_buffer[7:0]
+    13/65: $6\main___mod7___time_stamp_start[0:0]
+    14/65: $4\main___mod7___NumBytes[15:0]
+    15/65: $5\main___mod7___timeStampFlag[0:0]
+    16/65: $6\main___mod7___packet_done[0:0]
+    17/65: $2\main___data_buffer[7:0]
+    18/65: $9\main___mod7___state[3:0]
+    19/65: $5\main___mod7___time_stamp_start[0:0]
+    20/65: $3\main___mod7___NumBytes[15:0]
+    21/65: $4\main___mod7___timeStampFlag[0:0]
+    22/65: $5\main___mod7___packet_done[0:0]
+    23/65: $1\main___mod7___STD_buffer_size[12:0] [4:0]
+    24/65: $3\main___mod7___STD_buffer_scale[0:0]
+    25/65: $8\main___mod7___state[3:0]
+    26/65: $4\main___mod7___time_stamp_start[0:0]
+    27/65: $3\main___mod7___timeStampFlag[0:0]
+    28/65: $7\main___mod7___state[3:0]
+    29/65: $2\main___mod7___STD_buffer_scale[0:0]
+    30/65: $2\main___mod7___STD_buffer_size[4:0]
+    31/65: $3\main___mod7___time_stamp_start[0:0]
+    32/65: $2\main___mod7___timeStampFlag[0:0]
+    33/65: $2\main___mod7___NumBytes[15:0]
+    34/65: $5\main___mod7___NumBytes[15:0]
+    35/65: $14\main___mod7___state[3:0]
+    36/65: $2\main___mod7___time_stamp_start[0:0]
+    37/65: $3\main___mod7___STD_buffer_size[4:0]
+    38/65: $7\main___mod7___packet_done[0:0]
+    39/65: $4\stream_end[0:0]
+    40/65: $4\main___packetStop[0:0]
+    41/65: $4\main___mod7___stream_id[7:0]
+    42/65: $4\main___mod7___packet_done[0:0]
+    43/65: $4\main___mod7___state[3:0]
+    44/65: $3\main___packetStop[0:0]
+    45/65: $3\main___mod7___stream_id[7:0]
+    46/65: $3\main___mod7___packet_done[0:0]
+    47/65: $3\stream_end[0:0]
+    48/65: $2\main___packetStop[0:0]
+    49/65: $3\main___mod7___state[3:0]
+    50/65: $2\main___mod7___stream_id[7:0]
+    51/65: $2\main___mod7___packet_done[0:0]
+    52/65: $2\stream_end[0:0]
+    53/65: $2\main___mod7___state[3:0]
+    54/65: $1\main___mod7___state[3:0]
+    55/65: $1\main___data_buffer[7:0]
+    56/65: $1\main___packetStop[0:0]
+    57/65: $1\main___mod7___stream_id[7:0]
+    58/65: $5\main___mod7___state[3:0]
+    59/65: $1\main___mod7___STD_buffer_scale[0:0]
+    60/65: $6\main___mod7___state[3:0]
+    61/65: $1\main___mod7___time_stamp_start[0:0]
+    62/65: $1\main___mod7___NumBytes[15:0]
+    63/65: $1\main___mod7___timeStampFlag[0:0]
+    64/65: $1\main___mod7___packet_done[0:0]
+    65/65: $1\stream_end[0:0]
+Creating decoders for process `\main.$proc$f_mpeg.v:236$2257'.
+     1/66: $5\main___sysHeadParseStop[0:0]
+     2/66: $3\main___mod6___stream_temp[15:0] [15:8]
+     3/66: $4\main___mod6___Mem[0][23:0]
+     4/66: $4\main___mod6___Mem[1][23:0]
+     5/66: $4\main___mod6___Mem[2][23:0]
+     6/66: $4\main___mod6___Mem[3][23:0]
+     7/66: $4\main___mod6___Mem[4][23:0]
+     8/66: $4\main___mod6___Mem[5][23:0]
+     9/66: $4\main___mod6___Mem[6][23:0]
+    10/66: $4\main___mod6___Mem[7][23:0]
+    11/66: $3\main___mod6___stream_temp[15:0] [7:0]
+    12/66: $4\main___sysHeadParseStop[0:0]
+    13/66: $3\main___mod6___stream_id_temp[7:0]
+    14/66: $3\main___sysHeadParseStop[0:0]
+    15/66: $3\main___mod6___count1[1:0]
+    16/66: $3\main___mod6___stream_temp1[7:0]
+    17/66: $3\main___mod6___Mem[0][23:0]
+    18/66: $3\main___mod6___Mem[1][23:0]
+    19/66: $3\main___mod6___Mem[2][23:0]
+    20/66: $3\main___mod6___Mem[3][23:0]
+    21/66: $3\main___mod6___Mem[4][23:0]
+    22/66: $3\main___mod6___Mem[5][23:0]
+    23/66: $3\main___mod6___Mem[6][23:0]
+    24/66: $3\main___mod6___Mem[7][23:0]
+    25/66: $2\main___sysHeadParseStop[0:0]
+    26/66: $2\main___mod6___count1[1:0]
+    27/66: $2\main___mod6___stream_id_temp[7:0]
+    28/66: $2\main___mod6___stream_temp[15:0]
+    29/66: $2\main___mod6___stream_temp1[7:0]
+    30/66: $2\main___mod6___Mem[0][23:0]
+    31/66: $2\main___mod6___Mem[1][23:0]
+    32/66: $2\main___mod6___Mem[2][23:0]
+    33/66: $2\main___mod6___Mem[3][23:0]
+    34/66: $2\main___mod6___Mem[4][23:0]
+    35/66: $2\main___mod6___Mem[5][23:0]
+    36/66: $2\main___mod6___Mem[6][23:0]
+    37/66: $2\main___mod6___Mem[7][23:0]
+    38/66: $1\main___sysHeadParseStop[0:0]
+    39/66: $1\main___mod6___count1[1:0]
+    40/66: $1\main___mod6___stream_id_temp[7:0]
+    41/66: $1\main___mod6___stream_temp[15:0]
+    42/66: $1\main___mod6___stream_temp1[7:0]
+    43/66: $1\main___mod6___Mem[0][23:0]
+    44/66: $1\main___mod6___Mem[1][23:0]
+    45/66: $1\main___mod6___Mem[2][23:0]
+    46/66: $1\main___mod6___Mem[3][23:0]
+    47/66: $1\main___mod6___Mem[4][23:0]
+    48/66: $1\main___mod6___Mem[5][23:0]
+    49/66: $1\main___mod6___Mem[6][23:0]
+    50/66: $1\main___mod6___Mem[7][23:0]
+    51/66: $2\main___sysHeadLen[15:0] [15:8]
+    52/66: $2\main___sysHeadLen[15:0] [7:0]
+    53/66: $2\main___flagInfo[15:0] [7:0]
+    54/66: $2\main___rateBnd[23:0] [23:16]
+    55/66: $2\main___rateBnd[23:0] [7:0]
+    56/66: $2\main___flagInfo[15:0] [15:8]
+    57/66: $2\main___mod6___count[2:0]
+    58/66: $2\main___rateBnd[23:0] [15:8]
+    59/66: $2\main___resvdByte[7:0]
+    60/66: $2\main___mod6___flag[0:0]
+    61/66: $1\main___sysHeadLen[15:0]
+    62/66: $1\main___rateBnd[23:0]
+    63/66: $1\main___flagInfo[15:0]
+    64/66: $1\main___resvdByte[7:0]
+    65/66: $1\main___mod6___count[2:0]
+    66/66: $1\main___mod6___flag[0:0]
+Creating decoders for process `\main.$proc$f_mpeg.v:193$2256'.
+     1/9: $3\main___sysHeadStop[0:0]
+     2/9: $6\main___mod5___state[2:0]
+     3/9: $5\main___mod5___state[2:0]
+     4/9: $4\main___mod5___state[2:0]
+     5/9: $3\main___mod5___state[2:0]
+     6/9: $2\main___mod5___state[2:0]
+     7/9: $2\main___sysHeadStop[0:0]
+     8/9: $1\main___sysHeadStop[0:0]
+     9/9: $1\main___mod5___state[2:0]
+Creating decoders for process `\main.$proc$f_mpeg.v:150$2248'.
+     1/14: $2\main___scr[39:0] [39:32]
+     2/14: $2\main___muxRate[23:0] [7:0]
+     3/14: $2\main___scr[39:0] [23:16]
+     4/14: $2\main___muxRate[23:0] [15:8]
+     5/14: $2\main___scr[39:0] [31:24]
+     6/14: $2\main___muxRate[23:0] [23:16]
+     7/14: $2\main___mod4___count[2:0]
+     8/14: $2\main___packParseStop[0:0]
+     9/14: $2\main___scr[39:0] [15:8]
+    10/14: $2\main___scr[39:0] [7:0]
+    11/14: $1\main___packParseStop[0:0]
+    12/14: $1\main___scr[39:0]
+    13/14: $1\main___muxRate[23:0]
+    14/14: $1\main___mod4___count[2:0]
+Creating decoders for process `\main.$proc$f_mpeg.v:113$2247'.
+     1/9: $6\main___mod3___state[2:0]
+     2/9: $3\main___packHeadStop[0:0]
+     3/9: $5\main___mod3___state[2:0]
+     4/9: $4\main___mod3___state[2:0]
+     5/9: $3\main___mod3___state[2:0]
+     6/9: $2\main___mod3___state[2:0]
+     7/9: $2\main___packHeadStop[0:0]
+     8/9: $1\main___packHeadStop[0:0]
+     9/9: $1\main___mod3___state[2:0]
+Creating decoders for process `\main.$proc$f_mpeg.v:100$2244'.
+     1/2: $1\main___mod2___count_value[2:0]
+     2/2: $1\main___read_enable[0:0]
+Creating decoders for process `\main.$proc$f_mpeg.v:92$2243'.
+Creating decoders for process `\main.$proc$f_mpeg.v:66$2242'.
+     1/10: $2\main___packHeadStart[0:0]
+     2/10: $2\main___packetStart[0:0]
+     3/10: $2\main___sysHeadParseStart[0:0]
+     4/10: $1\main___packetStart[0:0]
+     5/10: $2\main___sysHeadStart[0:0]
+     6/10: $1\main___sysHeadParseStart[0:0]
+     7/10: $2\main___packParseStart[0:0]
+     8/10: $1\main___sysHeadStart[0:0]
+     9/10: $1\main___packHeadStart[0:0]
+    10/10: $1\main___packParseStart[0:0]
+
+4.3.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+No latch inferred for signal `\main.\main___mod7___module2___nextstate' from process `\main.$proc$f_mpeg.v:465$2314'.
+No latch inferred for signal `\main.\main___mod6___stream_temp1 [23:8]' from process `\main.$proc$f_mpeg.v:222$2311'.
+No latch inferred for signal `\main.\main___main_state' from process `\main.$proc$f_mpeg.v:58$2305'.
+
+4.3.9. Executing PROC_DFF pass (convert process syncs to FFs).
+Creating register for signal `\main.\main___mod7___module2___DTS' using process `\main.$proc$f_mpeg.v:473$2296'.
+  created $dff cell `$procdff$4344' with positive edge clock.
+Creating register for signal `\main.\main___mod7___module2___PTS' using process `\main.$proc$f_mpeg.v:473$2296'.
+  created $dff cell `$procdff$4345' with positive edge clock.
+Creating register for signal `\main.\main___mod7___module2___state' using process `\main.$proc$f_mpeg.v:473$2296'.
+  created $dff cell `$procdff$4346' with positive edge clock.
+Creating register for signal `\main.\main___mod7___timeStampBytes' using process `\main.$proc$f_mpeg.v:473$2296'.
+  created $dff cell `$procdff$4347' with positive edge clock.
+Creating register for signal `\main.\main___mod7___time_stamp_stop' using process `\main.$proc$f_mpeg.v:473$2296'.
+  created $dff cell `$procdff$4348' with positive edge clock.
+Creating register for signal `\main.\main___mod7___module1___state' using process `\main.$proc$f_mpeg.v:438$2287'.
+  created $dff cell `$procdff$4349' with positive edge clock.
+Creating register for signal `\main.\main___mod7___prefix_stop' using process `\main.$proc$f_mpeg.v:438$2287'.
+  created $dff cell `$procdff$4350' with positive edge clock.
+Creating register for signal `\main.\stream_end' using process `\main.$proc$f_mpeg.v:342$2271'.
+  created $dff cell `$procdff$4351' with positive edge clock.
+Creating register for signal `\main.\main___mod7___packet_done' using process `\main.$proc$f_mpeg.v:342$2271'.
+  created $dff cell `$procdff$4352' with positive edge clock.
+Creating register for signal `\main.\main___mod7___timeStampFlag' using process `\main.$proc$f_mpeg.v:342$2271'.
+  created $dff cell `$procdff$4353' with positive edge clock.
+Creating register for signal `\main.\main___mod7___NumBytes' using process `\main.$proc$f_mpeg.v:342$2271'.
+  created $dff cell `$procdff$4354' with positive edge clock.
+Creating register for signal `\main.\main___mod7___time_stamp_start' using process `\main.$proc$f_mpeg.v:342$2271'.
+  created $dff cell `$procdff$4355' with positive edge clock.
+Creating register for signal `\main.\main___mod7___STD_buffer_size' using process `\main.$proc$f_mpeg.v:342$2271'.
+  created $dff cell `$procdff$4356' with positive edge clock.
+Creating register for signal `\main.\main___mod7___STD_buffer_scale' using process `\main.$proc$f_mpeg.v:342$2271'.
+  created $dff cell `$procdff$4357' with positive edge clock.
+Creating register for signal `\main.\main___mod7___packet_length' using process `\main.$proc$f_mpeg.v:342$2271'.
+  created $dff cell `$procdff$4358' with positive edge clock.
+Creating register for signal `\main.\main___mod7___stream_id' using process `\main.$proc$f_mpeg.v:342$2271'.
+  created $dff cell `$procdff$4359' with positive edge clock.
+Creating register for signal `\main.\main___mod7___state' using process `\main.$proc$f_mpeg.v:342$2271'.
+  created $dff cell `$procdff$4360' with positive edge clock.
+Creating register for signal `\main.\main___packetStop' using process `\main.$proc$f_mpeg.v:342$2271'.
+  created $dff cell `$procdff$4361' with positive edge clock.
+Creating register for signal `\main.\main___data_buffer' using process `\main.$proc$f_mpeg.v:342$2271'.
+  created $dff cell `$procdff$4362' with positive edge clock.
+Creating register for signal `\main.\main___mod6___Mem[7]' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4363' with positive edge clock.
+Creating register for signal `\main.\main___mod6___Mem[6]' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4364' with positive edge clock.
+Creating register for signal `\main.\main___mod6___Mem[5]' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4365' with positive edge clock.
+Creating register for signal `\main.\main___mod6___Mem[4]' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4366' with positive edge clock.
+Creating register for signal `\main.\main___mod6___Mem[3]' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4367' with positive edge clock.
+Creating register for signal `\main.\main___mod6___Mem[2]' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4368' with positive edge clock.
+Creating register for signal `\main.\main___mod6___Mem[1]' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4369' with positive edge clock.
+Creating register for signal `\main.\main___mod6___Mem[0]' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4370' with positive edge clock.
+Creating register for signal `\main.\main___mod6___stream_temp1 [7:0]' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4371' with positive edge clock.
+Creating register for signal `\main.\main___mod6___stream_temp' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4372' with positive edge clock.
+Creating register for signal `\main.\main___mod6___stream_id_temp' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4373' with positive edge clock.
+Creating register for signal `\main.\main___mod6___count1' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4374' with positive edge clock.
+Creating register for signal `\main.\main___mod6___flag' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4375' with positive edge clock.
+Creating register for signal `\main.\main___mod6___count' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4376' with positive edge clock.
+Creating register for signal `\main.\main___resvdByte' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4377' with positive edge clock.
+Creating register for signal `\main.\main___flagInfo' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4378' with positive edge clock.
+Creating register for signal `\main.\main___rateBnd' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4379' with positive edge clock.
+Creating register for signal `\main.\main___sysHeadLen' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4380' with positive edge clock.
+Creating register for signal `\main.\main___sysHeadParseStop' using process `\main.$proc$f_mpeg.v:236$2257'.
+  created $dff cell `$procdff$4381' with positive edge clock.
+Creating register for signal `\main.\main___mod5___state' using process `\main.$proc$f_mpeg.v:193$2256'.
+  created $dff cell `$procdff$4382' with positive edge clock.
+Creating register for signal `\main.\main___sysHeadStop' using process `\main.$proc$f_mpeg.v:193$2256'.
+  created $dff cell `$procdff$4383' with positive edge clock.
+Creating register for signal `\main.\main___mod4___count' using process `\main.$proc$f_mpeg.v:150$2248'.
+  created $dff cell `$procdff$4384' with positive edge clock.
+Creating register for signal `\main.\main___muxRate' using process `\main.$proc$f_mpeg.v:150$2248'.
+  created $dff cell `$procdff$4385' with positive edge clock.
+Creating register for signal `\main.\main___scr' using process `\main.$proc$f_mpeg.v:150$2248'.
+  created $dff cell `$procdff$4386' with positive edge clock.
+Creating register for signal `\main.\main___packParseStop' using process `\main.$proc$f_mpeg.v:150$2248'.
+  created $dff cell `$procdff$4387' with positive edge clock.
+Creating register for signal `\main.\main___mod3___state' using process `\main.$proc$f_mpeg.v:113$2247'.
+  created $dff cell `$procdff$4388' with positive edge clock.
+Creating register for signal `\main.\main___packHeadStop' using process `\main.$proc$f_mpeg.v:113$2247'.
+  created $dff cell `$procdff$4389' with positive edge clock.
+Creating register for signal `\main.\main___mod2___count_value' using process `\main.$proc$f_mpeg.v:100$2244'.
+  created $dff cell `$procdff$4390' with positive edge clock.
+Creating register for signal `\main.\main___read_enable' using process `\main.$proc$f_mpeg.v:100$2244'.
+  created $dff cell `$procdff$4391' with positive edge clock.
+Creating register for signal `\main.\main___mod1___temp' using process `\main.$proc$f_mpeg.v:92$2243'.
+  created $dff cell `$procdff$4392' with positive edge clock.
+Creating register for signal `\main.\main___buffer' using process `\main.$proc$f_mpeg.v:92$2243'.
+  created $dff cell `$procdff$4393' with positive edge clock.
+Creating register for signal `\main.\main___packetStart' using process `\main.$proc$f_mpeg.v:66$2242'.
+  created $dff cell `$procdff$4394' with positive edge clock.
+Creating register for signal `\main.\main___sysHeadParseStart' using process `\main.$proc$f_mpeg.v:66$2242'.
+  created $dff cell `$procdff$4395' with positive edge clock.
+Creating register for signal `\main.\main___sysHeadStart' using process `\main.$proc$f_mpeg.v:66$2242'.
+  created $dff cell `$procdff$4396' with positive edge clock.
+Creating register for signal `\main.\main___packParseStart' using process `\main.$proc$f_mpeg.v:66$2242'.
+  created $dff cell `$procdff$4397' with positive edge clock.
+Creating register for signal `\main.\main___packHeadStart' using process `\main.$proc$f_mpeg.v:66$2242'.
+  created $dff cell `$procdff$4398' with positive edge clock.
+
+4.3.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+4.3.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Removing empty process `main.$proc$f_mpeg.v:465$2314'.
+Removing empty process `main.$proc$f_mpeg.v:434$2313'.
+Removing empty process `main.$proc$f_mpeg.v:328$2312'.
+Removing empty process `main.$proc$f_mpeg.v:222$2311'.
+Removing empty process `main.$proc$f_mpeg.v:189$2310'.
+Removing empty process `main.$proc$f_mpeg.v:144$2309'.
+Removing empty process `main.$proc$f_mpeg.v:109$2308'.
+Removing empty process `main.$proc$f_mpeg.v:96$2307'.
+Removing empty process `main.$proc$f_mpeg.v:88$2306'.
+Removing empty process `main.$proc$f_mpeg.v:58$2305'.
+Found and cleaned up 7 empty switches in `\main.$proc$f_mpeg.v:473$2296'.
+Removing empty process `main.$proc$f_mpeg.v:473$2296'.
+Found and cleaned up 8 empty switches in `\main.$proc$f_mpeg.v:438$2287'.
+Removing empty process `main.$proc$f_mpeg.v:438$2287'.
+Found and cleaned up 14 empty switches in `\main.$proc$f_mpeg.v:342$2271'.
+Removing empty process `main.$proc$f_mpeg.v:342$2271'.
+Found and cleaned up 7 empty switches in `\main.$proc$f_mpeg.v:236$2257'.
+Removing empty process `main.$proc$f_mpeg.v:236$2257'.
+Found and cleaned up 6 empty switches in `\main.$proc$f_mpeg.v:193$2256'.
+Removing empty process `main.$proc$f_mpeg.v:193$2256'.
+Found and cleaned up 2 empty switches in `\main.$proc$f_mpeg.v:150$2248'.
+Removing empty process `main.$proc$f_mpeg.v:150$2248'.
+Found and cleaned up 6 empty switches in `\main.$proc$f_mpeg.v:113$2247'.
+Removing empty process `main.$proc$f_mpeg.v:113$2247'.
+Found and cleaned up 1 empty switch in `\main.$proc$f_mpeg.v:100$2244'.
+Removing empty process `main.$proc$f_mpeg.v:100$2244'.
+Removing empty process `main.$proc$f_mpeg.v:92$2243'.
+Found and cleaned up 5 empty switches in `\main.$proc$f_mpeg.v:66$2242'.
+Removing empty process `main.$proc$f_mpeg.v:66$2242'.
+Cleaned up 56 empty switches.
+
+4.3.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module main.
+<suppressed ~85 debug messages>
+
+4.4. Executing FUTURE pass.
+
+4.5. Executing OPT_EXPR pass (perform const folding).
+Optimizing module main.
+
+4.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \main..
+Removed 411 unused cells and 966 unused wires.
+<suppressed ~434 debug messages>
+
+4.7. Executing CHECK pass (checking for obvious problems).
+Checking module main...
+Found and reported 0 problems.
+
+4.8. Executing OPT pass (performing simple optimizations).
+
+4.8.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module main.
+
+4.8.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\main'.
+<suppressed ~432 debug messages>
+Removed a total of 144 cells.
+
+4.8.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \main..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+      Replacing known input bits on port B of cell $procmux$3659: \main___buffer -> { \main___buffer [7:1] 1'1 }
+  Analyzing evaluation results.
+    dead port 2/2 on $mux $procmux$2735.
+    dead port 2/2 on $mux $procmux$2741.
+    dead port 2/2 on $mux $procmux$2747.
+    dead port 2/2 on $mux $procmux$2753.
+    dead port 2/2 on $mux $procmux$2759.
+    dead port 2/2 on $mux $procmux$2766.
+    dead port 2/2 on $mux $procmux$2773.
+    dead port 2/2 on $mux $procmux$2781.
+    dead port 2/2 on $mux $procmux$2812.
+    dead port 2/2 on $mux $procmux$2833.
+    dead port 1/2 on $mux $procmux$2856.
+    dead port 2/2 on $mux $procmux$2858.
+    dead port 2/2 on $mux $procmux$2860.
+    dead port 1/2 on $mux $procmux$2870.
+    dead port 2/2 on $mux $procmux$2872.
+    dead port 2/2 on $mux $procmux$2874.
+    dead port 2/2 on $mux $procmux$2883.
+    dead port 2/2 on $mux $procmux$2885.
+    dead port 2/2 on $mux $procmux$2905.
+    dead port 2/2 on $mux $procmux$2907.
+    dead port 2/2 on $mux $procmux$2916.
+    dead port 2/2 on $mux $procmux$2918.
+    dead port 2/2 on $mux $procmux$2927.
+    dead port 2/2 on $mux $procmux$2929.
+    dead port 2/2 on $mux $procmux$2956.
+    dead port 2/2 on $mux $procmux$2964.
+    dead port 2/2 on $mux $procmux$2972.
+    dead port 2/2 on $mux $procmux$2980.
+    dead port 2/2 on $mux $procmux$3019.
+    dead port 2/2 on $mux $procmux$3021.
+    dead port 2/2 on $mux $procmux$3032.
+    dead port 2/2 on $mux $procmux$3034.
+    dead port 2/2 on $mux $procmux$3045.
+    dead port 2/2 on $mux $procmux$3047.
+    dead port 2/2 on $mux $procmux$3057.
+    dead port 2/2 on $mux $procmux$3087.
+    dead port 2/2 on $mux $procmux$3097.
+    dead port 2/2 on $mux $procmux$3107.
+    dead port 2/2 on $mux $procmux$3114.
+    dead port 2/2 on $mux $procmux$3120.
+    dead port 2/2 on $mux $procmux$3131.
+    dead port 1/2 on $mux $procmux$3173.
+    dead port 2/2 on $mux $procmux$3175.
+    dead port 2/2 on $mux $procmux$3177.
+    dead port 1/2 on $mux $procmux$3192.
+    dead port 2/2 on $mux $procmux$3194.
+    dead port 2/2 on $mux $procmux$3196.
+    dead port 1/2 on $mux $procmux$3211.
+    dead port 2/2 on $mux $procmux$3213.
+    dead port 2/2 on $mux $procmux$3215.
+    dead port 2/2 on $mux $procmux$3248.
+    dead port 2/2 on $mux $procmux$3250.
+    dead port 2/2 on $mux $procmux$3264.
+    dead port 2/2 on $mux $procmux$3266.
+    dead port 2/2 on $mux $procmux$3280.
+    dead port 2/2 on $mux $procmux$3282.
+    dead port 2/2 on $mux $procmux$3312.
+    dead port 2/2 on $mux $procmux$3314.
+    dead port 2/2 on $mux $procmux$3327.
+    dead port 2/2 on $mux $procmux$3340.
+    dead port 2/2 on $mux $procmux$3353.
+    dead port 2/2 on $mux $procmux$3379.
+    dead port 2/2 on $mux $procmux$3393.
+    dead port 2/2 on $mux $procmux$2403.
+    dead port 2/2 on $mux $procmux$2433.
+    dead port 2/2 on $mux $procmux$2435.
+    dead port 1/2 on $mux $procmux$2454.
+    dead port 2/2 on $mux $procmux$2454.
+    dead port 1/2 on $mux $procmux$2456.
+    dead port 2/2 on $mux $procmux$2456.
+    dead port 1/2 on $mux $procmux$2458.
+    dead port 2/2 on $mux $procmux$2458.
+    dead port 1/2 on $mux $procmux$3438.
+    dead port 2/2 on $mux $procmux$3440.
+    dead port 2/2 on $mux $procmux$3442.
+    dead port 2/2 on $mux $procmux$3460.
+    dead port 2/2 on $mux $procmux$2479.
+    dead port 2/2 on $mux $procmux$2481.
+    dead port 1/2 on $mux $procmux$2523.
+    dead port 2/2 on $mux $procmux$2523.
+    dead port 1/2 on $mux $procmux$2525.
+    dead port 2/2 on $mux $procmux$2525.
+    dead port 1/2 on $mux $procmux$2527.
+    dead port 2/2 on $mux $procmux$2527.
+    dead port 1/2 on $mux $procmux$2569.
+    dead port 2/2 on $mux $procmux$2569.
+    dead port 1/2 on $mux $procmux$2571.
+    dead port 2/2 on $mux $procmux$2571.
+    dead port 1/2 on $mux $procmux$2573.
+    dead port 2/2 on $mux $procmux$2573.
+    dead port 2/2 on $mux $procmux$2593.
+    dead port 2/2 on $mux $procmux$3648.
+    dead port 2/2 on $mux $procmux$3650.
+    dead port 2/2 on $mux $procmux$3652.
+    dead port 2/2 on $mux $procmux$3661.
+    dead port 2/2 on $mux $procmux$3663.
+    dead port 2/2 on $mux $procmux$3670.
+    dead port 2/2 on $mux $procmux$3672.
+    dead port 2/2 on $mux $procmux$2613.
+    dead port 2/2 on $mux $procmux$3681.
+    dead port 2/2 on $mux $procmux$3683.
+    dead port 2/2 on $mux $procmux$3770.
+    dead port 2/2 on $mux $procmux$3776.
+    dead port 2/2 on $mux $procmux$3782.
+    dead port 2/2 on $mux $procmux$3965.
+    dead port 1/2 on $mux $procmux$2631.
+    dead port 2/2 on $mux $procmux$2633.
+    dead port 2/2 on $mux $procmux$4001.
+    dead port 2/2 on $mux $procmux$4028.
+    dead port 2/2 on $mux $procmux$4030.
+    dead port 2/2 on $mux $procmux$4039.
+    dead port 2/2 on $mux $procmux$4041.
+    dead port 2/2 on $mux $procmux$4050.
+    dead port 2/2 on $mux $procmux$4052.
+    dead port 2/2 on $mux $procmux$4062.
+    dead port 2/2 on $mux $procmux$4064.
+    dead port 2/2 on $mux $procmux$4075.
+    dead port 2/2 on $mux $procmux$4077.
+    dead port 2/2 on $mux $procmux$4087.
+    dead port 2/2 on $mux $procmux$4094.
+    dead port 2/2 on $mux $procmux$4184.
+    dead port 2/2 on $mux $procmux$4196.
+    dead port 2/2 on $mux $procmux$4239.
+    dead port 2/2 on $mux $procmux$4241.
+    dead port 2/2 on $mux $procmux$4249.
+    dead port 2/2 on $mux $procmux$4251.
+    dead port 2/2 on $mux $procmux$4260.
+    dead port 2/2 on $mux $procmux$4262.
+    dead port 2/2 on $mux $procmux$4271.
+    dead port 2/2 on $mux $procmux$4273.
+    dead port 2/2 on $mux $procmux$2699.
+    dead port 2/2 on $mux $procmux$4283.
+    dead port 2/2 on $mux $procmux$4285.
+    dead port 2/2 on $mux $procmux$2719.
+    dead port 2/2 on $mux $procmux$4294.
+    dead port 2/2 on $mux $procmux$4300.
+    dead port 2/2 on $mux $procmux$2730.
+Removed 137 multiplexer ports.
+<suppressed ~266 debug messages>
+
+4.8.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \main.
+    New ctrl vector for $pmux cell $procmux$3642: $auto$opt_reduce.cc:137:opt_pmux$4400
+    New ctrl vector for $pmux cell $procmux$2788: { $auto$opt_reduce.cc:137:opt_pmux$4402 $procmux$2742_CMP $procmux$2731_CMP }
+    New ctrl vector for $pmux cell $procmux$3677: { $auto$opt_reduce.cc:137:opt_pmux$4404 $procmux$3649_CMP }
+    New ctrl vector for $pmux cell $procmux$3956: { $auto$opt_reduce.cc:137:opt_pmux$4406 $procmux$3957_CMP }
+    New ctrl vector for $pmux cell $procmux$3992: { $auto$opt_reduce.cc:137:opt_pmux$4408 $procmux$3957_CMP }
+    New ctrl vector for $pmux cell $procmux$2656: { $procmux$2436_CMP $procmux$2670_CMP $procmux$2669_CMP $procmux$2404_CMP $procmux$2667_CMP $procmux$2666_CMP $procmux$2664_CMP $procmux$2663_CMP $procmux$2662_CMP $procmux$2661_CMP $procmux$2660_CMP $procmux$2659_CMP $procmux$2658_CMP $auto$opt_reduce.cc:137:opt_pmux$4410 }
+    New ctrl vector for $pmux cell $procmux$4175: { $auto$opt_reduce.cc:137:opt_pmux$4412 $procmux$4176_CMP }
+    New ctrl vector for $pmux cell $procmux$4187: { $auto$opt_reduce.cc:137:opt_pmux$4414 $procmux$4176_CMP }
+    New ctrl vector for $pmux cell $procmux$2673: { $procmux$2436_CMP $procmux$2404_CMP $auto$opt_reduce.cc:137:opt_pmux$4416 }
+  Optimizing cells in module \main.
+Performed a total of 9 changes.
+
+4.8.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\main'.
+<suppressed ~15 debug messages>
+Removed a total of 5 cells.
+
+4.8.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \main..
+Removed 2 unused cells and 279 unused wires.
+<suppressed ~3 debug messages>
+
+4.8.7. Executing OPT_EXPR pass (perform const folding).
+Optimizing module main.
+
+4.8.8. Rerunning OPT passes. (Maybe there is more to do..)
+
+4.8.9. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \main..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~151 debug messages>
+
+4.8.10. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \main.
+    New ctrl vector for $pmux cell $procmux$4289: { $procmux$4272_CMP $procmux$4261_CMP $auto$opt_reduce.cc:137:opt_pmux$4418 }
+  Optimizing cells in module \main.
+Performed a total of 1 changes.
+
+4.8.11. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\main'.
+Removed a total of 0 cells.
+
+4.8.12. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \main..
+
+4.8.13. Executing OPT_EXPR pass (perform const folding).
+Optimizing module main.
+
+4.8.14. Rerunning OPT passes. (Maybe there is more to do..)
+
+4.8.15. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \main..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~150 debug messages>
+
+4.8.16. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \main.
+Performed a total of 0 changes.
+
+4.8.17. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\main'.
+Removed a total of 0 cells.
+
+4.8.18. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \main..
+
+4.8.19. Executing OPT_EXPR pass (perform const folding).
+Optimizing module main.
+
+4.8.20. Finished fast OPT passes. (There is nothing left to do.)
+
+4.9. Executing WREDUCE pass (reducing word size of cells).
+Removed top 2 bits (of 3) from port B of cell main.$procmux$3963_CMP0 ($eq).
+Removed top 1 bits (of 3) from port B of cell main.$procmux$3962_CMP0 ($eq).
+Removed top 1 bits (of 3) from port B of cell main.$procmux$3961_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell main.$procmux$2861_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell main.$procmux$2834_CMP0 ($eq).
+Removed top 2 bits (of 4) from port B of cell main.$procmux$2821_CMP0 ($eq).
+Removed top 2 bits (of 4) from port B of cell main.$procmux$2801_CMP0 ($eq).
+Removed top 1 bits (of 2) from port B of cell main.$procmux$2767_CMP0 ($eq).
+Removed top 3 bits (of 4) from port B of cell main.$procmux$2670_CMP0 ($eq).
+Removed top 2 bits (of 4) from port B of cell main.$procmux$2669_CMP0 ($eq).
+Removed top 2 bits (of 4) from port B of cell main.$procmux$2667_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell main.$procmux$2666_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell main.$procmux$2665_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell main.$procmux$2664_CMP0 ($eq).
+Removed top 1 bits (of 4) from port B of cell main.$procmux$2663_CMP0 ($eq).
+Removed top 1 bits (of 2) from port B of cell main.$procmux$3679_CMP0 ($eq).
+Removed top 6 bits (of 8) from port B of cell main.$procmux$3647_CMP0 ($eq).
+Removed top 1 bits (of 8) from port B of cell main.$procmux$3645_CMP0 ($eq).
+Removed top 5 bits (of 8) from port B of cell main.$procmux$3643_CMP0 ($eq).
+Removed top 2 bits (of 4) from mux cell main.$procmux$3458 ($mux).
+Removed top 1 bits (of 4) from port B of cell main.$procmux$3400_CMP0 ($eq).
+Removed top 4 bits (of 8) from port A of cell main.$eq$f_mpeg.v:485$2301 ($eq).
+Removed top 7 bits (of 8) from port A of cell main.$lt$f_mpeg.v:456$2294 ($lt).
+Removed top 7 bits (of 8) from port A of cell main.$eq$f_mpeg.v:450$2292 ($eq).
+Removed top 15 bits (of 16) from port A of cell main.$lt$f_mpeg.v:418$2284 ($lt).
+Removed top 15 bits (of 16) from port A of cell main.$eq$f_mpeg.v:410$2283 ($eq).
+Removed top 15 bits (of 16) from port A of cell main.$lt$f_mpeg.v:408$2282 ($lt).
+Removed top 12 bits (of 16) from port B of cell main.$sub$f_mpeg.v:407$2281 ($sub).
+Removed top 16 bits (of 32) from port A of cell main.$sub$f_mpeg.v:402$2279 ($sub).
+Removed top 28 bits (of 32) from port B of cell main.$sub$f_mpeg.v:402$2279 ($sub).
+Removed top 15 bits (of 32) from port Y of cell main.$sub$f_mpeg.v:402$2279 ($sub).
+Removed top 15 bits (of 16) from port B of cell main.$sub$f_mpeg.v:392$2277 ($sub).
+Removed top 1 bits (of 2) from port A of cell main.$eq$f_mpeg.v:380$2276 ($eq).
+Removed top 1 bits (of 2) from port A of cell main.$add$f_mpeg.v:278$2268 ($add).
+Removed top 2 bits (of 3) from port A of cell main.$add$f_mpeg.v:241$2260 ($add).
+Removed top 1 bits (of 4) from port B of cell main.$procmux$3022_CMP0 ($eq).
+Removed top 2 bits (of 4) from mux cell main.$procmux$3017 ($mux).
+Removed top 2 bits (of 3) from port A of cell main.$add$f_mpeg.v:155$2249 ($add).
+Removed top 2 bits (of 3) from port A of cell main.$add$f_mpeg.v:107$2246 ($add).
+Removed top 1 bits (of 3) from port B of cell main.$procmux$4029_CMP0 ($eq).
+Removed top 1 bits (of 3) from mux cell main.$procmux$4048 ($mux).
+Removed top 1 bits (of 3) from port B of cell main.$procmux$4051_CMP0 ($eq).
+Removed top 1 bits (of 3) from mux cell main.$procmux$4060 ($mux).
+Removed top 2 bits (of 3) from port B of cell main.$procmux$4063_CMP0 ($eq).
+Removed top 2 bits (of 3) from mux cell main.$procmux$4073 ($mux).
+Removed top 1 bits (of 3) from port B of cell main.$procmux$4180_CMP0 ($eq).
+Removed top 1 bits (of 3) from port B of cell main.$procmux$4181_CMP0 ($eq).
+Removed top 2 bits (of 3) from port B of cell main.$procmux$4182_CMP0 ($eq).
+Removed top 1 bits (of 3) from port B of cell main.$procmux$4240_CMP0 ($eq).
+Removed top 1 bits (of 8) from port B of cell main.$procmux$4248_CMP0 ($eq).
+Removed top 1 bits (of 3) from mux cell main.$procmux$4257 ($pmux).
+Removed top 7 bits (of 8) from port B of cell main.$procmux$4259_CMP0 ($eq).
+Removed top 1 bits (of 3) from port B of cell main.$procmux$4261_CMP0 ($eq).
+Removed top 2 bits (of 3) from port B of cell main.$procmux$4272_CMP0 ($eq).
+Removed top 2 bits (of 3) from wire main.$3\main___mod3___state[2:0].
+Removed top 1 bits (of 3) from wire main.$4\main___mod3___state[2:0].
+Removed top 1 bits (of 3) from wire main.$5\main___mod3___state[2:0].
+Removed top 1 bits (of 3) from wire main.$5\main___mod5___state[2:0].
+Removed top 1 bits (of 3) from wire main.$6\main___mod5___state[2:0].
+Removed top 2 bits (of 4) from wire main.$6\main___mod7___state[3:0].
+Removed top 2 bits (of 4) from wire main.$8\main___mod7___state[3:0].
+Removed top 1 bits (of 16) from wire main.$sub$f_mpeg.v:392$2277_Y.
+
+4.10. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \main..
+Removed 0 unused cells and 7 unused wires.
+<suppressed ~1 debug messages>
+
+4.11. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+4.12. Executing OPT pass (performing simple optimizations).
+
+4.12.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module main.
+
+4.12.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\main'.
+Removed a total of 0 cells.
+
+4.12.3. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \main..
+
+4.12.4. Finished fast OPT passes.
+
+4.13. Printing statistics.
+
+=== main ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      250 wires
+      648 wire bits
+       37 public wires
+      137 public wire bits
+        3 ports
+        3 port bits
+      245 cells
+        4   $add
+        4   $and
+       32   $dff
+       65   $eq
+       10   $logic_not
+        3   $lt
+       92   $mux
+        1   $ne
+        2   $not
+       20   $pmux
+        1   $reduce_bool
+        8   $reduce_or
+        3   $sub
+
+4.14. Executing CHECK pass (checking for obvious problems).
+Checking module main...
+Found and reported 0 problems.
+
+5. Executing MITER pass (creating miter circuit).
+Creating miter cell "miter" with gold cell "main" and gate cell "revised".
+
+5.1. Executing FLATTEN pass (flatten design).
+<suppressed ~11 debug messages>
+
+5.2. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+<suppressed ~16 debug messages>
+Removed 46 unused cells and 39 unused wires.
+
+6. Executing CLK2FFLOGIC pass (convert clocked FFs to generic $ff cells).
+
+6.1. Executing PEEPOPT pass (run peephole optimizers).
+Replacing counter.$procdff$2131 ($dff): CLK=\clk, D=$0\count_over[0:0], Q=\count_over
+Replacing counter.$procdff$2132 ($dff): CLK=\clk, D=$0\count_value[2:0], Q=\count_value
+Replacing fsm_for_pack_start.$procdff$2133 ($dff): CLK=\enable, D=$0\state[2:0], Q=\state
+Replacing fsm_for_pack_start.$procdff$2134 ($dff): CLK=\enable, D=$0\stop[0:0], Q=\stop
+Replacing fsm_for_syshead_start.$procdff$2139 ($dff): CLK=\enable, D=$0\state[2:0], Q=\state
+Replacing fsm_for_syshead_start.$procdff$2140 ($dff): CLK=\enable, D=$0\stop[0:0], Q=\stop
+Replacing input_buffer.$procdff$2129 ($dff): CLK=\clk, D={ \input_stream \output_buffer [7:1] }, Q=\output_buffer
+Replacing main.$procdff$2172 ($dff): CLK=\clk, D=$0\packHeadStart[0:0], Q=\packHeadStart
+Replacing main.$procdff$2173 ($dff): CLK=\clk, D=$0\packParseStart[0:0], Q=\packParseStart
+Replacing main.$procdff$2174 ($dff): CLK=\clk, D=$0\sysHeadStart[0:0], Q=\sysHeadStart
+Replacing main.$procdff$2175 ($dff): CLK=\clk, D=$0\sysHeadParseStart[0:0], Q=\sysHeadParseStart
+Replacing main.$procdff$2176 ($dff): CLK=\clk, D=$0\packetStart[0:0], Q=\packetStart
+Replacing miter.$flatten\gate.$procdff$4346 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod7___module2___state[3:0], Q=\gate.main___mod7___module2___state
+Replacing miter.$flatten\gate.$procdff$4347 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod7___timeStampBytes[3:0], Q=\gate.main___mod7___timeStampBytes
+Replacing miter.$flatten\gate.$procdff$4348 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod7___time_stamp_stop[0:0], Q=\gate.main___mod7___time_stamp_stop
+Replacing miter.$flatten\gate.$procdff$4349 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod7___module1___state[1:0], Q=\gate.main___mod7___module1___state
+Replacing miter.$flatten\gate.$procdff$4350 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod7___prefix_stop[0:0], Q=\gate.main___mod7___prefix_stop
+Replacing miter.$flatten\gate.$procdff$4351 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\stream_end[0:0], Q=\gate.stream_end
+Replacing miter.$flatten\gate.$procdff$4353 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod7___timeStampFlag[0:0], Q=\gate.main___mod7___timeStampFlag
+Replacing miter.$flatten\gate.$procdff$4354 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod7___NumBytes[15:0], Q=\gate.main___mod7___NumBytes
+Replacing miter.$flatten\gate.$procdff$4355 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod7___time_stamp_start[0:0], Q=\gate.main___mod7___time_stamp_start
+Replacing miter.$flatten\gate.$procdff$4358 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod7___packet_length[15:0], Q=\gate.main___mod7___packet_length
+Replacing miter.$flatten\gate.$procdff$4359 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod7___stream_id[7:0], Q=\gate.main___mod7___stream_id
+Replacing miter.$flatten\gate.$procdff$4360 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod7___state[3:0], Q=\gate.main___mod7___state
+Replacing miter.$flatten\gate.$procdff$4361 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___packetStop[0:0], Q=\gate.main___packetStop
+Replacing miter.$flatten\gate.$procdff$4373 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod6___stream_id_temp[7:0], Q=\gate.main___mod6___stream_id_temp
+Replacing miter.$flatten\gate.$procdff$4374 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod6___count1[1:0], Q=\gate.main___mod6___count1
+Replacing miter.$flatten\gate.$procdff$4375 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod6___flag[0:0], Q=\gate.main___mod6___flag
+Replacing miter.$flatten\gate.$procdff$4376 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod6___count[2:0], Q=\gate.main___mod6___count
+Replacing miter.$flatten\gate.$procdff$4381 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___sysHeadParseStop[0:0], Q=\gate.main___sysHeadParseStop
+Replacing miter.$flatten\gate.$procdff$4382 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod5___state[2:0], Q=\gate.main___mod5___state
+Replacing miter.$flatten\gate.$procdff$4383 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___sysHeadStop[0:0], Q=\gate.main___sysHeadStop
+Replacing miter.$flatten\gate.$procdff$4384 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___mod4___count[2:0], Q=\gate.main___mod4___count
+Replacing miter.$flatten\gate.$procdff$4387 ($dff): CLK=\gate.main___read_enable, D=$flatten\gate.$0\main___packParseStop[0:0], Q=\gate.main___packParseStop
+Replacing miter.$flatten\gate.$procdff$4388 ($dff): CLK=\in_clk, D=$flatten\gate.$0\main___mod3___state[2:0], Q=\gate.main___mod3___state
+Replacing miter.$flatten\gate.$procdff$4389 ($dff): CLK=\in_clk, D=$flatten\gate.$0\main___packHeadStop[0:0], Q=\gate.main___packHeadStop
+Replacing miter.$flatten\gate.$procdff$4390 ($dff): CLK=\in_clk, D=$flatten\gate.$0\main___mod2___count_value[2:0], Q=\gate.main___mod2___count_value
+Replacing miter.$flatten\gate.$procdff$4391 ($dff): CLK=\in_clk, D=$flatten\gate.$0\main___read_enable[0:0], Q=\gate.main___read_enable
+Replacing miter.$flatten\gate.$procdff$4393 ($dff): CLK=\in_clk, D={ \in_input_stream \gate.main___buffer [7:1] }, Q=\gate.main___buffer
+Replacing miter.$flatten\gate.$procdff$4394 ($dff): CLK=\in_clk, D=$flatten\gate.$0\main___packetStart[0:0], Q=\gate.main___packetStart
+Replacing miter.$flatten\gate.$procdff$4395 ($dff): CLK=\in_clk, D=$flatten\gate.$0\main___sysHeadParseStart[0:0], Q=\gate.main___sysHeadParseStart
+Replacing miter.$flatten\gate.$procdff$4396 ($dff): CLK=\in_clk, D=$flatten\gate.$0\main___sysHeadStart[0:0], Q=\gate.main___sysHeadStart
+Replacing miter.$flatten\gate.$procdff$4397 ($dff): CLK=\in_clk, D=$flatten\gate.$0\main___packParseStart[0:0], Q=\gate.main___packParseStart
+Replacing miter.$flatten\gate.$procdff$4398 ($dff): CLK=\in_clk, D=$flatten\gate.$0\main___packHeadStart[0:0], Q=\gate.main___packHeadStart
+Replacing miter.$flatten\gold.$procdff$2172 ($dff): CLK=\in_clk, D=$flatten\gold.$0\packHeadStart[0:0], Q=\gold.packHeadStart
+Replacing miter.$flatten\gold.$procdff$2173 ($dff): CLK=\in_clk, D=$flatten\gold.$0\packParseStart[0:0], Q=\gold.packParseStart
+Replacing miter.$flatten\gold.$procdff$2174 ($dff): CLK=\in_clk, D=$flatten\gold.$0\sysHeadStart[0:0], Q=\gold.sysHeadStart
+Replacing miter.$flatten\gold.$procdff$2175 ($dff): CLK=\in_clk, D=$flatten\gold.$0\sysHeadParseStart[0:0], Q=\gold.sysHeadParseStart
+Replacing miter.$flatten\gold.$procdff$2176 ($dff): CLK=\in_clk, D=$flatten\gold.$0\packetStart[0:0], Q=\gold.packetStart
+Replacing miter.$flatten\gold.mod1.$procdff$2129 ($dff): CLK=\in_clk, D={ \in_input_stream \gold.mod1.output_buffer [7:1] }, Q=\gold.mod1.output_buffer
+Replacing miter.$flatten\gold.mod2.$procdff$2131 ($dff): CLK=\in_clk, D=$flatten\gold.mod2.$0\count_over[0:0], Q=\gold.mod2.count_over
+Replacing miter.$flatten\gold.mod2.$procdff$2132 ($dff): CLK=\in_clk, D=$flatten\gold.mod2.$0\count_value[2:0], Q=\gold.mod2.count_value
+Replacing miter.$flatten\gold.mod3.$procdff$2133 ($dff): CLK=\in_clk, D=$flatten\gold.mod3.$0\state[2:0], Q=\gold.mod3.state
+Replacing miter.$flatten\gold.mod3.$procdff$2134 ($dff): CLK=\in_clk, D=$flatten\gold.mod3.$0\stop[0:0], Q=\gold.mod3.stop
+Replacing miter.$flatten\gold.mod4.$procdff$2135 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod4.$0\stop[0:0], Q=\gold.mod4.stop
+Replacing miter.$flatten\gold.mod4.$procdff$2136 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod4.$0\count[2:0], Q=\gold.mod4.count
+Replacing miter.$flatten\gold.mod5.$procdff$2139 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod5.$0\state[2:0], Q=\gold.mod5.state
+Replacing miter.$flatten\gold.mod5.$procdff$2140 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod5.$0\stop[0:0], Q=\gold.mod5.stop
+Replacing miter.$flatten\gold.mod6.$procdff$2141 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod6.$0\stop[0:0], Q=\gold.mod6.stop
+Replacing miter.$flatten\gold.mod6.$procdff$2146 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod6.$0\count[2:0], Q=\gold.mod6.count
+Replacing miter.$flatten\gold.mod6.$procdff$2147 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod6.$0\flag[0:0], Q=\gold.mod6.flag
+Replacing miter.$flatten\gold.mod6.$procdff$2148 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod6.$0\count1[1:0], Q=\gold.mod6.count1
+Replacing miter.$flatten\gold.mod6.$procdff$2149 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod6.$0\stream_id_temp[7:0], Q=\gold.mod6.stream_id_temp
+Replacing miter.$flatten\gold.mod7.$procdff$2160 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod7.$0\done[0:0], Q=\gold.mod7.done
+Replacing miter.$flatten\gold.mod7.$procdff$2162 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod7.$0\stream_done[0:0], Q=\gold.mod7.stream_done
+Replacing miter.$flatten\gold.mod7.$procdff$2163 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod7.$0\state[3:0], Q=\gold.mod7.state
+Replacing miter.$flatten\gold.mod7.$procdff$2164 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod7.$0\stream_id[7:0], Q=\gold.mod7.stream_id
+Replacing miter.$flatten\gold.mod7.$procdff$2165 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod7.$0\packet_length[15:0], Q=\gold.mod7.packet_length
+Replacing miter.$flatten\gold.mod7.$procdff$2168 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod7.$0\time_stamp_start[0:0], Q=\gold.mod7.time_stamp_start
+Replacing miter.$flatten\gold.mod7.$procdff$2169 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod7.$0\NumBytes[15:0], Q=\gold.mod7.NumBytes
+Replacing miter.$flatten\gold.mod7.$procdff$2170 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod7.$0\timeStampFlag[0:0], Q=\gold.mod7.timeStampFlag
+Replacing miter.$flatten\gold.mod7.module1.$procdff$2122 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod7.module1.$0\done[0:0], Q=\gold.mod7.module1.done
+Replacing miter.$flatten\gold.mod7.module1.$procdff$2123 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod7.module1.$0\state[1:0], Q=\gold.mod7.module1.state
+Replacing miter.$flatten\gold.mod7.module2.$procdff$2124 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod7.module2.$0\done[0:0], Q=\gold.mod7.module2.done
+Replacing miter.$flatten\gold.mod7.module2.$procdff$2125 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod7.module2.$0\state[3:0], Q=\gold.mod7.module2.state
+Replacing miter.$flatten\gold.mod7.module2.$procdff$2126 ($dff): CLK=\gold.mod2.count_over, D=$flatten\gold.mod7.module2.$0\timeBytes[3:0], Q=\gold.mod7.module2.timeBytes
+Replacing parse_pack_header.$procdff$2135 ($dff): CLK=\enable, D=$0\stop[0:0], Q=\stop
+Replacing parse_pack_header.$procdff$2136 ($dff): CLK=\enable, D=$0\count[2:0], Q=\count
+Replacing parse_pack_header.$procdff$2137 ($dff): CLK=\enable, D=$0\scr_reg[39:0], Q=\scr_reg
+Replacing parse_pack_header.$procdff$2138 ($dff): CLK=\enable, D=$0\mux_rate_reg[23:0], Q=\mux_rate_reg
+Replacing parse_system_header.$procdff$2141 ($dff): CLK=\enable, D=$0\stop[0:0], Q=\stop
+Replacing parse_system_header.$procdff$2142 ($dff): CLK=\enable, D=$0\syshead_len_reg[15:0], Q=\syshead_len_reg
+Replacing parse_system_header.$procdff$2143 ($dff): CLK=\enable, D=$0\rate_bnd_reg[23:0], Q=\rate_bnd_reg
+Replacing parse_system_header.$procdff$2144 ($dff): CLK=\enable, D=$0\flag_reg[15:0], Q=\flag_reg
+Replacing parse_system_header.$procdff$2145 ($dff): CLK=\enable, D=$0\resvd_byte_reg[7:0], Q=\resvd_byte_reg
+Replacing parse_system_header.$procdff$2146 ($dff): CLK=\enable, D=$0\count[2:0], Q=\count
+Replacing parse_system_header.$procdff$2147 ($dff): CLK=\enable, D=$0\flag[0:0], Q=\flag
+Replacing parse_system_header.$procdff$2148 ($dff): CLK=\enable, D=$0\count1[1:0], Q=\count1
+Replacing parse_system_header.$procdff$2149 ($dff): CLK=\enable, D=$0\stream_id_temp[7:0], Q=\stream_id_temp
+Replacing read_packet.$procdff$2160 ($dff): CLK=\read_signal, D=$0\done[0:0], Q=\done
+Replacing read_packet.$procdff$2161 ($dff): CLK=\read_signal, D=$0\buffer_out[7:0], Q=\buffer_out
+Replacing read_packet.$procdff$2162 ($dff): CLK=\read_signal, D=$0\stream_done[0:0], Q=\stream_done
+Replacing read_packet.$procdff$2163 ($dff): CLK=\read_signal, D=$0\state[3:0], Q=\state
+Replacing read_packet.$procdff$2164 ($dff): CLK=\read_signal, D=$0\stream_id[7:0], Q=\stream_id
+Replacing read_packet.$procdff$2165 ($dff): CLK=\read_signal, D=$0\packet_length[15:0], Q=\packet_length
+Replacing read_packet.$procdff$2168 ($dff): CLK=\read_signal, D=$0\time_stamp_start[0:0], Q=\time_stamp_start
+Replacing read_packet.$procdff$2169 ($dff): CLK=\read_signal, D=$0\NumBytes[15:0], Q=\NumBytes
+Replacing read_packet.$procdff$2170 ($dff): CLK=\read_signal, D=$0\timeStampFlag[0:0], Q=\timeStampFlag
+Replacing revised.$procdff$4346 ($dff): CLK=\main___read_enable, D=$0\main___mod7___module2___state[3:0], Q=\main___mod7___module2___state
+Replacing revised.$procdff$4347 ($dff): CLK=\main___read_enable, D=$0\main___mod7___timeStampBytes[3:0], Q=\main___mod7___timeStampBytes
+Replacing revised.$procdff$4348 ($dff): CLK=\main___read_enable, D=$0\main___mod7___time_stamp_stop[0:0], Q=\main___mod7___time_stamp_stop
+Replacing revised.$procdff$4349 ($dff): CLK=\main___read_enable, D=$0\main___mod7___module1___state[1:0], Q=\main___mod7___module1___state
+Replacing revised.$procdff$4350 ($dff): CLK=\main___read_enable, D=$0\main___mod7___prefix_stop[0:0], Q=\main___mod7___prefix_stop
+Replacing revised.$procdff$4351 ($dff): CLK=\main___read_enable, D=$0\stream_end[0:0], Q=\stream_end
+Replacing revised.$procdff$4353 ($dff): CLK=\main___read_enable, D=$0\main___mod7___timeStampFlag[0:0], Q=\main___mod7___timeStampFlag
+Replacing revised.$procdff$4354 ($dff): CLK=\main___read_enable, D=$0\main___mod7___NumBytes[15:0], Q=\main___mod7___NumBytes
+Replacing revised.$procdff$4355 ($dff): CLK=\main___read_enable, D=$0\main___mod7___time_stamp_start[0:0], Q=\main___mod7___time_stamp_start
+Replacing revised.$procdff$4358 ($dff): CLK=\main___read_enable, D=$0\main___mod7___packet_length[15:0], Q=\main___mod7___packet_length
+Replacing revised.$procdff$4359 ($dff): CLK=\main___read_enable, D=$0\main___mod7___stream_id[7:0], Q=\main___mod7___stream_id
+Replacing revised.$procdff$4360 ($dff): CLK=\main___read_enable, D=$0\main___mod7___state[3:0], Q=\main___mod7___state
+Replacing revised.$procdff$4361 ($dff): CLK=\main___read_enable, D=$0\main___packetStop[0:0], Q=\main___packetStop
+Replacing revised.$procdff$4373 ($dff): CLK=\main___read_enable, D=$0\main___mod6___stream_id_temp[7:0], Q=\main___mod6___stream_id_temp
+Replacing revised.$procdff$4374 ($dff): CLK=\main___read_enable, D=$0\main___mod6___count1[1:0], Q=\main___mod6___count1
+Replacing revised.$procdff$4375 ($dff): CLK=\main___read_enable, D=$0\main___mod6___flag[0:0], Q=\main___mod6___flag
+Replacing revised.$procdff$4376 ($dff): CLK=\main___read_enable, D=$0\main___mod6___count[2:0], Q=\main___mod6___count
+Replacing revised.$procdff$4381 ($dff): CLK=\main___read_enable, D=$0\main___sysHeadParseStop[0:0], Q=\main___sysHeadParseStop
+Replacing revised.$procdff$4382 ($dff): CLK=\main___read_enable, D=$0\main___mod5___state[2:0], Q=\main___mod5___state
+Replacing revised.$procdff$4383 ($dff): CLK=\main___read_enable, D=$0\main___sysHeadStop[0:0], Q=\main___sysHeadStop
+Replacing revised.$procdff$4384 ($dff): CLK=\main___read_enable, D=$0\main___mod4___count[2:0], Q=\main___mod4___count
+Replacing revised.$procdff$4387 ($dff): CLK=\main___read_enable, D=$0\main___packParseStop[0:0], Q=\main___packParseStop
+Replacing revised.$procdff$4388 ($dff): CLK=\clk, D=$0\main___mod3___state[2:0], Q=\main___mod3___state
+Replacing revised.$procdff$4389 ($dff): CLK=\clk, D=$0\main___packHeadStop[0:0], Q=\main___packHeadStop
+Replacing revised.$procdff$4390 ($dff): CLK=\clk, D=$0\main___mod2___count_value[2:0], Q=\main___mod2___count_value
+Replacing revised.$procdff$4391 ($dff): CLK=\clk, D=$0\main___read_enable[0:0], Q=\main___read_enable
+Replacing revised.$procdff$4393 ($dff): CLK=\clk, D={ \input_stream \main___buffer [7:1] }, Q=\main___buffer
+Replacing revised.$procdff$4394 ($dff): CLK=\clk, D=$0\main___packetStart[0:0], Q=\main___packetStart
+Replacing revised.$procdff$4395 ($dff): CLK=\clk, D=$0\main___sysHeadParseStart[0:0], Q=\main___sysHeadParseStart
+Replacing revised.$procdff$4396 ($dff): CLK=\clk, D=$0\main___sysHeadStart[0:0], Q=\main___sysHeadStart
+Replacing revised.$procdff$4397 ($dff): CLK=\clk, D=$0\main___packParseStart[0:0], Q=\main___packParseStart
+Replacing revised.$procdff$4398 ($dff): CLK=\clk, D=$0\main___packHeadStart[0:0], Q=\main___packHeadStart
+Replacing start_code_prefix.$procdff$2122 ($dff): CLK=\read_signal, D=$0\done[0:0], Q=\done
+Replacing start_code_prefix.$procdff$2123 ($dff): CLK=\read_signal, D=$0\state[1:0], Q=\state
+Replacing time_stamps.$procdff$2124 ($dff): CLK=\read_signal, D=$0\done[0:0], Q=\done
+Replacing time_stamps.$procdff$2125 ($dff): CLK=\read_signal, D=$0\state[3:0], Q=\state
+Replacing time_stamps.$procdff$2126 ($dff): CLK=\read_signal, D=$0\timeBytes[3:0], Q=\timeBytes
+
+7. Executing PREP pass.
+
+7.1. Executing HIERARCHY pass (managing design hierarchy).
+
+7.1.1. Analyzing design hierarchy..
+Top module:  \miter
+
+7.1.2. Analyzing design hierarchy..
+Top module:  \miter
+Removing unused module `\counter'.
+Removing unused module `\fsm_for_pack_start'.
+Removing unused module `\fsm_for_syshead_start'.
+Removing unused module `\input_buffer'.
+Removing unused module `\main'.
+Removing unused module `\parse_pack_header'.
+Removing unused module `\parse_system_header'.
+Removing unused module `\read_packet'.
+Removing unused module `\revised'.
+Removing unused module `\start_code_prefix'.
+Removing unused module `\time_stamps'.
+Removed 11 unused modules.
+
+7.2. Executing PROC pass (convert processes to netlists).
+
+7.2.1. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+7.2.2. Executing PROC_RMDEAD pass (remove dead branches from decision trees).
+Removed a total of 0 dead cases.
+
+7.2.3. Executing PROC_PRUNE pass (remove redundant assignments in processes).
+Removed 0 redundant assignments.
+Promoted 0 assignments to connections.
+
+7.2.4. Executing PROC_INIT pass (extract init attributes).
+
+7.2.5. Executing PROC_ARST pass (detect async resets in processes).
+
+7.2.6. Executing PROC_ROM pass (convert switches to ROMs).
+Converted 0 switches.
+
+7.2.7. Executing PROC_MUX pass (convert decision trees to multiplexers).
+
+7.2.8. Executing PROC_DLATCH pass (convert process syncs to latches).
+
+7.2.9. Executing PROC_DFF pass (convert process syncs to FFs).
+
+7.2.10. Executing PROC_MEMWR pass (convert process memory writes to cells).
+
+7.2.11. Executing PROC_CLEAN pass (remove empty switches from decision trees).
+Cleaned up 0 empty switches.
+
+7.2.12. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+
+7.3. Executing FUTURE pass.
+
+7.4. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+
+7.5. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \miter..
+Removed 0 unused cells and 68 unused wires.
+<suppressed ~5 debug messages>
+
+7.6. Executing CHECK pass (checking for obvious problems).
+Checking module miter...
+Found and reported 0 problems.
+
+7.7. Executing OPT pass (performing simple optimizations).
+
+7.7.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+
+7.7.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\miter'.
+<suppressed ~375 debug messages>
+Removed a total of 125 cells.
+
+7.7.3. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \miter..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~424 debug messages>
+
+7.7.4. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \miter.
+Performed a total of 0 changes.
+
+7.7.5. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\miter'.
+<suppressed ~6 debug messages>
+Removed a total of 2 cells.
+
+7.7.6. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \miter..
+Removed 0 unused cells and 127 unused wires.
+<suppressed ~1 debug messages>
+
+7.7.7. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+
+7.7.8. Rerunning OPT passes. (Maybe there is more to do..)
+
+7.7.9. Executing OPT_MUXTREE pass (detect dead branches in mux trees).
+Running muxtree optimizer on module \miter..
+  Creating internal representation of mux trees.
+  Evaluating internal representation of mux trees.
+  Analyzing evaluation results.
+Removed 0 multiplexer ports.
+<suppressed ~428 debug messages>
+
+7.7.10. Executing OPT_REDUCE pass (consolidate $*mux and $reduce_* inputs).
+  Optimizing cells in module \miter.
+Performed a total of 0 changes.
+
+7.7.11. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\miter'.
+Removed a total of 0 cells.
+
+7.7.12. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \miter..
+
+7.7.13. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+
+7.7.14. Finished fast OPT passes. (There is nothing left to do.)
+
+7.8. Executing WREDUCE pass (reducing word size of cells).
+Removed top 1 bits (of 2) from port B of cell miter.$auto$clk2fflogic.cc:93:sample_control_edge$4987 ($eqx).
+Removed top 1 bits (of 2) from port B of cell miter.$auto$clk2fflogic.cc:93:sample_control_edge$4787 ($eqx).
+Removed top 1 bits (of 2) from port B of cell miter.$auto$clk2fflogic.cc:93:sample_control_edge$4567 ($eqx).
+Removed top 16 bits (of 32) from wire miter.$flatten\gold.mod7.$auto$wreduce.cc:514:run$2241.
+
+7.9. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \miter..
+Removed 0 unused cells and 1 unused wires.
+<suppressed ~1 debug messages>
+
+7.10. Executing MEMORY_COLLECT pass (generating $mem cells).
+
+7.11. Executing OPT pass (performing simple optimizations).
+
+7.11.1. Executing OPT_EXPR pass (perform const folding).
+Optimizing module miter.
+
+7.11.2. Executing OPT_MERGE pass (detect identical cells).
+Finding identical cells in module `\miter'.
+Removed a total of 0 cells.
+
+7.11.3. Executing OPT_CLEAN pass (remove unused cells and wires).
+Finding unused cells or wires in module \miter..
+
+7.11.4. Finished fast OPT passes.
+
+7.12. Printing statistics.
+
+=== miter ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      674 wires
+     1832 wire bits
+      115 public wires
+      374 public wire bits
+        5 ports
+        5 port bits
+      636 cells
+        8   $add
+        4   $and
+      129   $eq
+        4   $eqx
+      131   $ff
+        3   $gt
+        4   $logic_and
+       20   $logic_not
+        3   $lt
+      248   $mux
+        2   $ne
+        5   $not
+       40   $pmux
+        2   $reduce_bool
+       16   $reduce_or
+       11   $scopeinfo
+        6   $sub
+
+7.13. Executing CHECK pass (checking for obvious problems).
+Checking module miter...
+Found and reported 0 problems.
+
+8. Executing HIERARCHY pass (managing design hierarchy).
+Attribute `top' found on module `miter'. Setting top module to miter.
+
+8.1. Analyzing design hierarchy..
+Top module:  \miter
+
+8.2. Analyzing design hierarchy..
+Top module:  \miter
+Removed 0 unused modules.
+
+9. Executing jny backend.
+
+10. Executing RTLIL backend.
+Output filename: ../model/design.il
+
+Warnings: 2 unique messages, 2 total
+End of script. Logfile hash: c73f570cbd, CPU: user 0.27s system 0.00s, MEM: 22.23 MB peak
+Yosys 0.60+8 (git sha1 0e31e389f, clang++ 18.1.8 -fPIC -O3)
+Time spent: 19% 17x opt_clean (0 sec), 16% 21x opt_expr (0 sec), ...

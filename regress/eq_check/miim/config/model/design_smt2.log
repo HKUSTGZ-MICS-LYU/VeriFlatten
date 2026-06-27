@@ -1,0 +1,69 @@
+
+ /----------------------------------------------------------------------------\
+ |  yosys -- Yosys Open SYnthesis Suite                                       |
+ |  Copyright (C) 2012 - 2025  Claire Xenia Wolf <claire@yosyshq.com>         |
+ |  Distributed under an ISC-like license, type "license" to see terms        |
+ \----------------------------------------------------------------------------/
+ Yosys 0.60+8 (git sha1 0e31e389f, clang++ 18.1.8 -fPIC -O3)
+
+-- Executing script file `design_smt2.ys' --
+
+1. Executing RTLIL frontend.
+Input filename: design_prep.il
+
+2. Executing HIERARCHY pass (managing design hierarchy).
+Attribute `top' found on module `miter'. Setting top module to miter.
+
+2.1. Analyzing design hierarchy..
+Top module:  \miter
+
+2.2. Analyzing design hierarchy..
+Top module:  \miter
+Removed 0 unused modules.
+
+3. Executing FORMALFF pass.
+
+4. Executing DFFUNMAP pass (unmap clock enable and synchronous reset from FFs).
+
+5. Printing statistics.
+
+=== miter ===
+
+        +----------Local Count, excluding submodules.
+        | 
+      451 wires
+     1022 wire bits
+      186 public wires
+      485 public wire bits
+       29 ports
+       97 port bits
+      375 cells
+        4   $add
+       57   $and
+        1   $assume
+       24   $eq
+        8   $eqx
+       61   $ff
+        1   $gt
+        1   $logic_and
+        5   $logic_not
+        1   $lt
+      139   $mux
+       27   $not
+       28   $or
+        2   $pmux
+        5   $reduce_and
+        2   $reduce_or
+        5   $scopeinfo
+        4   $sub
+
+6. Executing SMT2 backend.
+
+6.1. Executing BMUXMAP pass.
+
+6.2. Executing DEMUXMAP pass.
+Creating SMT-LIBv2 representation of module miter.
+
+End of script. Logfile hash: f0b7357eb0, CPU: user 0.01s system 0.00s, MEM: 13.43 MB peak
+Yosys 0.60+8 (git sha1 0e31e389f, clang++ 18.1.8 -fPIC -O3)
+Time spent: 64% 2x write_smt2 (0 sec), 23% 2x read_rtlil (0 sec), ...

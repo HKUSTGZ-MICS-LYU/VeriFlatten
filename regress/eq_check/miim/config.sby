@@ -1,0 +1,24 @@
+[options]
+mode prove
+depth 10
+
+[engines]
+smtbmc
+
+[script]
+read -formal miim_golden.v
+prep -top main
+design -stash golden
+
+read -formal f_vMiim.v
+prep -top main
+design -stash revised
+
+design -load golden
+design -copy-from revised -as revised main
+miter -equiv -flatten -make_outputs main revised miter
+prep -top miter
+
+[files]
+miim_golden.v
+f_vMiim.v
